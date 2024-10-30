@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@nuxtjs/tailwindcss'
   ],
+
   pwa: {
     strategies: 'generateSW',
     manifest: {
@@ -42,10 +43,11 @@ export default defineNuxtConfig({
       navigateFallback: '/',
     }
   },
+
   primevue: {
     autoImport: false,
     components: {
-        include: ['Button', 'DataTable']
+        include: ['Accordion', 'AccordionPanel', 'AccordionHeader', 'AccordionContent', 'Button', 'Card', 'Carousel']
     },
     options: {
         ripple: true,
@@ -62,9 +64,32 @@ export default defineNuxtConfig({
         }
     }
   },
+
   tailwindcss: {
     cssPath: 'assets/css/tailwind.css',
     configPath: 'tailwind.config.js',
     exposeConfig: false,
   },
+  css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.googleapis.com'
+        },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossorigin: 'anonymous'
+        },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap'
+        }
+      ]
+    }
+  },
+
+  compatibilityDate: '2024-10-30',
 })
