@@ -1,9 +1,12 @@
 // nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config'
+import Aura from '@primevue/themes/aura';
 
 export default defineNuxtConfig({
   modules: [
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    '@primevue/nuxt-module',
+    '@nuxtjs/tailwindcss'
   ],
   pwa: {
     strategies: 'generateSW',
@@ -38,5 +41,30 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       navigateFallback: '/',
     }
+  },
+  primevue: {
+    autoImport: false,
+    components: {
+        include: ['Button', 'DataTable']
+    },
+    options: {
+        ripple: true,
+        inputVariant: 'filled',
+        theme: {
+            preset: Aura,
+            options: {
+                darkModeSelector: false,
+                cssLayer: {
+                  name: 'primevue',
+                  order: 'tailwind-base, primevue, tailwind-utilities'
+                }
+            }
+        }
+    }
+  },
+  tailwindcss: {
+    cssPath: 'assets/css/tailwind.css',
+    configPath: 'tailwind.config.js',
+    exposeConfig: false,
   },
 })
