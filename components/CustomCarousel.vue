@@ -6,11 +6,9 @@
       :numScroll="1"
       :showIndicators="false"
     >
-      <template #item>
-        <div
-          class="p-4 m-2 border rounded border-surface-200 dark:border-surface-700"
-        >
-          <img src="../assets/images/contents/1c.jpg" alt="Contents" />
+      <template #item="{ data }">
+        <div class="m-2 border rounded">
+          <img :src="`/assets/images/contents/${data.image}`" alt="Contents" />
         </div>
       </template>
     </Carousel>
@@ -23,39 +21,15 @@ import { ref } from "vue";
 const products = ref([
   {
     id: "1000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
+    image: "clinic1.jpg",
   },
   {
     id: "2000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
+    image: "clinic2.jpg",
   },
   {
     id: "3000",
-    code: "f230fh0g3",
-    name: "Bamboo Watch",
-    description: "Product Description",
-    image: "bamboo-watch.jpg",
-    price: 65,
-    category: "Accessories",
-    quantity: 24,
-    inventoryStatus: "INSTOCK",
-    rating: 5,
+    image: "clinic3.jpg",
   },
 ]);
 </script>

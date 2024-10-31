@@ -1,29 +1,34 @@
 <template>
-  <Card class="top-[300px] w-[300px] ml-4 mt-4">
+  <Card
+    class="!max-h-[85vh] w-[380px] ml-4 mt-4 shadow-lg"
+    pt:body:class="!p-0"
+  >
     <template #content>
-      <Accordion :value="['0']" multiple>
-        <AccordionPanel
-          v-for="(item, index) in accordionItems"
-          :key="index"
-          :value="index.toString()"
-        >
-          <AccordionHeader class="text-lg font-semibold">{{
-            item.header
-          }}</AccordionHeader>
-          <AccordionContent>
-            <div class="flex flex-col space-y-2">
-              <div
-                v-for="(clickableItem, itemIndex) in item.clickableItems"
-                :key="itemIndex"
-                class="p-2 transition-colors bg-gray-200 border rounded-lg cursor-pointer hover:bg-gray-300"
-                @click="handleItemClick(clickableItem)"
-              >
-                {{ clickableItem.label }}
+      <div class="scrollable-container">
+        <Accordion :value="['0']" multiple>
+          <AccordionPanel
+            v-for="(item, index) in accordionItems"
+            :key="index"
+            :value="index.toString()"
+          >
+            <AccordionHeader class="text-lg font-semibold">{{
+              item.header
+            }}</AccordionHeader>
+            <AccordionContent>
+              <div class="flex flex-col mt-2 space-y-2">
+                <div
+                  v-for="(clickableItem, itemIndex) in item.clickableItems"
+                  :key="itemIndex"
+                  class="p-2 transition-colors bg-gray-200 border rounded-lg cursor-pointer hover:bg-gray-300"
+                  @click="handleItemClick(clickableItem)"
+                >
+                  {{ clickableItem.label }}
+                </div>
               </div>
-            </div>
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
+            </AccordionContent>
+          </AccordionPanel>
+        </Accordion>
+      </div>
     </template>
   </Card>
 </template>
@@ -178,6 +183,17 @@ const handleItemClick = (clickableItem) => {
   console.log(
     `Item clicked: ${clickableItem.label}, Action: ${clickableItem.action}`
   );
-  // Implement your action based on clickableItem.action here
 };
 </script>
+
+<style scoped>
+.scrollable-container {
+  max-height: 85vh;
+  overflow-y: auto;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* For Firefox */
+}
+.scrollable-container::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+</style>

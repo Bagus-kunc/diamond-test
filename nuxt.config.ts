@@ -6,11 +6,15 @@ export default defineNuxtConfig({
   modules: [
     '@vite-pwa/nuxt',
     '@primevue/nuxt-module',
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxt/image'
   ],
 
   pwa: {
-    strategies: 'generateSW',
+    strategies: 'injectManifest',
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    registerType: 'autoUpdate',
     manifest: {
       name: 'Diamond Clinic',
       short_name: 'DiamonClinic',
@@ -37,6 +41,10 @@ export default defineNuxtConfig({
           purpose: 'any maskable',
         },
       ],
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
     },
     workbox: {
       cleanupOutdatedCaches: true,
@@ -66,7 +74,7 @@ export default defineNuxtConfig({
   },
 
   tailwindcss: {
-    cssPath: 'assets/css/tailwind.css',
+    cssPath: ['assets/css/tailwind.css' , {injectPosition: 'first'}],
     configPath: 'tailwind.config.js',
     exposeConfig: false,
   },

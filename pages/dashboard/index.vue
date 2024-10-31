@@ -4,11 +4,11 @@
       <div>
         <img
           src="../../assets/images/logo.png"
-          class="h-20"
+          class="h-16"
           alt="Header Logo"
         />
       </div>
-      <div>
+      <div class="flex justify-center w-full">
         <ul class="flex space-x-8 text-gray-700">
           <li class="cursor-pointer hover:text-blue-500">ANTIAGING</li>
           <li class="cursor-pointer hover:text-blue-500">WELLNESS</li>
@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="flex">
-    <MenuSideBar />
+    <MenuSideBar class="sticky top-[120px]" />
     <CustomCarousel />
     <div></div>
   </div>
