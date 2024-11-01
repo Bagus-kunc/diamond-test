@@ -1,45 +1,36 @@
 <template>
-  <Card
-    class="!max-h-[85vh] w-[380px] ml-4 mt-4 shadow-lg"
-    pt:body:class="!p-0"
-  >
-    <template #content>
-      <div class="scrollable-container">
-        <Accordion :value="['0']" multiple>
-          <AccordionPanel
-            v-for="(item, index) in accordionItems"
-            :key="index"
-            :value="index.toString()"
+  <div class="!max-h-[40vh] w-[250px] ml-4 mt-4">
+    <TieredMenu :model="accordionItems" :baseZIndex="100">
+      <template #item="{ item, props, hasSubmenu }">
+        <a v-ripple class="flex items-center" v-bind="props.action">
+          <span class="ml-2">{{ item.label }}</span>
+          <span
+            v-if="item.shortcut"
+            class="p-1 ml-auto text-xs border rounded border-surface bg-emphasis text-muted-color"
+            >{{ item.shortcut }}</span
           >
-            <AccordionHeader class="text-lg font-semibold">{{
-              item.header
-            }}</AccordionHeader>
-            <AccordionContent>
-              <div class="flex flex-col mt-2 space-y-2">
-                <div
-                  v-for="(clickableItem, itemIndex) in item.clickableItems"
-                  :key="itemIndex"
-                  class="p-2 transition-colors bg-gray-200 border rounded-lg cursor-pointer hover:bg-gray-300"
-                  @click="handleItemClick(clickableItem)"
-                >
-                  {{ clickableItem.label }}
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionPanel>
-        </Accordion>
-      </div>
-    </template>
-  </Card>
+          <i v-if="hasSubmenu" class="ml-auto pi pi-angle-right"></i>
+        </a>
+      </template>
+    </TieredMenu>
+    <!-- <Listbox
+      v-model="selectedBox"
+      :options="accordionItems"
+      optionLabel="label"
+      class="w-full hidden-scrollbar"
+      listStyle="max-height:70vh"
+    /> -->
+  </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 
+const selectedBox = ref("Laser Treatment");
 const accordionItems = ref([
   {
-    header: "Laser Treatment",
-    clickableItems: [
+    label: "Laser Treatment",
+    items: [
       { label: "Gleaming Beauty Rejuvenation", action: "A1" },
       { label: "Dual layer laser", action: "A2" },
       { label: "Vascular lesions", action: "A3" },
@@ -48,8 +39,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "3D Beautification",
-    clickableItems: [
+    label: "3D Beautification",
+    items: [
       { label: "Botox", action: "B1" },
       { label: "Filler", action: "B2" },
       { label: "Chin Filler", action: "B3" },
@@ -61,8 +52,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Skin Booster",
-    clickableItems: [
+    label: "Skin Booster",
+    items: [
       { label: "Glowing Booster", action: "C1" },
       { label: "Deep Skin Hydration", action: "C2" },
       { label: "Prohealer", action: "C3" },
@@ -76,8 +67,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Skin Cocktail",
-    clickableItems: [
+    label: "Skin Cocktail",
+    items: [
       { label: "S.M.A.R.T", action: "CA1" },
       { label: "Skin Rescue", action: "CA2" },
       { label: "Glow Ink", action: "CA3" },
@@ -86,8 +77,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Signature Booster",
-    clickableItems: [
+    label: "Signature Booster",
+    items: [
       { label: "Nano Revive Cell Rej", action: "CB1" },
       { label: "Collagen Stimulator", action: "CB2" },
       { label: "Bio Density", action: "CB3" },
@@ -96,8 +87,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Derma Cell Stim",
-    clickableItems: [
+    label: "Derma Cell Stim",
+    items: [
       { label: "DermaCell Stimulator", action: "CC1" },
       { label: "AQ Growth Factor", action: "CC2" },
       { label: "Exosome", action: "CC3" },
@@ -105,8 +96,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Facial",
-    clickableItems: [
+    label: "Facial",
+    items: [
       { label: "Korean Facial", action: "D1" },
       { label: "Peeling Facial", action: "D2" },
       { label: "Oxygeneo Facial", action: "D3" },
@@ -122,8 +113,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Adds On",
-    clickableItems: [
+    label: "Adds On",
+    items: [
       { label: "Celluma Light Therapy", action: "E1" },
       { label: "PDT Light Therapy", action: "E2" },
       { label: "Oxy Jet", action: "E3" },
@@ -134,8 +125,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Countouring",
-    clickableItems: [
+    label: "Countouring",
+    items: [
       { label: "Instant Lifting Alma", action: "F1" },
       { label: "Face Max Shaping", action: "F2" },
       { label: "Body Max Shaping", action: "F3" },
@@ -146,8 +137,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "Injection",
-    clickableItems: [
+    label: "Injection",
+    items: [
       { label: "Fat Cells Go Away (Kybella)", action: "H1" },
       { label: "Immune Booster", action: "H2" },
       { label: "VIT. C Injection", action: "H3" },
@@ -156,8 +147,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "3Deep",
-    clickableItems: [
+    label: "3Deep",
+    items: [
       { label: "Eyefine", action: "J1" },
       { label: "3Deep Beauty", action: "J2" },
       { label: "Silky Skin", action: "J3" },
@@ -170,8 +161,8 @@ const accordionItems = ref([
     ],
   },
   {
-    header: "MMFU",
-    clickableItems: [
+    label: "MMFU",
+    items: [
       { label: "MMFU MPT", action: "K1" },
       { label: "Onlift Booster", action: "K2" },
     ],
@@ -188,7 +179,7 @@ const handleItemClick = (clickableItem) => {
 
 <style scoped>
 .scrollable-container {
-  max-height: 85vh;
+  max-height: 70vh;
   overflow-y: auto;
   /* Hide scrollbar */
   scrollbar-width: none; /* For Firefox */
