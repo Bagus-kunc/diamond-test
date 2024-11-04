@@ -3,7 +3,7 @@
     <Header class="mb-10" />
     <div class="flex flex-col items-center justify-center">
       <h1 class="font-semibold text-5xl mb-[50px]">PIN</h1>
-      <OtpInput
+      <PinInput
         v-model="value"
         :length="4"
         :clear-field="true"
@@ -25,7 +25,7 @@ import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import Button from "primevue/button";
 import Header from "~/components/Header.vue";
-import OtpInput from "../components/OtpInput.vue";
+import PinInput from "../components/PinInput.vue";
 
 const value = ref("");
 const router = useRouter();
@@ -37,7 +37,7 @@ definePageMeta({
 defineComponent({
   components: {
     Button,
-    OtpInput,
+    PinInput,
     Header,
   },
 });

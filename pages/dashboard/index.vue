@@ -1,7 +1,7 @@
 <template>
   <div class="flex w-full">
     <div>
-      <Card class="h-[200px] w-[250px] ml-4 mt-4 shadow-lg">
+      <Card class="h-[200px] w-[300px] ml-4 mt-4 shadow-lg">
         <template #content>
           <div class="flex flex-col items-center gap-1">
             <div class="mb-4">
@@ -39,7 +39,7 @@
         </template>
       </Card>
 
-      <MenuSideBar />
+      <Sidebar />
     </div>
 
     <CustomCarousel />
@@ -47,13 +47,13 @@
 </template>
 <script setup>
 import Header from "~/components/Header.vue";
-import MenuSideBar from "~/components/MenuSideBar.vue";
+import Sidebar from "~/components/Sidebar.vue";
 import CustomCarousel from "~/components/CustomCarousel.vue";
 
 defineComponent({
   components: {
     Header,
-    MenuSideBar,
+    Sidebar,
     CustomCarousel,
   },
 });

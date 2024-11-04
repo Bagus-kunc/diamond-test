@@ -1,32 +1,49 @@
 <template>
-  <div class="!max-h-[40vh] w-[250px] ml-4 mt-4">
-    <TieredMenu :model="accordionItems" :baseZIndex="100">
-      <template #item="{ item, props, hasSubmenu }">
-        <a v-ripple class="flex items-center" v-bind="props.action">
-          <span class="ml-2">{{ item.label }}</span>
-          <span
-            v-if="item.shortcut"
-            class="p-1 ml-auto text-xs border rounded border-surface bg-emphasis text-muted-color"
-            >{{ item.shortcut }}</span
-          >
-          <i v-if="hasSubmenu" class="ml-auto pi pi-angle-right"></i>
-        </a>
-      </template>
-    </TieredMenu>
-    <!-- <Listbox
+  <div class="!max-h-[40vh] w-[300px] ml-4 mt-4 relative">
+    <Listbox
       v-model="selectedBox"
       :options="accordionItems"
-      optionLabel="label"
       class="w-full hidden-scrollbar"
       listStyle="max-height:70vh"
-    /> -->
+      @click="toggleSubMenu"
+    >
+      <template #option="{ option }">
+        <div class="flex justify-between cursor-pointer">
+          <div>{{ option.label }}</div>
+        </div>
+      </template>
+    </Listbox>
+
+    <!-- Teleport for Submenu -->
+    <Teleport to="#teleports" v-if="isVisibel">
+      <div
+        class="submenu"
+        :style="{ top: submenuPosition.top, left: submenuPosition.left }"
+        ref="refSubMenu"
+      >
+        <Listbox
+          v-model="selectedSubItem"
+          :options="selectedSubMenu.items"
+          optionLabel="label"
+          class="w-full sublist"
+          listStyle="max-height:550px"
+          @change="handleItemClick(selectedSubItem)"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 
 const selectedBox = ref("Laser Treatment");
+const selectedSubItem = ref(null);
+const selectedSubMenu = ref(null);
+const refSubMenu = ref(null);
+const isVisibel = ref(false);
+const submenuPosition = ref({ top: "0px", left: "0px" });
+
 const accordionItems = ref([
   {
     label: "Laser Treatment",
@@ -169,6 +186,46 @@ const accordionItems = ref([
   },
 ]);
 
+const toggleSubMenu = () => {
+  selectedSubMenu.value = selectedBox.value;
+
+  if (selectedSubMenu.value) {
+    const itemElement = document.querySelector(
+      ".p-listbox-option.p-listbox-option-selected"
+    );
+    const rect = itemElement.getBoundingClientRect();
+
+    submenuPosition.value = {
+      top: `${rect.bottom + window.scrollY - 25}px`,
+      left: `${rect.left + window.scrollX + 270}px`,
+    };
+    isVisibel.value = true;
+
+    nextTick(() => {
+      const bodyRect = document.body.getBoundingClientRect();
+
+      if (refSubMenu.value) {
+        const rectSubmenu = refSubMenu.value.getBoundingClientRect();
+
+        let rectVerticalPosition = rectSubmenu.height / 2;
+
+        if (rectSubmenu.bottom > bodyRect.bottom) {
+          rectVerticalPosition = rectSubmenu.height;
+        }
+
+        console.info(bodyRect, rectSubmenu);
+
+        submenuPosition.value = {
+          top: `${rect.bottom + window.scrollY - rectVerticalPosition}px`,
+          left: `${rect.left + window.scrollX + 270}px`,
+        };
+      }
+    });
+  } else {
+    submenuPosition.value = { top: "0px", left: "0px" };
+  }
+};
+
 // Handle item click
 const handleItemClick = (clickableItem) => {
   console.log(
@@ -186,5 +243,13 @@ const handleItemClick = (clickableItem) => {
 }
 .scrollable-container::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Opera */
+}
+
+.submenu {
+  position: absolute;
+  z-index: 1000;
+  background: rgb(255, 255, 255);
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
