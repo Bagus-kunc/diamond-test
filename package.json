@@ -25,6 +25,7 @@
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@primevue/nuxt-module": "^4.1.1",
     "@vite-pwa/assets-generator": "^0.2.6",
+    "postcss-import": "^16.1.0",
     "vite-plugin-pwa": "^0.20.5"
   }
 }

@@ -1,6 +1,5 @@
 // nuxt.config.ts
-import { defineNuxtConfig } from 'nuxt/config'
-import Aura from '@primevue/themes/aura';
+import { defineNuxtConfig } from 'nuxt/config';
 
 export default defineNuxtConfig({
   modules: [
@@ -36,25 +35,16 @@ export default defineNuxtConfig({
     exposeConfig: false,
   },
 
+  css: ['~/assets/css/tailwind.css', '~/assets/css/main.css'],
+
   primevue: {
     autoImport: false,
     components: {
         include: ['Accordion', 'AccordionPanel', 'AccordionHeader', 'AccordionContent', 'Button', 'Card', 'Carousel', 'Listbox', 'TieredMenu']
     },
     options: {
-        ripple: true,
-        inputVariant: 'filled',
-        theme: {
-            preset: Aura,
-            options: {
-                darkModeSelector: false,
-                cssLayer: {
-                  name: 'primevue',
-                  order: 'tailwind-base, primevue, tailwind-utilities'
-                }
-            }
-        }
-    }
+      theme: 'none'
+    },
   },
   
   pwa: {
@@ -99,6 +89,14 @@ export default defineNuxtConfig({
       enabled: true,
       navigateFallback: '/',
       type: 'module',
+    },
+  },
+
+  postcss: {
+    plugins: {
+      'postcss-import': {},
+      tailwindcss: {},
+      autoprefixer: {},
     },
   },
 
