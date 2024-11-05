@@ -8,6 +8,7 @@
     <div
       class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full"
     ></div>
+
     <div class="flex flex-col items-center h-screen">
       <div
         class="flex flex-col gap-3 items-center justify-center mt-[29px] z-20"

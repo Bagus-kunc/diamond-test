@@ -64,11 +64,13 @@ const onBackspace = (index) => {
     otpRefs.value[prevIndex]?.focus();
   }
 };
+
 const onPaste = (event) => {
   event.preventDefault();
   const pasteData = event.clipboardData
     .getData("text")
     .split("")
+    .filter((char) => !/[a-zA-Z]/.test(char))
     .slice(0, props.length);
   otp.value = pasteData.concat(Array(props.length - pasteData.length).fill(""));
   emit("update:modelValue", otp.value.join(""));
@@ -83,6 +85,7 @@ const isBlocked = (index) => {
   const otpLength = otp.value.join("").length;
   return Math.min(otpLength, props.length - 1) !== index;
 };
+
 watch(
   () => props.clearField,
   (newValue) => {
