@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vite-pwa/nuxt'
   ],
-
   app: {
     head: {
       link: [

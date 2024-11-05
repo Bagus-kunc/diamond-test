@@ -1,48 +1,38 @@
 <template>
-  <div class="flex w-full">
-    <div>
-      <Card class="h-[200px] w-[300px] ml-4 mt-4 shadow-lg">
-        <template #content>
-          <div class="flex flex-col items-center gap-1">
-            <div class="mb-4">
-              <img
-                src="../../assets/images/logo.png"
-                class="h-20"
-                alt="Header Logo"
-              />
-            </div>
-            <div>
-              <ul class="grid grid-cols-2 gap-4 text-center text-gray-700">
-                <li
-                  class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
-                >
-                  ANTIAGING
-                </li>
-                <li
-                  class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
-                >
-                  WELLNESS
-                </li>
-                <li
-                  class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
-                >
-                  BEAUTY
-                </li>
-                <li
-                  class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
-                >
-                  CERTIFICATIONS
-                </li>
-              </ul>
-            </div>
-          </div>
-        </template>
-      </Card>
-
-      <Sidebar />
+  <div class="w-full">
+    <div
+      class="mb-4 absolute top-2.5 left-[90px] rounded bg-white shadow-lg p-1"
+    >
+      <nuxt-img src="/images/logo.png" class="h-24" alt="Header Logo" />
     </div>
-
-    <CustomCarousel />
+    <div class="flex items-center justify-center gap-1 p-5 shadow-lg">
+      <ul class="flex gap-6 text-center text-gray-700">
+        <li
+          class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
+        >
+          ANTIAGING
+        </li>
+        <li
+          class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
+        >
+          WELLNESS
+        </li>
+        <li
+          class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
+        >
+          BEAUTY
+        </li>
+        <li
+          class="transition-colors duration-200 cursor-pointer hover:text-blue-500"
+        >
+          CERTIFICATIONS
+        </li>
+      </ul>
+    </div>
+    <div class="flex">
+      <Sidebar />
+      <CustomCarousel />
+    </div>
   </div>
 </template>
 <script setup>

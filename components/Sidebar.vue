@@ -1,9 +1,9 @@
 <template>
-  <div class="w-[300px] ml-4 mt-4 relative menu-sidebar">
+  <div class="min-w-[300px] ml-4 mt-4 relative menu-sidebar">
     <Listbox
       v-model="selectedBox"
       :options="accordionItems"
-      class="w-full hidden-scrollbar"
+      class="absolute w-full hidden-scrollbar top-14"
       listStyle="max-height:70vh"
       @click="toggleSubMenu"
     >
@@ -280,6 +280,7 @@ const handleItemClick = (clickableItem) => {
 .submenu {
   position: absolute;
   z-index: 1000;
+  border-radius: 10px;
   background: rgb(255, 255, 255);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
