@@ -9,7 +9,7 @@
       contentClass="max-h-[110vh] max-w-[110vh]"
     >
       <template #item="{ data }">
-        <div class="flex items-center justify-center h-full m-2 border rounded">
+        <div class="flex items-center justify-center h-full m-2 rounded">
           <img
             :src="`/assets/images/contents/${data.image}`"
             alt="Contents"

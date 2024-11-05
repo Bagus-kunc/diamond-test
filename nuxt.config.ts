@@ -40,7 +40,7 @@ export default defineNuxtConfig({
   primevue: {
     autoImport: false,
     components: {
-        include: ['Accordion', 'AccordionPanel', 'AccordionHeader', 'AccordionContent', 'Button', 'Card', 'Carousel', 'Listbox', 'TieredMenu']
+        include: ['Button', 'Card', 'Carousel', 'Listbox']
     },
     options: {
       theme: 'none'

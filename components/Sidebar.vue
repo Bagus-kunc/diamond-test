@@ -1,5 +1,5 @@
 <template>
-  <div class="!max-h-[40vh] w-[300px] ml-4 mt-4 relative">
+  <div class="w-[300px] ml-4 mt-4 relative menu-sidebar">
     <Listbox
       v-model="selectedBox"
       :options="accordionItems"
@@ -15,21 +15,25 @@
     </Listbox>
 
     <!-- Teleport for Submenu -->
-    <Teleport to="#teleports" v-if="isVisibel">
-      <div
-        class="submenu"
-        :style="{ top: submenuPosition.top, left: submenuPosition.left }"
-        ref="refSubMenu"
-      >
-        <Listbox
-          v-model="selectedSubItem"
-          :options="selectedSubMenu.items"
-          optionLabel="label"
-          class="w-full sublist"
-          listStyle="max-height:550px"
-          @change="handleItemClick(selectedSubItem)"
-        />
-      </div>
+    <Teleport to="#teleports">
+      <transition name="fade">
+        <div
+          v-if="isVisible"
+          class="submenu"
+          :style="{ top: submenuPosition.top, left: submenuPosition.left }"
+          ref="refSubMenu"
+          v-click-outside="handleClickOutside"
+        >
+          <Listbox
+            v-model="selectedSubItem"
+            :options="selectedSubMenu.items"
+            optionLabel="label"
+            class="w-full sublist"
+            listStyle="max-height:550px"
+            @change="handleItemClick(selectedSubItem)"
+          />
+        </div>
+      </transition>
     </Teleport>
   </div>
 </template>
@@ -41,7 +45,8 @@ const selectedBox = ref("Laser Treatment");
 const selectedSubItem = ref(null);
 const selectedSubMenu = ref(null);
 const refSubMenu = ref(null);
-const isVisibel = ref(false);
+const status = ref("");
+const isVisible = ref(false);
 const submenuPosition = ref({ top: "0px", left: "0px" });
 
 const accordionItems = ref([
@@ -187,42 +192,69 @@ const accordionItems = ref([
 ]);
 
 const toggleSubMenu = () => {
-  selectedSubMenu.value = selectedBox.value;
-
-  if (selectedSubMenu.value) {
+  isVisible.value = false;
+  status.value = "";
+  if (selectedBox.value) {
+    selectedSubMenu.value = selectedBox.value;
     const itemElement = document.querySelector(
       ".p-listbox-option.p-listbox-option-selected"
     );
-    const rect = itemElement.getBoundingClientRect();
 
-    submenuPosition.value = {
-      top: `${rect.bottom + window.scrollY - 25}px`,
-      left: `${rect.left + window.scrollX + 270}px`,
-    };
-    isVisibel.value = true;
+    if (itemElement != null) {
+      const rect = itemElement.getBoundingClientRect();
 
-    nextTick(() => {
-      const bodyRect = document.body.getBoundingClientRect();
+      submenuPosition.value = {
+        top: `${rect.top + window.scrollY + rect.height / 2}px`,
+        left: `${rect.left + window.scrollX + 270}px`,
+      };
 
-      if (refSubMenu.value) {
-        const rectSubmenu = refSubMenu.value.getBoundingClientRect();
+      setTimeout(() => {
+        status.value = "click";
+      }, 500);
+      isVisible.value = true;
 
-        let rectVerticalPosition = rectSubmenu.height / 2;
+      nextTick(() => {
+        if (refSubMenu.value) {
+          const rectSubmenu = refSubMenu.value.getBoundingClientRect();
 
-        if (rectSubmenu.bottom > bodyRect.bottom) {
-          rectVerticalPosition = rectSubmenu.height;
+          // Hitung posisi tengah vertikal yang diinginkan
+          let desiredTop =
+            rect.top +
+            window.scrollY +
+            rect.height / 2 -
+            rectSubmenu.height / 2;
+
+          // Pastikan submenu tidak keluar dari batas bawah viewport
+          if (desiredTop + rectSubmenu.height > window.innerHeight) {
+            desiredTop = window.innerHeight - rectSubmenu.height;
+          }
+
+          // Pastikan submenu tidak keluar dari batas atas viewport
+          if (desiredTop < 0) {
+            desiredTop = 0;
+          }
+
+          submenuPosition.value = {
+            top: `${desiredTop}px`,
+            left: `${rect.left + 288}px`,
+          };
         }
-
-        console.info(bodyRect, rectSubmenu);
-
-        submenuPosition.value = {
-          top: `${rect.bottom + window.scrollY - rectVerticalPosition}px`,
-          left: `${rect.left + window.scrollX + 270}px`,
-        };
-      }
-    });
+      });
+    }
   } else {
     submenuPosition.value = { top: "0px", left: "0px" };
+  }
+};
+
+const handleClickOutside = () => {
+  if (isVisible.value && status.value === "click") {
+    isVisible.value = false;
+    const itemElement = document.querySelector(
+      ".p-listbox-option.p-listbox-option-selected"
+    );
+    if (itemElement) {
+      itemElement.classList.remove("p-listbox-option-selected");
+    }
   }
 };
 
@@ -249,7 +281,6 @@ const handleItemClick = (clickableItem) => {
   position: absolute;
   z-index: 1000;
   background: rgb(255, 255, 255);
-  border: 1px solid #ddd;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
