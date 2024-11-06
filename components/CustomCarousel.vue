@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 
 const products = ref([
   {
@@ -73,9 +73,7 @@ const products = ref([
   },
 ]);
 
-const controlVideo = async (index) => {
-  await nextTick();
-
+const controlVideo = (index) => {
   let vidFunc =
     products.value[index]?.type === "iframe" ? "playVideo" : "stopVideo";
 
@@ -87,7 +85,5 @@ const controlVideo = async (index) => {
       "*"
     );
   }
-
-  console.info("vidFunc", vidFunc);
 };
 </script>
