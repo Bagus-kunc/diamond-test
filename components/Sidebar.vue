@@ -1,10 +1,10 @@
 <template>
-  <div class="min-w-[300px] ml-4 mt-4 relative menu-sidebar">
+  <div class="min-w-[300px] ml-4 mt-6 relative menu-sidebar">
     <Listbox
       v-model="selectedBox"
       :options="accordionItems"
-      class="absolute w-full hidden-scrollbar top-14"
-      listStyle="max-height:70vh"
+      class="w-full"
+      listStyle="max-height:70dvh;scrollbar-width: none"
       @click="toggleSubMenu"
     >
       <template #option="{ option }">
@@ -267,16 +267,6 @@ const handleItemClick = (clickableItem) => {
 </script>
 
 <style scoped>
-.scrollable-container {
-  max-height: 70vh;
-  overflow-y: auto;
-  /* Hide scrollbar */
-  scrollbar-width: none; /* For Firefox */
-}
-.scrollable-container::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
-}
-
 .submenu {
   position: absolute;
   z-index: 1000;

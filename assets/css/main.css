@@ -74,7 +74,7 @@
 }
 
 body {
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
 }
@@ -87,16 +87,3 @@ body {
   border-radius: 7px;
 }
 
-.hidden-scrollbar {
-    /* Hide scrollbar for Chrome, Safari, and Opera */
-    overflow: hidden; /* For all browsers */
-    
-    /* Specific to Firefox */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer and Edge */
-}
-
-/* Hide scrollbar for Chrome, Safari, and Opera */
-.hidden-scrollbar::-webkit-scrollbar {
-    display: none;
-}

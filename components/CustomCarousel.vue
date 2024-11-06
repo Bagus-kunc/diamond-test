@@ -5,8 +5,7 @@
       :numVisible="1"
       :numScroll="1"
       :showIndicators="false"
-      class="h-full"
-      contentClass="max-h-[110vh] max-w-[110vh]"
+      contentClass="max-h-[110dvh] max-w-[110dvh]"
       @update:page="controlVideo"
     >
       <template #item="{ data }">
@@ -17,7 +16,7 @@
             v-if="data.type == 'image'"
             :src="`/images/contents/${data.url}`"
             alt="Contents"
-            class="object-cover w-full h-full"
+            class="object-cover"
             format="webp"
           />
 
@@ -74,16 +73,17 @@ const products = ref([
 ]);
 
 const controlVideo = (index) => {
-  let vidFunc =
-    products.value[index]?.type === "iframe" ? "playVideo" : "stopVideo";
+  let isIframe = products.value[index]?.type === "iframe";
 
-  const iframe = document.getElementsByTagName("iframe")[0];
+  if (!isIframe) {
+    const iframe = document.getElementsByTagName("iframe")[0];
 
-  if (iframe && iframe.contentWindow) {
-    iframe.contentWindow.postMessage(
-      '{"event":"command","func":"' + vidFunc + '","args":""}',
-      "*"
-    );
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage(
+        '{"event":"command","func":"stopVideo","args":""}',
+        "*"
+      );
+    }
   }
 };
 </script>
