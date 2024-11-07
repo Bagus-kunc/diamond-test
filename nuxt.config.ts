@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@primevue/nuxt-module",
     "@nuxt/image",
     "@vite-pwa/nuxt",
+    "@nuxt/eslint"
   ],
   app: {
     head: {
