@@ -7,8 +7,10 @@ export default defineNuxtConfig({
     "@primevue/nuxt-module",
     "@nuxt/image",
     "@vite-pwa/nuxt",
+    "@nuxt/eslint",
+    "nuxt-swiper",
+    "@nuxt/icon"
   ],
-
   app: {
     head: {
       link: [
@@ -23,14 +25,16 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap",
-        },
-        {
-          rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap",
         },
       ],
     },
+  },
+
+  icon: {
+    serverBundle: {
+      collections: ["ic"]
+    }
   },
 
   tailwindcss: {
@@ -45,15 +49,10 @@ export default defineNuxtConfig({
     autoImport: false,
     components: {
       include: [
-        "Accordion",
-        "AccordionPanel",
-        "AccordionHeader",
-        "AccordionContent",
         "Button",
         "Card",
         "Carousel",
         "Listbox",
-        "TieredMenu",
       ],
     },
     options: {

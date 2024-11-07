@@ -73,18 +73,17 @@
     }
 }
 
-
-
-.hidden-scrollbar {
-    /* Hide scrollbar for Chrome, Safari, and Opera */
-    overflow: hidden; /* For all browsers */
-    
-    /* Specific to Firefox */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer and Edge */
+body {
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
 }
 
-/* Hide scrollbar for Chrome, Safari, and Opera */
-.hidden-scrollbar::-webkit-scrollbar {
-    display: none;
+
+.submenu .p-listbox-option.p-listbox-option-selected,
+.menu-sidebar .p-listbox-option.p-listbox-option-selected {
+  background: #000080 !important;
+  color: white !important;
+  border-radius: 7px;
 }
+
