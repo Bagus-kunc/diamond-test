@@ -40,7 +40,7 @@
           @click="goToHomepage"
         />
         <p
-          class="md:text-[13px] sm:text-[12px] text-[10px] mt-1 text-[#757575]"
+          class="md:text-[16px] sm:text-[12px] text-[10px] mt-1 text-[#757575]"
         >
           If there is a problem with the login process please contact
           <span class="font-bold">administator@gmail.com</span>
