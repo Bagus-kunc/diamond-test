@@ -7,7 +7,9 @@ export default defineNuxtConfig({
     "@primevue/nuxt-module",
     "@nuxt/image",
     "@vite-pwa/nuxt",
-    "@nuxt/eslint"
+    "@nuxt/eslint",
+    "nuxt-swiper",
+    "@nuxt/icon"
   ],
   app: {
     head: {
@@ -27,6 +29,12 @@ export default defineNuxtConfig({
         },
       ],
     },
+  },
+
+  icon: {
+    serverBundle: {
+      collections: ["ic"]
+    }
   },
 
   tailwindcss: {
