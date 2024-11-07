@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row gap-5">
+  <div class="flex flex-row md:gap-14 sm:gap-10 gap-5">
     <input
       v-for="(value, index) in otp"
       :key="index"
@@ -12,7 +12,7 @@
       @input="onInput(index, $event)"
       @paste="onPaste($event)"
       @keydown.backspace="onBackspace(index)"
-      class="bg-white border-2 border-[#c4c3c2] text-lg font-semibold text-center rounded-md w-11 h-11 focus:outline-none"
+      class="bg-white border-2 border-[#c4c3c2] md:text-5xl sm:text-2xl text-lg font-semibold text-center rounded-md md:w-36 md:h-36 sm:w-24 sm:h-24 w-16 h-16 focus:outline-none shadow-md shadow-gray-400"
       :ref="(el) => (otpRefs[index] = el)"
     />
   </div>
@@ -64,11 +64,13 @@ const onBackspace = (index) => {
     otpRefs.value[prevIndex]?.focus();
   }
 };
+
 const onPaste = (event) => {
   event.preventDefault();
   const pasteData = event.clipboardData
     .getData("text")
     .split("")
+    .filter((char) => !/[a-zA-Z]/.test(char))
     .slice(0, props.length);
   otp.value = pasteData.concat(Array(props.length - pasteData.length).fill(""));
   emit("update:modelValue", otp.value.join(""));
@@ -83,6 +85,7 @@ const isBlocked = (index) => {
   const otpLength = otp.value.join("").length;
   return Math.min(otpLength, props.length - 1) !== index;
 };
+
 watch(
   () => props.clearField,
   (newValue) => {
