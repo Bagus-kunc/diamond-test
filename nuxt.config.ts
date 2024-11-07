@@ -22,7 +22,7 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap",
         },
       ],
     },
@@ -34,12 +34,17 @@ export default defineNuxtConfig({
     exposeConfig: false,
   },
 
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/tailwind.css", "~/assets/css/main.css"],
 
   primevue: {
     autoImport: false,
     components: {
-      include: ["Button", "Card", "Carousel", "Listbox"],
+      include: [
+        "Button",
+        "Card",
+        "Carousel",
+        "Listbox",
+      ],
     },
     options: {
       theme: "none",
