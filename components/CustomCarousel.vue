@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center w-full h-full ml-4 card">
+  <div class="flex justify-center h-full ml-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
       <button class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
