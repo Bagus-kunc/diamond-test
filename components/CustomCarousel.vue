@@ -141,18 +141,16 @@ const setFullScreen = () => {
     isFullScreen.value = false;
   }
 };
-const handleKeyPress = (event) => {
-  if ((event.key === 'F11' || event.key === 'Escape') && isFullScreen.value) {
-    document.exitFullscreen();
-    isFullScreen.value = false;
-  }
-};
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyPress);
-});
+  const handleFullscreenChange = () => {
+    isFullScreen.value = !!document.fullscreenElement;
+  };
 
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyPress);
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+  onBeforeUnmount(() => {
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  });
 });
 </script>
