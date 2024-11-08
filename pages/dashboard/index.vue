@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
-    <div class="flex items-center justify-center gap-1 p-2 shadow-lg">
-      <div class="min-w-[300px] flex justify-center">
+    <div class="sticky z-10 flex items-center justify-center gap-1 p-2 shadow-lg">
+      <div class="min-w-[220px] flex justify-center">
         <nuxt-img src="/images/logo.png" class="h-14" alt="Header Logo" />
       </div>
       <ul class="flex justify-center w-full gap-6 text-gray-700">

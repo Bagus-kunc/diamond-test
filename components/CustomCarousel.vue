@@ -1,14 +1,16 @@
 <template>
-  <div class="flex justify-center w-full h-full mt-4 ml-4 card">
-    <div class="flex justify-center">
+  <div class="flex justify-center h-full ml-4 lg:w-full card">
+    <div ref="fullscreenDiv" class="flex justify-center">
       <button class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
       <Swiper
-        class="max-h-[90dvh] max-w-[100dvh]"
+        :class="{
+          'max-h-[100dvh] max-w-[115dvh] !m-0': isFullScreen,
+          'max-h-[90dvh] max-w-[100dvh]': !isFullScreen,
+        }"
         :slides-per-view="1"
         :loop="true"
-        :autoplay="{ delay: 8000, disableOnInteraction: false }"
         :effect="'creative'"
         :creative-effect="{
           prev: { shadow: false, translate: ['-20%', 0, -1] },
@@ -20,29 +22,46 @@
         <SwiperSlide v-for="product in products" :key="product.id">
           <div class="relative flex items-center justify-center h-full rounded">
             <!-- Display image if type is 'image' -->
-            <nuxt-img
-              v-if="product.type === 'image'"
-              :src="`/images/contents/${product.url}`"
-              alt="Content Image"
-              class="object-cover"
-              format="webp"
-            />
+            <div v-if="product.type === 'image'" class="flex items-center w-full h-full">
+              <nuxt-img
+                :src="`/images/contents/${product.url}`"
+                alt="Content Image"
+                class="object-cover"
+                format="webp"
+              />
+              <Icon
+                class="absolute bottom-0 right-0 cursor-pointer"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="45"
+                style="color: gray"
+                @click="setFullScreen"
+              />
+            </div>
 
             <!-- Display iframe if type is 'iframe' -->
-            <div v-else-if="product.type === 'iframe'" class="relative w-full aspect-[16/9]">
+            <div v-else-if="product.type === 'iframe'" class="flex items-center w-full h-full">
               <nuxt-img
                 src="/images/contents/background.jpg"
                 layout="fill"
-                class="absolute top-0 left-0 object-cover w-full h-full"
+                class="absolute top-0 left-0 w-full h-full"
                 alt="Background Image"
               />
-              <iframe
-                class="absolute top-0 left-0 w-full h-full"
-                :src="`${product.url}?rel=0&enablejsapi=1`"
-                title="YouTube video player"
-                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
+              <div class="relative w-full aspect-[16/9]">
+                <iframe
+                  class="absolute top-0 left-0 w-full h-full"
+                  :src="`${product.url}?rel=0&enablejsapi=1`"
+                  title="YouTube video player"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                />
+              </div>
+              <Icon
+                class="absolute bottom-0 right-0 cursor-pointer"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="45"
+                style="color: gray"
+                @click="setFullScreen"
               />
             </div>
           </div>
@@ -61,6 +80,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/swiper-bundle.css';
 
 const mySwiperRef = ref(null);
+const fullscreenDiv = ref(null);
+const isFullScreen = ref(false);
 
 const products = ref([
   {
@@ -108,4 +129,28 @@ const controlVideo = (index) => {
     }
   }
 };
+
+const setFullScreen = () => {
+  if (!document.fullscreenElement) {
+    // Request fullscreen for the specific div
+    fullscreenDiv.value.requestFullscreen();
+    isFullScreen.value = true;
+  } else if (document.exitFullscreen) {
+    // Exit fullscreen mode
+    document.exitFullscreen();
+    isFullScreen.value = false;
+  }
+};
+
+onMounted(() => {
+  const handleFullscreenChange = () => {
+    isFullScreen.value = !!document.fullscreenElement;
+  };
+
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+  onBeforeUnmount(() => {
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  });
+});
 </script>

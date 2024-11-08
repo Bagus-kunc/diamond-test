@@ -1,10 +1,11 @@
 <template>
-  <div class="min-w-[200px] ml-4 mt-6 relative menu-sidebar">
+  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar">
     <Listbox
       v-model="selectedBox"
       :options="accordionItems"
       class="w-full"
       listStyle="max-height:85dvh;scrollbar-width: none"
+      pt:list:class="gap-[5px]"
       @click="toggleSubMenu"
     >
       <template #option="{ option }">
@@ -22,6 +23,7 @@
           ref="refSubMenu"
           v-click-outside="handleClickOutside"
           class="submenu"
+          pt:list:class="gap-[5px]"
           :style="{ top: submenuPosition.top, left: submenuPosition.left }"
         >
           <Listbox
@@ -223,14 +225,18 @@ const toggleSubMenu = () => {
             desiredTop = window.innerHeight - rectSubmenu.height;
           }
 
+          console.info('desiredTop', desiredTop);
+
           // Pastikan submenu tidak keluar dari batas atas viewport
-          if (desiredTop < 0) {
-            desiredTop = 0;
+          const headerHeight = 85;
+
+          if (desiredTop < headerHeight) {
+            desiredTop = headerHeight;
           }
 
           submenuPosition.value = {
             top: `${desiredTop}px`,
-            left: `${rect.left + 188}px`,
+            left: `${rect.left + 200}px`,
           };
         }
       });
