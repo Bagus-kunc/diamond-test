@@ -1,10 +1,13 @@
 <template>
-  <div class="flex justify-center h-full ml-4 lg:w-full card">
+  <div class="flex justify-center h-full relative ml-4 mt-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
+      <div class="swiper-pagination" />
       <button class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
+
       <Swiper
+        :modules="[Pagination]"
         :class="{
           'max-h-[100dvh] max-w-[115dvh] !m-0': isFullScreen,
           'max-h-[90dvh] max-w-[100dvh]': !isFullScreen,
@@ -15,6 +18,12 @@
         :creative-effect="{
           prev: { shadow: false, translate: ['-20%', 0, -1] },
           next: { translate: ['100%', 0, 0] },
+        }"
+        :lazy="true"
+        :pagination="{
+          clickable: true,
+          el: '.swiper-pagination',
+          type: 'bullets',
         }"
         @swiper="onSwiper"
         @slide-change="controlVideo"
@@ -77,6 +86,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
 
 const mySwiperRef = ref(null);
@@ -154,3 +164,21 @@ onMounted(() => {
   });
 });
 </script>
+
+<style scoped>
+.swiper-pagination {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  display: flex;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.swiper-pagination-bullet .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  width: 30px !important;
+  border-radius: 10px !important;
+}
+</style>
