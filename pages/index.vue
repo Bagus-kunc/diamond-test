@@ -45,8 +45,6 @@ import PinInput from '../components/PinInput.vue';
 import BgDiamond from '~/assets/images/bg-diamond.jpg';
 import useFetchApi from '~/composables/useFetchApi';
 
-// State
-const bg = ref('');
 const valuePin = ref('');
 const isLoading = ref(false);
 const error = ref('');

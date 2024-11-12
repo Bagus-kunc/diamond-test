@@ -4,6 +4,4 @@
     <slot />
   </main>
 </template>
-<script setup>
-import Toast from 'primevue/toast';
-</script>
+<script setup></script>
