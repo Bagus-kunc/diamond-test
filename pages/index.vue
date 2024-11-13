@@ -17,7 +17,7 @@
         <PinInput v-model="valuePin" :length="4" :clear-field="true" class="mb-[70px]" :disabled="isLoading" />
       </div>
 
-      <div class="flex flex-col justify-center items-center mb-10">
+      <div class="relative flex flex-col justify-center items-center mb-10">
         <Button
           :label="isLoading ? 'Processing...' : 'Masuk'"
           class="bg-[#000080] border-none text-white md:w-[24rem] w-[18rem] py-3 hover:opacity-85 rounded-lg disabled:opacity-50"
@@ -26,7 +26,7 @@
           @click="handlePin"
         />
 
-        <p v-if="error" class="text-red-500 mt-2 text-sm">{{ error }}</p>
+        <p v-if="error" class="absolute -top-12 text-red-500 mt-2 text-sm">{{ error }}</p>
 
         <p class="md:text-[16px] sm:text-[12px] text-[10px] mt-1 text-[#757575]">
           If there is a problem with the login process please contact
