@@ -4,6 +4,7 @@
     style="font-family: 'Lato', sans-serif"
     :style="{ backgroundImage: `url(${BgDiamond})` }"
   >
+    <!-- <Header class="mb-10" /> -->
     <div class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full" />
 
     <div class="flex flex-col items-center h-screen">
@@ -38,7 +39,6 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Button from 'primevue/button';
 import PinInput from '../components/PinInput.vue';
@@ -51,6 +51,28 @@ const error = ref('');
 const router = useRouter();
 
 const isValidPin = computed(() => valuePin.value.length === 4);
+
+definePageMeta({
+  layout: 'dashboard',
+});
+
+defineComponent({
+  components: {
+    PinInput,
+  },
+});
+
+const cacheData = async () => {
+  const apiUrl = 'json';
+
+  const data = await checkCacheAndFetchData(apiUrl);
+
+  if (data) {
+    if (window.location.pathname === '/') {
+      await cacheApiResponse(apiUrl, data);
+    }
+  }
+};
 
 const goToHomepage = () => {
   router.push('/dashboard');
@@ -83,9 +105,8 @@ const handlePin = async () => {
   }
 };
 
-// Page meta
-definePageMeta({
-  layout: 'dashboard',
+onMounted(() => {
+  cacheData();
 });
 </script>
 
