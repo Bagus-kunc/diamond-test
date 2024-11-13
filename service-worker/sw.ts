@@ -33,6 +33,18 @@ self.addEventListener('install', (event) => {
 
 cleanupOutdatedCaches();
 
+self.addEventListener('message', async (event) => {
+  if (event.data.action === 'cache-on-demand') {
+    const cache = await caches.open(CACHE_NAME);
+    const isCached = await cache.match('images/cache-me-outside.jpg');
+    console.log('berhasil');
+    if (!isCached) {
+      const res = await fetch('images/cache-me-outside.jpg');
+      await cache.put('images/cache-me-outside.jpg', res);
+    }
+  }
+  event.ports[0].postMessage(true);
+});
 // Custom cache clearing for old versions of the manual cache
 self.addEventListener('activate', (event) => {
   event.waitUntil(
