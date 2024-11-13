@@ -1,0 +1,1012 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "title": "Anti Aging",
+      "data": [
+        {
+          "id": 1,
+          "title": "Laser Treatment",
+          "cover": "https://diamond.talenavi.com/storage/menus/01JC2P0C49JA4EPX3N9TJ90XEA.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "3D Beautification",
+          "cover": "menus/01JC0T2NR48NC20S4QV5FB0RTT.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Skin Booster",
+          "cover": "menus/01JC0T396WA2V73T0MFNE37RDX.png",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Skin Cocktail",
+          "cover": "menus/01JC0T3SSNVC6BKPTVM4GAACXP.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Signature Booster",
+          "cover": "menus/01JC0T4NMFWWEFW49EBG7BC4AB.png",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Derma Cell Stim",
+          "cover": "menus/01JC0T56G4KDM6HKQ4T52ZDMW3.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Wellness",
+      "data": [
+        {
+          "id": 5,
+          "title": "Signature Booster",
+          "cover": "menus/01JC0T4NMFWWEFW49EBG7BC4AB.png",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Derma Cell Stim",
+          "cover": "menus/01JC0T56G4KDM6HKQ4T52ZDMW3.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Beauty",
+      "data": [
+        {
+          "id": 3,
+          "title": "Skin Booster",
+          "cover": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Skin Cocktail",
+          "cover": "menus/01JC0T3SSNVC6BKPTVM4GAACXP.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Certifications",
+      "data": [
+        {
+          "id": 1,
+          "title": "Laser Treatment",
+          "cover": "menus/01JC0T1XFEMVDEN8TKDC04F8WD.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "3D Beautification",
+          "cover": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg",
+          "data": [
+            {
+              "id": 2,
+              "title": "Gleaming Beauty Rejuvenation",
+              "data": [
+                {
+                  "id": 9,
+                  "type": 2,
+                  "url": "https://www.youtube.com/watch?v=kd3WwUH0P0c"
+                },
+                {
+                  "id": 1,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                },
+                {
+                  "id": 2,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PE1EXP8EPHVSEQ26VHHQW.jpg"
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "title": "Dual layer laser",
+              "data": [
+                {
+                  "id": 3,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                },
+                {
+                  "id": 4,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "title": "Vascular lesions",
+              "data": [
+                {
+                  "id": 5,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                },
+                {
+                  "id": 6,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "title": "Lips Rejuvenation",
+              "data": [
+                {
+                  "id": 7,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                }
+              ]
+            },
+            {
+              "id": 1,
+              "title": "Cryo Treatment",
+              "data": [
+                {
+                  "id": 8,
+                  "type": 1,
+                  "url": "https://diamond.talenavi.com/storage/slides/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "title": "Anti Aging",
+            "data": [
+                {
+                    "id": 1,
+                    "title": "Laser Treatment",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JC2P0C49JA4EPX3N9TJ90XEA.jpg",
+                    "data": [
+                        {
+                            "id": 2,
+                            "title": "Gleaming Beauty Rejuvenation",
+                            "data": [
+                                {
+                                    "id": 1,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PDH91E53F2F15ZVCQVVW7.jpg"
+                                },
+                                {
+                                    "id": 10,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JCFHDZMB5EAGRE4DS521MSS5.jpg"
+                                },
+                                {
+                                    "id": 11,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JCFHEWZFB9EZSJEA36X2GP2H.jpg"
+                                },
+                                {
+                                    "id": 12,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JCFHFC829ZF4NKH6JN1BBRK9.jpg"
+                                },
+                                {
+                                    "id": 13,
+                                    "type": 2,
+                                    "url": "https:\/\/youtu.be\/IHw7Q28HrDY?feature=shared"
+                                },
+                                {
+                                    "id": 14,
+                                    "type": 2,
+                                    "url": "https:\/\/youtu.be\/rwu4332-3QI"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 3,
+                            "title": "Dual layer laser",
+                            "data": [
+                                {
+                                    "id": 3,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PEWBZ1XD4B2Q1KSVY723M.jpg"
+                                },
+                                {
+                                    "id": 4,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PF96S2HK7MSMV49VKWDGZ.jpg"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 4,
+                            "title": "Vascular lesions",
+                            "data": [
+                                {
+                                    "id": 5,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PGWSDPXN9BPNQT215B17A.jpg"
+                                },
+                                {
+                                    "id": 6,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PHBC9X5T0M7SM38P9G9HM.jpg"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 5,
+                            "title": "Lips Rejuvenation",
+                            "data": [
+                                {
+                                    "id": 7,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PHZ5137N5CT5PM8VWEZZB.jpg"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 1,
+                            "title": "Cryo Treatment",
+                            "data": [
+                                {
+                                    "id": 8,
+                                    "type": 1,
+                                    "url": "https:\/\/diamond.talenavi.com\/storage\/slides\/01JC2PJJ3P064YMW59P4AGXY33.jpg"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 10,
+                    "title": "Injection",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH6GH6C41W6DRFC2MCPXDW.jpg",
+                    "data": []
+                },
+                {
+                    "id": 11,
+                    "title": "3Deep",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH784Q92XN938T8JEWC2SN.jpg",
+                    "data": []
+                },
+                {
+                    "id": 12,
+                    "title": "MMFU",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH7ZSW449Q1R0QA35ZDJ3W.jpg",
+                    "data": []
+                },
+                {
+                    "id": 2,
+                    "title": "3D Beautification",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCF35XHT5N1ANKSJ5NQ7NK0B.jpg",
+                    "data": []
+                },
+                {
+                    "id": 3,
+                    "title": "Skin Booster",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFGW8YK86QBTJBTJ7GJ29AH.jpg",
+                    "data": []
+                },
+                {
+                    "id": 4,
+                    "title": "Skin Cocktail",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFGXYDXBPCAV47JK1KG2C16.jpg",
+                    "data": []
+                },
+                {
+                    "id": 5,
+                    "title": "Signature Booster",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFGZDTDJ738CMA6PD2SVFC7.jpg",
+                    "data": []
+                },
+                {
+                    "id": 6,
+                    "title": "Derma Cell Trim",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH2PSTGFQERYBTQVSZ256V.jpg",
+                    "data": []
+                },
+                {
+                    "id": 7,
+                    "title": "Facial",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH3BH9Q41KRNBZTMNT593Q.jpg",
+                    "data": []
+                },
+                {
+                    "id": 8,
+                    "title": "Adds On",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH4756V0MHPW782483R0JC.jpg",
+                    "data": []
+                },
+                {
+                    "id": 9,
+                    "title": "Countouring",
+                    "cover": "https:\/\/diamond.talenavi.com\/storage\/menus\/01JCFH4YE7KHX51S98NTZ3YVGX.jpg",
+                    "data": []
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Wellness",
+            "data": []
+        },
+        {
+            "id": 4,
+            "title": "Beauty",
+            "data": []
+        },
+        {
+            "id": 5,
+            "title": "Certification",
+            "data": []
+        }
+    ]
+}

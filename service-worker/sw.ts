@@ -13,7 +13,12 @@ const ASSETS_TO_CACHE = [
   '/',
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
   'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
+  'https://diamond.talenavi.com/api/json',
 ];
+
+// const ASSETS_MANUAL = [
+
+// ]
 
 // Precache assets defined in __WB_MANIFEST
 precacheAndRoute(self.__WB_MANIFEST);
@@ -33,6 +38,18 @@ self.addEventListener('install', (event) => {
 
 cleanupOutdatedCaches();
 
+self.addEventListener('message', async (event) => {
+  if (event.data.action === 'cache-on-demand') {
+    const cache = await caches.open(CACHE_NAME);
+    const isCached = await cache.match('images/cache-me-outside.jpg');
+    console.log('berhasil');
+    if (!isCached) {
+      const res = await fetch('images/cache-me-outside.jpg');
+      await cache.put('images/cache-me-outside.jpg', res);
+    }
+  }
+  event.ports[0].postMessage(true);
+});
 // Custom cache clearing for old versions of the manual cache
 self.addEventListener('activate', (event) => {
   event.waitUntil(
