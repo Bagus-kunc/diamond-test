@@ -21,14 +21,16 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import Sidebar from '~/components/Sidebar.vue';
+import { ref, onMounted } from 'vue';
+import { checkCacheAndFetchData, cacheApiResponse } from '~/utils/apiHandler';
 
 const menuItems = ref([]);
 const firstItem = ref([]);
 const selectedItem = ref(null);
 const firstItemSelected = ref(null);
-
 const dataItem = ref([]);
 
 defineComponent({
@@ -37,6 +39,7 @@ defineComponent({
   },
 });
 
+// Fungsi untuk menangani klik pada menu
 const handleItem = (data, id) => {
   selectedItem.value = id;
   dataItem.value = data;
@@ -44,31 +47,26 @@ const handleItem = (data, id) => {
   console.log('id', id);
 };
 
-const fetchMenubar = async () => {
-  try {
-    const res = await fetch('/data/clinicData.json');
-    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+const fetchData = async () => {
+  const apiUrl = 'json';
 
-    const data = await res.json();
+  // Memeriksa cache dan mengambil data dari cache atau API
+  const data = await checkCacheAndFetchData(apiUrl);
 
+  if (data) {
     menuItems.value = data.categories;
     firstItem.value = data.categories[0];
+    firstItemSelected.value = data.categories[0].data[0];
 
-    if (!firstItemSelected.value) {
-      firstItemSelected.value = data.categories[0].data[0]; // Set dengan item pertama
-      console.log('First data set to:', firstItemSelected.value);
+    // Jika halaman utama '/', simpan data ke cache
+    if (window.location.pathname === '/') {
+      await cacheApiResponse(apiUrl, data);
     }
 
     const first = data.categories[0];
     handleItem(first.data, first.id);
-
-    console.log('data pertama', data.categories[0]);
-  } catch (err) {
-    console.log('Failed to fetch Menu item:', err);
   }
 };
 
-onMounted(async () => {
-  await fetchMenubar();
-});
+onMounted(fetchData);
 </script>

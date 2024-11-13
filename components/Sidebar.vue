@@ -152,7 +152,7 @@ watch(() => {
 onMounted(() => {
   setTimeout(() => {
     coverItem.value = props.firstData?.cover;
-  }, 500);
+  }, 100);
 });
 </script>
 

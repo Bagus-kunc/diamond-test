@@ -8,6 +8,7 @@
       <div class="relative">
         <div class="swiper-pagination" />
         <Icon
+          v-if="coverSubMenu"
           class="absolute bottom-4 right-0 cursor-pointer z-10"
           :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
           size="35"
@@ -43,7 +44,14 @@
             class="relative flex items-center justify-center h-full rounded"
           >
             <div class="flex items-center w-full h-full">
-              <nuxt-img :src="coverSubMenu" alt="Cover Image" class="object-cover" layout="fill" format="webp" />
+              <nuxt-img
+                v-if="coverSubMenu"
+                :src="coverSubMenu"
+                alt="Cover Image"
+                class="object-cover"
+                layout="fill"
+                format="webp"
+              />
             </div>
           </div>
 
@@ -108,6 +116,7 @@ const fullscreenDiv = ref(null);
 const youtubeIframe = ref(null);
 const isFullScreen = ref(false);
 const coverSubMenu = ref('');
+const isLoading = ref(false);
 
 const products = ref([]);
 
@@ -166,8 +175,16 @@ onMounted(() => {
   });
 });
 
-watch(() => {
+const showImgCover = () => {
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 300);
   coverSubMenu.value = props.cover;
+};
+
+watch(() => {
+  showImgCover();
 });
 
 watch(

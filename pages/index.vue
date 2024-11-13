@@ -61,6 +61,20 @@ defineComponent({
   },
 });
 
+const cacheData = async () => {
+  const apiUrl = 'json';
+
+  // Memeriksa cache dan mengambil data dari cache atau API
+  const data = await checkCacheAndFetchData(apiUrl);
+
+  if (data) {
+    // Jika halaman utama '/', simpan data ke cache
+    if (window.location.pathname === '/') {
+      await cacheApiResponse(apiUrl, data);
+    }
+  }
+};
+
 // const cacheContent = async () => {
 //     const res = await window.serwist.messageSW({ action: 'cache-on-demand' });
 // };
@@ -71,6 +85,6 @@ const goToHomepage = () => {
 
 onMounted(() => {
   saveBg();
-  // cacheContent()
+  cacheData();
 });
 </script>
