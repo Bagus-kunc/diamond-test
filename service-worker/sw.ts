@@ -8,13 +8,11 @@ import { NavigationRoute, registerRoute } from 'workbox-routing';
 declare let self: ServiceWorkerGlobalScope;
 
 // Define custom cache name and assets
-const CACHE_NAME = cacheNames.precache;
+const CACHE_NAME = cacheNames.runtime;
 const ASSETS_TO_CACHE = [
-  '/',
-  '/dashboard',
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
   'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
-  'https://diamond.talenavi.com/api/json',
+  `https://diamond.talenavi.com/api/json`,
 ];
 
 // Precache assets defined in __WB_MANIFEST
@@ -48,26 +46,25 @@ self.addEventListener('message', async (event) => {
   event.ports[0].postMessage(true);
 });
 // Custom cache clearing for old versions of the manual cache
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        }),
-      );
-    }),
-  );
-});
+// self.addEventListener('activate', (event) => {
+//   event.waitUntil(
+//     caches.keys().then((cacheNames) => {
+//       return Promise.all(
+//         cacheNames.map((cacheName) => {
+//           if (cacheName !== CACHE_NAME) {
+//             console.log('Deleting old cache:', cacheName);
+//             return caches.delete(cacheName);
+//           }
+//         }),
+//       );
+//     }),
+//   );
+// });
 
 // Serve cached assets for fetch events if available
 self.addEventListener('fetch', (event) => {
-  console.log(event);
   if (event.request.url.endsWith('.jpg') || event.request.url.endsWith('.jpeg') || event.request.url.endsWith('.png')) {
-    event.respondWith(handleImageRequest(event.request));
+    event.respondWith(handleImageRequest(event));
   } else {
     event.respondWith(
       caches.match(event.request).then((response) => {
@@ -77,13 +74,13 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-const handleImageRequest = async (request) => {
+const handleImageRequest = async (event: FetchEvent) => {
   const cache = await caches.open(CACHE_NAME);
-  const response = await cache.match(request.url);
+  const response = await cache.match(event.request.url);
 
   if (!response) {
-    const fetchResponse = await fetch(request);
-    cache.put(request.url, fetchResponse.clone());
+    const fetchResponse = await fetch(event.request);
+    cache.put(event.request.url, fetchResponse.clone());
 
     return fetchResponse;
   }
