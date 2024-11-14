@@ -62,18 +62,6 @@ defineComponent({
   },
 });
 
-const cacheData = async () => {
-  const apiUrl = 'json';
-
-  const data = await checkCacheAndFetchData(apiUrl);
-
-  if (data) {
-    if (window.location.pathname === '/') {
-      await cacheApiResponse(apiUrl, data);
-    }
-  }
-};
-
 const goToHomepage = () => {
   router.push('/dashboard');
 };
@@ -104,10 +92,6 @@ const handlePin = async () => {
     isLoading.value = false;
   }
 };
-
-onMounted(() => {
-  cacheData();
-});
 </script>
 
 <style scoped>
