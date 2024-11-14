@@ -39,12 +39,10 @@
     </Teleport>
   </div>
 
-  <!-- Spinner saat loading -->
   <div v-if="loading" class="spinner-overlay">
     <ProgressSpinner />
   </div>
 
-  <!-- Carousel dengan event image-loaded -->
   <CustomCarousel :data="sideData" :cover="coverItem" @image-loaded="hideSpinner" />
 </template>
 

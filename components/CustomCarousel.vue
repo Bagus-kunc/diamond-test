@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <SwiperSlide v-else v-for="product in products" :key="product.id">
+          <SwiperSlide v-for="product in products" v-else :key="product.id">
             <div class="relative flex items-center justify-center h-full rounded">
               <div v-if="product.type === 'image' || product.type === 1" class="flex items-center w-full h-full">
                 <nuxt-img
