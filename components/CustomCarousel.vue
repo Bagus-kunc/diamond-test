@@ -1,14 +1,14 @@
 <template>
   <div class="flex justify-center h-full relative ml-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
-      <button v-if="products.length > 0" class="m-3" @click="goToPrev">
+      <button v-if="products.length > 1 && !isLoading" class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
 
       <div class="relative">
         <div class="swiper-pagination" />
         <Icon
-          v-if="coverSubMenu"
+          v-if="coverSubMenu || !isLoading"
           class="absolute bottom-4 right-0 cursor-pointer z-10"
           :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
           size="35"
@@ -51,6 +51,7 @@
                 class="object-cover"
                 layout="fill"
                 format="webp"
+                @load="handleImageLoad"
               />
             </div>
           </div>
@@ -59,7 +60,13 @@
             <div class="relative flex items-center justify-center h-full rounded">
               <!-- Display image if type is 'image' -->
               <div v-if="product.type === 'image' || product.type === 1" class="flex items-center w-full h-full">
-                <nuxt-img :src="`${product.url}`" alt="Content Image" class="object-cover" format="webp" />
+                <nuxt-img
+                  :src="`${product.url}`"
+                  alt="Content Image"
+                  class="object-cover"
+                  format="webp"
+                  @load="handleImageLoad"
+                />
               </div>
 
               <!-- Display iframe if type is 'iframe' -->
@@ -69,6 +76,7 @@
                   layout="fill"
                   class="top-0 left-0 w-full h-full"
                   alt="Background Image"
+                  @load="handleImageLoad"
                 />
                 <div class="absolute w-full aspect-[16/9]">
                   <iframe
@@ -86,7 +94,7 @@
         </Swiper>
       </div>
 
-      <button v-if="products.length > 0" class="m-3" @click="goToNext">
+      <button v-if="products.length > 1 && !isLoading" class="m-3" @click="goToNext">
         <Icon name="ic:baseline-arrow-circle-right" size="30" style="color: gray" />
       </button>
     </div>
@@ -111,6 +119,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['image-loaded']);
+
 const mySwiperRef = ref(null);
 const fullscreenDiv = ref(null);
 const youtubeIframe = ref(null);
@@ -121,9 +131,7 @@ const isLoading = ref(false);
 const products = ref([]);
 
 const convertToEmbedUrl = (url) => {
-  // Cari ID video dari URL dengan regex
   const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu.be\/)([a-zA-Z0-9_-]+)/);
-  // Kembalikan URL embed jika ID video ditemukan, atau kembalikan URL asli jika tidak cocok
   return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : url;
 };
 
@@ -153,14 +161,17 @@ const controlVideo = (index) => {
 
 const setFullScreen = () => {
   if (!document.fullscreenElement) {
-    // Request fullscreen for the specific div
     fullscreenDiv.value.requestFullscreen();
     isFullScreen.value = true;
   } else if (document.exitFullscreen) {
-    // Exit fullscreen mode
     document.exitFullscreen();
     isFullScreen.value = false;
   }
+};
+
+const handleImageLoad = () => {
+  isLoading.value = false;
+  emit('image-loaded'); // Emit the custom 'image-loaded' event
 };
 
 onMounted(() => {

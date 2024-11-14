@@ -2,7 +2,7 @@
   <div
     class="relative max-h-screen bg-cover bg-center"
     style="font-family: 'Lato', sans-serif"
-    :style="{ backgroundImage: 'url(' + bg + ')' }"
+    :style="{ backgroundImage: `url(${BgDiamond})` }"
   >
     <!-- <Header class="mb-10" /> -->
     <div class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full" />
@@ -15,15 +15,20 @@
           Enter the 4-digit passcode to enter
         </h1>
 
-        <PinInput v-model="value" :length="4" :clear-field="true" class="mb-[70px]" />
+        <PinInput v-model="valuePin" :length="4" :clear-field="true" class="mb-[70px]" :disabled="isLoading" />
       </div>
 
-      <div class="flex flex-col justify-center items-center mb-10">
+      <div class="relative flex flex-col justify-center items-center mb-10">
         <Button
-          label="Masuk"
-          class="bg-[#000080] border-none text-white md:w-[24rem] w-[18rem] py-3 hover:opacity-85 rounded-lg"
-          @click="goToHomepage"
+          :label="isLoading ? 'Processing...' : 'Masuk'"
+          class="bg-[#000080] border-none text-white md:w-[24rem] w-[18rem] py-3 hover:opacity-85 rounded-lg disabled:opacity-50"
+          :disabled="isLoading || !isValidPin"
+          :loading="isLoading"
+          @click="handlePin"
         />
+
+        <p v-if="error" class="absolute -top-12 text-red-500 mt-2 text-sm">{{ error }}</p>
+
         <p class="md:text-[16px] sm:text-[12px] text-[10px] mt-1 text-[#757575]">
           If there is a problem with the login process please contact
           <span class="font-bold">administator@gmail.com</span>
@@ -34,22 +39,18 @@
 </template>
 
 <script setup>
-import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import Button from 'primevue/button';
 import PinInput from '../components/PinInput.vue';
 import BgDiamond from '~/assets/images/bg-diamond.jpg';
+import useFetchApi from '~/composables/useFetchApi';
 
-const bg = ref('');
-
-const saveBg = () => {
-  sessionStorage.setItem('bgPin', BgDiamond);
-
-  bg.value = sessionStorage.getItem('bgPin');
-};
-
-const value = ref('');
+const valuePin = ref('');
+const isLoading = ref(false);
+const error = ref('');
 const router = useRouter();
+
+const isValidPin = computed(() => valuePin.value.length === 4);
 
 definePageMeta({
   layout: 'dashboard',
@@ -61,30 +62,41 @@ defineComponent({
   },
 });
 
-const cacheData = async () => {
-  const apiUrl = 'json';
-
-  // Memeriksa cache dan mengambil data dari cache atau API
-  const data = await checkCacheAndFetchData(apiUrl);
-
-  if (data) {
-    // Jika halaman utama '/', simpan data ke cache
-    if (window.location.pathname === '/') {
-      await cacheApiResponse(apiUrl, data);
-    }
-  }
-};
-
-// const cacheContent = async () => {
-//     const res = await window.serwist.messageSW({ action: 'cache-on-demand' });
-// };
-
 const goToHomepage = () => {
   router.push('/dashboard');
 };
 
-onMounted(() => {
-  saveBg();
-  cacheData();
-});
+const handlePin = async () => {
+  if (!isValidPin.value || isLoading.value) return;
+
+  isLoading.value = true;
+  error.value = '';
+
+  try {
+    const response = await useFetchApi('POST', 'user_pin', {
+      body: { pin: parseInt(valuePin.value) },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status) {
+      // console.log('Berhasil');
+      goToHomepage();
+    }
+  } catch (err) {
+    console.log('Error: Unable to verify PIN', err);
+    error.value = err?._data.message || '';
+    valuePin.value = '';
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
+
+<style scoped>
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
