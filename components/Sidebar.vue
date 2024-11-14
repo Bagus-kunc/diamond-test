@@ -1,5 +1,5 @@
 <template>
-  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar">
+  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar z-[1000]">
     <Listbox
       v-model="selectedBox"
       :options="accordionItems"
@@ -39,12 +39,19 @@
     </Teleport>
   </div>
 
-  <CustomCarousel :data="sideData" :cover="coverItem" />
+  <!-- Spinner saat loading -->
+  <div v-if="loading" class="spinner-overlay">
+    <ProgressSpinner />
+  </div>
+
+  <!-- Carousel dengan event image-loaded -->
+  <CustomCarousel :data="sideData" :cover="coverItem" @image-loaded="hideSpinner" />
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, watch, onMounted } from 'vue';
 import CustomCarousel from '~/components/CustomCarousel.vue';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const props = defineProps({
   data: {
@@ -68,8 +75,7 @@ const submenuPosition = ref({ top: '0px', left: '0px' });
 const accordionItems = ref([]);
 const sideData = ref([]);
 const coverItem = ref('');
-// const sideTitle = ref('');
-// const sideCover = ref('');
+const loading = ref(false);
 
 const toggleSubMenu = () => {
   isVisible.value = false;
@@ -78,12 +84,15 @@ const toggleSubMenu = () => {
     selectedSubMenu.value = selectedBox.value;
     coverItem.value = selectedSubMenu.value.cover;
     sideData.value = [];
-    console.log('klik item', selectedSubMenu.value);
-    const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
+    loading.value = true;
 
+    setTimeout(() => {
+      loading.value = false;
+    }, 1000);
+
+    const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
     if (itemElement != null) {
       const rect = itemElement.getBoundingClientRect();
-
       submenuPosition.value = {
         top: `${rect.top + window.scrollY + rect.height / 2}px`,
         left: `${rect.left + window.scrollX + 270}px`,
@@ -97,24 +106,14 @@ const toggleSubMenu = () => {
       nextTick(() => {
         if (refSubMenu.value) {
           const rectSubmenu = refSubMenu.value.getBoundingClientRect();
-
-          // Hitung posisi tengah vertikal yang diinginkan
           let desiredTop = rect.top + window.scrollY + rect.height / 2 - rectSubmenu.height / 2;
-
-          // Pastikan submenu tidak keluar dari batas bawah viewport
           if (desiredTop + rectSubmenu.height > window.innerHeight) {
             desiredTop = window.innerHeight - rectSubmenu.height;
           }
-
-          console.info('desiredTop', desiredTop);
-
-          // Pastikan submenu tidak keluar dari batas atas viewport
           const headerHeight = 85;
-
           if (desiredTop < headerHeight) {
             desiredTop = headerHeight;
           }
-
           submenuPosition.value = {
             top: `${desiredTop}px`,
             left: `${rect.left + 200}px`,
@@ -127,6 +126,10 @@ const toggleSubMenu = () => {
   }
 };
 
+const hideSpinner = () => {
+  loading.value = false;
+};
+
 const handleClickOutside = () => {
   if (isVisible.value && status.value === 'click') {
     isVisible.value = false;
@@ -137,16 +140,13 @@ const handleClickOutside = () => {
   }
 };
 
-// Handle item click
 const handleItemClick = (clickableItem) => {
   sideData.value = clickableItem.data;
-
-  console.log(`Item clicked: ${clickableItem.title}, Action: ${clickableItem.data}`);
+  loading.value = true;
 };
 
 watch(() => {
   accordionItems.value = props.data;
-  console.log('selectedBox', selectedBox.value);
 });
 
 onMounted(() => {
@@ -159,9 +159,22 @@ onMounted(() => {
 <style scoped>
 .submenu {
   position: absolute;
-  z-index: 1000;
+  z-index: 1010;
   border-radius: 10px;
   background: rgb(255, 255, 255);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  z-index: 999;
 }
 </style>

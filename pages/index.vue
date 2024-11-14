@@ -81,7 +81,7 @@ const handlePin = async () => {
     });
 
     if (response.status) {
-      console.log('Berhasil');
+      // console.log('Berhasil');
       goToHomepage();
     }
   } catch (err) {
