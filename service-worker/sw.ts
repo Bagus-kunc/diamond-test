@@ -11,8 +11,10 @@ declare let self: ServiceWorkerGlobalScope;
 const CACHE_NAME = cacheNames.precache;
 const ASSETS_TO_CACHE = [
   '/',
+  '/dashboard',
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
   'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
+  'https://diamond.talenavi.com/api/json',
 ];
 
 // Precache assets defined in __WB_MANIFEST
@@ -63,12 +65,31 @@ self.addEventListener('activate', (event) => {
 
 // Serve cached assets for fetch events if available
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }),
-  );
+  console.log(event);
+  if (event.request.url.endsWith('.jpg') || event.request.url.endsWith('.jpeg') || event.request.url.endsWith('.png')) {
+    event.respondWith(handleImageRequest(event.request));
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      }),
+    );
+  }
 });
+
+const handleImageRequest = async (request) => {
+  const cache = await caches.open(CACHE_NAME);
+  const response = await cache.match(request.url);
+
+  if (!response) {
+    const fetchResponse = await fetch(request);
+    cache.put(request.url, fetchResponse.clone());
+
+    return fetchResponse;
+  }
+
+  return response;
+};
 
 // Navigation fallback route for SPA
 let allowlist: undefined | RegExp[];
