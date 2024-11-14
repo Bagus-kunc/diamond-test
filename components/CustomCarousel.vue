@@ -1,14 +1,14 @@
 <template>
   <div class="flex justify-center h-full relative ml-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
-      <button v-if="products.length > 0" class="m-3" @click="goToPrev">
+      <button v-if="products.length > 0 || !isLoading" class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
 
       <div class="relative">
-        <div class="swiper-pagination" />
+        <div v-if="!isLoading" class="swiper-pagination" />
         <Icon
-          v-if="coverSubMenu"
+          v-if="coverSubMenu || !isLoading"
           class="absolute bottom-4 right-0 cursor-pointer z-10"
           :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
           size="35"
@@ -51,18 +51,23 @@
                 class="object-cover"
                 layout="fill"
                 format="webp"
+                @load="handleImageLoad"
               />
             </div>
           </div>
 
-          <SwiperSlide v-else v-for="product in products" :key="product.id">
+          <SwiperSlide v-for="product in products" v-else :key="product.id">
             <div class="relative flex items-center justify-center h-full rounded">
-              <!-- Display image if type is 'image' -->
               <div v-if="product.type === 'image' || product.type === 1" class="flex items-center w-full h-full">
-                <nuxt-img :src="`${product.url}`" alt="Content Image" class="object-cover" format="webp" />
+                <nuxt-img
+                  :src="`${product.url}`"
+                  alt="Content Image"
+                  class="object-cover"
+                  format="webp"
+                  @load="handleImageLoad"
+                />
               </div>
 
-              <!-- Display iframe if type is 'iframe' -->
               <div v-else-if="product.type === 'iframe' || product.type === 2" class="flex items-center w-full h-full">
                 <img
                   src="/images/contents/background.jpg"
@@ -78,6 +83,7 @@
                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen
+                    @load="handleIframeLoad"
                   />
                 </div>
               </div>
@@ -86,7 +92,7 @@
         </Swiper>
       </div>
 
-      <button v-if="products.length > 0" class="m-3" @click="goToNext">
+      <button v-if="products.length > 0 || !isLoading" class="m-3" @click="goToNext">
         <Icon name="ic:baseline-arrow-circle-right" size="30" style="color: gray" />
       </button>
     </div>
@@ -94,11 +100,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, watch, onBeforeUnmount } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
-// import background from '/images/contents/background.jpg';
 
 const props = defineProps({
   data: {
@@ -111,19 +116,19 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['image-loaded']);
+
 const mySwiperRef = ref(null);
 const fullscreenDiv = ref(null);
 const youtubeIframe = ref(null);
 const isFullScreen = ref(false);
 const coverSubMenu = ref('');
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 const products = ref([]);
 
 const convertToEmbedUrl = (url) => {
-  // Cari ID video dari URL dengan regex
   const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu.be\/)([a-zA-Z0-9_-]+)/);
-  // Kembalikan URL embed jika ID video ditemukan, atau kembalikan URL asli jika tidak cocok
   return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : url;
 };
 
@@ -144,7 +149,6 @@ const controlVideo = (index) => {
 
   if (!isIframe) {
     const iframe = document.getElementsByTagName('iframe')[0];
-
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
     }
@@ -153,14 +157,21 @@ const controlVideo = (index) => {
 
 const setFullScreen = () => {
   if (!document.fullscreenElement) {
-    // Request fullscreen for the specific div
     fullscreenDiv.value.requestFullscreen();
     isFullScreen.value = true;
   } else if (document.exitFullscreen) {
-    // Exit fullscreen mode
     document.exitFullscreen();
     isFullScreen.value = false;
   }
+};
+
+const handleImageLoad = () => {
+  isLoading.value = false;
+  emit('image-loaded'); // Emit the custom 'image-loaded' event
+};
+
+const handleIframeLoad = () => {
+  isLoading.value = false;
 };
 
 onMounted(() => {
@@ -191,7 +202,6 @@ watch(
   () => props.data,
   (newData) => {
     products.value = newData;
-    console.log('Updated products:', products.value);
   },
   { immediate: true },
 );
@@ -205,7 +215,7 @@ watch(
   left: 0;
   width: 100%;
   height: 10px;
-  z-index: 2000;
+  z-index: 1000;
 }
 
 :deep(.swiper-pagination-bullet) {

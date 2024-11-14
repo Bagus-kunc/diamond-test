@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="sticky z-10 flex items-center justify-center gap-1 p-2 shadow-lg">
+    <div class="sticky z-[1000] flex items-center justify-center gap-1 p-2 shadow-lg">
       <div class="min-w-[220px] flex justify-center">
         <nuxt-img src="/images/logo.png" class="h-14" alt="Header Logo" />
       </div>
@@ -43,8 +43,8 @@ defineComponent({
 const handleItem = (data, id) => {
   selectedItem.value = id;
   dataItem.value = data;
-  console.log('data', data[0]);
-  console.log('id', id);
+  // console.log('data', data[0]);
+  // console.log('id', id);
 };
 
 const fetchData = async () => {
