@@ -94,10 +94,8 @@ const toggleSubMenu = () => {
     }
 
     const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
-
     if (itemElement != null) {
       const rect = itemElement.getBoundingClientRect();
-
       submenuPosition.value = {
         top: `${rect.top + window.scrollY + rect.height / 2}px`,
         left: `${rect.left + window.scrollX + 270}px`,
@@ -121,11 +119,9 @@ const toggleSubMenu = () => {
           console.info('desiredTop', desiredTop);
 
           const headerHeight = 85;
-
           if (desiredTop < headerHeight) {
             desiredTop = headerHeight;
           }
-
           submenuPosition.value = {
             top: `${desiredTop}px`,
             left: `${rect.left + 200}px`,
@@ -157,14 +153,24 @@ const handleItemClick = (clickableItem) => {
   loading.value = true;
 };
 
-watch(() => {
+watchEffect(() => {
   accordionItems.value = props.data;
 });
 
-onMounted(() => {
-  setTimeout(() => {
-    coverItem.value = props.firstData?.cover;
-  }, 100);
+onMounted(async () => {
+  loading.value = true;
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (props.firstData?.cover) {
+      coverItem.value = props.firstData.cover;
+    }
+  } catch (error) {
+    console.error('Error during mounted lifecycle:', error);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
@@ -175,7 +181,7 @@ onMounted(() => {
 
 .submenu {
   position: absolute;
-  z-index: 1000;
+  z-index: 1010;
   border-radius: 10px;
   background: rgb(255, 255, 255);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -191,6 +197,6 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background-color: white;
-  z-index: 500;
+  z-index: 999;
 }
 </style>

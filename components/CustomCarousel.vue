@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center h-full relative ml-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
-      <button v-if="products.length > 1 && !isLoading" class="m-3" @click="goToPrev">
+      <button v-if="products.length > 1" class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
 
@@ -56,9 +56,8 @@
             </div>
           </div>
 
-          <SwiperSlide v-else v-for="product in products" :key="product.id">
+          <SwiperSlide v-for="product in products" v-else :key="product.id">
             <div class="relative flex items-center justify-center h-full rounded">
-              <!-- Display image if type is 'image' -->
               <div v-if="product.type === 'image' || product.type === 1" class="flex items-center w-full h-full">
                 <nuxt-img
                   :src="`${product.url}`"
@@ -69,7 +68,6 @@
                 />
               </div>
 
-              <!-- Display iframe if type is 'iframe' -->
               <div v-else-if="product.type === 'iframe' || product.type === 2" class="flex items-center w-full h-full">
                 <img
                   src="/images/contents/background.jpg"
@@ -86,6 +84,7 @@
                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen
+                    @load="handleIframeLoad"
                   />
                 </div>
               </div>
@@ -94,7 +93,7 @@
         </Swiper>
       </div>
 
-      <button v-if="products.length > 1 && !isLoading" class="m-3" @click="goToNext">
+      <button v-if="products.length > 1" class="m-3" @click="goToNext">
         <Icon name="ic:baseline-arrow-circle-right" size="30" style="color: gray" />
       </button>
     </div>
@@ -102,11 +101,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, watch, onBeforeUnmount } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
-// import background from '/images/contents/background.jpg';
 
 const props = defineProps({
   data: {
@@ -126,7 +124,7 @@ const fullscreenDiv = ref(null);
 const youtubeIframe = ref(null);
 const isFullScreen = ref(false);
 const coverSubMenu = ref('');
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 const products = ref([]);
 
@@ -152,7 +150,6 @@ const controlVideo = (index) => {
 
   if (!isIframe) {
     const iframe = document.getElementsByTagName('iframe')[0];
-
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
     }
@@ -171,7 +168,9 @@ const setFullScreen = () => {
 
 const handleImageLoad = () => {
   isLoading.value = false;
-  emit('image-loaded'); // Emit the custom 'image-loaded' event
+  setTimeout(() => {
+    emit('image-loaded');
+  }, 500);
 };
 
 onMounted(() => {
@@ -185,24 +184,26 @@ onMounted(() => {
     document.removeEventListener('fullscreenchange', handleFullscreenChange);
   });
 });
-
-const showImgCover = () => {
+const showImgCover = async () => {
   isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 300);
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  isLoading.value = false;
   coverSubMenu.value = props.cover;
 };
 
-watch(() => {
-  showImgCover();
-});
+watch(
+  () => props.cover,
+  (newCover) => {
+    showImgCover();
+  },
+);
 
 watch(
   () => props.data,
   (newData) => {
     products.value = newData;
-    console.log('Updated products:', products.value);
   },
   { immediate: true },
 );
@@ -216,7 +217,7 @@ watch(
   left: 0;
   width: 100%;
   height: 10px;
-  z-index: 2000;
+  z-index: 1000;
 }
 
 :deep(.swiper-pagination-bullet) {
