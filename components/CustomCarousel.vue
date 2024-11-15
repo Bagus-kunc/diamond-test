@@ -200,13 +200,9 @@ watch(
   },
 );
 
-watch(
-  () => props.data,
-  (newData) => {
-    products.value = newData;
-  },
-  { immediate: true },
-);
+watchEffect(() => {
+  products.value = props.data;
+});
 </script>
 
 <style scoped>
