@@ -1,12 +1,12 @@
 <template>
   <div class="flex justify-center h-full relative ml-4 lg:w-full card">
     <div ref="fullscreenDiv" class="flex justify-center">
-      <button v-if="products.length > 0 || !isLoading" class="m-3" @click="goToPrev">
+      <button v-if="products.length > 1" class="m-3" @click="goToPrev">
         <Icon name="ic:baseline-arrow-circle-left" size="30" style="color: gray" />
       </button>
 
       <div class="relative">
-        <div v-if="!isLoading" class="swiper-pagination" />
+        <div class="swiper-pagination" />
         <Icon
           v-if="coverSubMenu || !isLoading"
           class="absolute bottom-4 right-0 cursor-pointer z-10"
@@ -74,6 +74,7 @@
                   layout="fill"
                   class="top-0 left-0 w-full h-full"
                   alt="Background Image"
+                  @load="handleImageLoad"
                 />
                 <div class="absolute w-full aspect-[16/9]">
                   <iframe
@@ -92,7 +93,7 @@
         </Swiper>
       </div>
 
-      <button v-if="products.length > 0 || !isLoading" class="m-3" @click="goToNext">
+      <button v-if="products.length > 1" class="m-3" @click="goToNext">
         <Icon name="ic:baseline-arrow-circle-right" size="30" style="color: gray" />
       </button>
     </div>
@@ -167,11 +168,9 @@ const setFullScreen = () => {
 
 const handleImageLoad = () => {
   isLoading.value = false;
-  emit('image-loaded'); // Emit the custom 'image-loaded' event
-};
-
-const handleIframeLoad = () => {
-  isLoading.value = false;
+  setTimeout(() => {
+    emit('image-loaded');
+  }, 500);
 };
 
 onMounted(() => {
@@ -185,26 +184,25 @@ onMounted(() => {
     document.removeEventListener('fullscreenchange', handleFullscreenChange);
   });
 });
-
-const showImgCover = () => {
+const showImgCover = async () => {
   isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 300);
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  isLoading.value = false;
   coverSubMenu.value = props.cover;
 };
 
-watch(() => {
-  showImgCover();
-});
-
 watch(
-  () => props.data,
-  (newData) => {
-    products.value = newData;
+  () => props.cover,
+  (newCover) => {
+    showImgCover();
   },
-  { immediate: true },
 );
+
+watchEffect(() => {
+  products.value = props.data;
+});
 </script>
 
 <style scoped>

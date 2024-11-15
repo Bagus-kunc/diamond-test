@@ -1,7 +1,10 @@
 <template>
-  <main class="">
-    <Toast />
-    <slot />
-  </main>
-</template>
-<script setup></script>
+    <main class="">
+      <slot />
+    </main>
+  </template>
+  <script setup>
+  
+
+  </script>
+  

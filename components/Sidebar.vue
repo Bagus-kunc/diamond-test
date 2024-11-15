@@ -1,6 +1,7 @@
 <template>
-  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar z-[1000]">
+  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar">
     <Listbox
+      v-if="accordionItems.length > 0"
       v-model="selectedBox"
       :options="accordionItems"
       class="w-full"
@@ -27,6 +28,7 @@
           :style="{ top: submenuPosition.top, left: submenuPosition.left }"
         >
           <Listbox
+            v-if="isVisible && selectedSubMenu.data.length > 0"
             v-model="selectedSubItem"
             :options="selectedSubMenu.data"
             optionLabel="title"
@@ -47,7 +49,6 @@
 </template>
 
 <script setup>
-import { ref, nextTick, watch, onMounted } from 'vue';
 import CustomCarousel from '~/components/CustomCarousel.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 
@@ -58,7 +59,8 @@ const props = defineProps({
   },
   firstData: {
     type: Object,
-    required: true,
+    required: false,
+    default: () => {},
   },
 });
 
@@ -78,15 +80,18 @@ const loading = ref(false);
 const toggleSubMenu = () => {
   isVisible.value = false;
   status.value = '';
+
   if (selectedBox.value) {
     selectedSubMenu.value = selectedBox.value;
-    coverItem.value = selectedSubMenu.value.cover;
-    sideData.value = [];
-    loading.value = true;
+    if (coverItem.value !== selectedSubMenu.value.cover) {
+      coverItem.value = selectedSubMenu.value.cover;
+      sideData.value = [];
+      loading.value = true;
 
-    setTimeout(() => {
-      loading.value = false;
-    }, 1000);
+      setTimeout(() => {
+        loading.value = false;
+      }, 1000);
+    }
 
     const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
     if (itemElement != null) {
@@ -104,10 +109,15 @@ const toggleSubMenu = () => {
       nextTick(() => {
         if (refSubMenu.value) {
           const rectSubmenu = refSubMenu.value.getBoundingClientRect();
+
           let desiredTop = rect.top + window.scrollY + rect.height / 2 - rectSubmenu.height / 2;
+
           if (desiredTop + rectSubmenu.height > window.innerHeight) {
             desiredTop = window.innerHeight - rectSubmenu.height;
           }
+
+          console.info('desiredTop', desiredTop);
+
           const headerHeight = 85;
           if (desiredTop < headerHeight) {
             desiredTop = headerHeight;
@@ -143,18 +153,32 @@ const handleItemClick = (clickableItem) => {
   loading.value = true;
 };
 
-watch(() => {
+watchEffect(() => {
   accordionItems.value = props.data;
 });
 
-onMounted(() => {
-  setTimeout(() => {
-    coverItem.value = props.firstData?.cover;
-  }, 100);
+onMounted(async () => {
+  loading.value = true;
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (props.firstData?.cover) {
+      coverItem.value = props.firstData.cover;
+    }
+  } catch (error) {
+    console.error('Error during mounted lifecycle:', error);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <style scoped>
+.menu-sidebar {
+  z-index: 1000;
+}
+
 .submenu {
   position: absolute;
   z-index: 1010;

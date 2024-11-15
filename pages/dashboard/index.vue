@@ -24,7 +24,6 @@
 
 <script setup>
 import Sidebar from '~/components/Sidebar.vue';
-import { ref, onMounted } from 'vue';
 import { checkCacheAndFetchData, cacheApiResponse } from '~/utils/apiHandler';
 
 const menuItems = ref([]);
@@ -39,18 +38,14 @@ defineComponent({
   },
 });
 
-// Fungsi untuk menangani klik pada menu
 const handleItem = (data, id) => {
   selectedItem.value = id;
   dataItem.value = data;
-  // console.log('data', data[0]);
-  // console.log('id', id);
 };
 
 const fetchData = async () => {
   const apiUrl = 'json';
 
-  // Memeriksa cache dan mengambil data dari cache atau API
   const data = await checkCacheAndFetchData(apiUrl);
 
   if (data) {
@@ -58,7 +53,6 @@ const fetchData = async () => {
     firstItem.value = data.categories[0];
     firstItemSelected.value = data.categories[0].data[0];
 
-    // Jika halaman utama '/', simpan data ke cache
     if (window.location.pathname === '/') {
       await cacheApiResponse(apiUrl, data);
     }
@@ -68,5 +62,7 @@ const fetchData = async () => {
   }
 };
 
-onMounted(fetchData);
+onMounted(() => {
+  fetchData();
+});
 </script>
