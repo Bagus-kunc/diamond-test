@@ -12,6 +12,7 @@ const CACHE_NAME = cacheNames.runtime;
 const ASSETS_TO_CACHE = [
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
   'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap',
   `https://diamond.talenavi.com/api/json`,
 ];
 

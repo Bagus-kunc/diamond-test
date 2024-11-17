@@ -1,54 +1,87 @@
 <template>
-  <div class="min-w-[200px] ml-3 mt-3 relative menu-sidebar">
-    <Listbox
-      v-if="accordionItems.length > 0"
-      v-model="selectedBox"
-      :options="accordionItems"
-      class="w-full"
-      listStyle="max-height:85dvh;scrollbar-width: none"
-      pt:list:class="gap-[5px]"
-      @click="toggleSubMenu"
-    >
-      <template #option="{ option }">
-        <div class="flex justify-between cursor-pointer">
-          <div>{{ option.title }}</div>
-        </div>
-      </template>
-    </Listbox>
+  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col">
+    <!-- Header Section -->
+    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
+      <div class="flex">
+        <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
+      </div>
+      <h1>Menu</h1>
+    </div>
 
-    <!-- Teleport for Submenu -->
-    <Teleport to="#teleports">
-      <transition name="fade">
-        <div
-          v-if="isVisible"
-          ref="refSubMenu"
-          v-click-outside="handleClickOutside"
-          class="submenu"
-          pt:list:class="gap-[5px]"
-          :style="{ top: submenuPosition.top, left: submenuPosition.left }"
-        >
-          <Listbox
-            v-if="isVisible && selectedSubMenu.data.length > 0"
-            v-model="selectedSubItem"
-            :options="selectedSubMenu.data"
-            optionLabel="title"
-            class="w-full sublist"
-            listStyle="max-height:550px"
-            @change="handleItemClick(selectedSubItem)"
-          />
-        </div>
-      </transition>
-    </Teleport>
+    <!-- Listbox Section -->
+    <div class="flex-1">
+      <Listbox
+        v-if="accordionItems.length > 0"
+        class="menu w-full border-none rounded-none custom-listbox"
+        :options="accordionItems"
+        listStyle="max-height:calc(100vh - 25vh); overflow-y:scroll; scrollbar-width:none;"
+        pt:list:class="gap-[5px]"
+        :modelValue="selectedBox"
+        @update:modelValue="handleSelectionChange"
+      >
+        <h1 class="text-black">Menu</h1>
+        <template #option="{ option }">
+          <img v-show="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
+          <div v-show="isOptionSelected(option)" class="bg-color"></div>
+          <div
+            :class="[
+              'menu-item flex justify-between cursor-pointer z-50 relative items-center w-full',
+              { 'menu-item-selected text-[#000080]': isOptionSelected(option) },
+            ]"
+            @click="handleMainClick($event, option)"
+          >
+            <div class="flex justify-between">
+              {{ option.title }}
+            </div>
+            <img
+              v-if="isOptionSelected(option)"
+              src="~/assets/icons/double-arrow-blue.svg"
+              alt="double arrow icon"
+              @click.stop="handleArrowClick($event, option)"
+            />
+            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" />
+          </div>
+        </template>
+      </Listbox>
+
+      <!-- Teleport for Submenu -->
+      <Teleport to="#teleports">
+        <transition name="fade">
+          <div
+            v-if="isVisible"
+            ref="refSubMenu"
+            v-click-outside="handleClickOutside"
+            class="submenu"
+            pt:list:class="gap-[5px]"
+            :style="{ top: submenuPosition.top, left: submenuPosition.left }"
+          >
+            <Listbox
+              v-if="isVisible && selectedSubMenu?.data?.length > 0"
+              v-model="selectedSubItem"
+              :options="selectedSubMenu.data"
+              optionLabel="title"
+              pt:root:class="bg-image-submenu"
+              class="w-full sublist"
+              listStyle="max-height:550px"
+              @change="handleItemClick(selectedSubItem)"
+            />
+          </div>
+        </transition>
+      </Teleport>
+    </div>
   </div>
 
-  <div v-if="loading" class="spinner-overlay">
-    <ProgressSpinner />
-  </div>
+  <div class="flex-1 flex flex-col ml-[250px]" style="max-width: calc(100vw - 250px)">
+    <div v-if="loading" class="spinner-overlay ml-[250px]" style="max-width: calc(100vw - 250px)">
+      <ProgressSpinner />
+    </div>
 
-  <CustomCarousel :data="sideData" :cover="coverItem" @image-loaded="hideSpinner" />
+    <CustomCarousel :data="sideData" :cover="coverItem" @image-loaded="hideSpinner" />
+  </div>
 </template>
 
 <script setup>
+import { ref, watchEffect, nextTick, onMounted } from 'vue';
 import CustomCarousel from '~/components/CustomCarousel.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 
@@ -60,116 +93,148 @@ const props = defineProps({
   firstData: {
     type: Object,
     required: false,
-    default: () => {},
+    default: () => ({}),
   },
 });
 
-const selectedBox = ref('');
+// State management
+const state = ref({
+  activeOption: null,
+  currentCover: '',
+  submenuVisible: false,
+  submenuStatus: '',
+  loading: false,
+});
+
+// UI related refs
+const selectedBox = ref(null);
 const selectedSubItem = ref(null);
 const selectedSubMenu = ref(null);
 const refSubMenu = ref(null);
-const status = ref('');
-const isVisible = ref(false);
 const submenuPosition = ref({ top: '0px', left: '0px' });
-
 const accordionItems = ref([]);
 const sideData = ref([]);
-const coverItem = ref('');
-const loading = ref(false);
 
-const toggleSubMenu = () => {
-  isVisible.value = false;
-  status.value = '';
+// Computed values for cleaner template
+const isVisible = computed(() => state.value.submenuVisible);
+const coverItem = computed(() => state.value.currentCover);
+const loading = computed(() => state.value.loading);
 
-  if (selectedBox.value) {
-    selectedSubMenu.value = selectedBox.value;
-    if (coverItem.value !== selectedSubMenu.value.cover) {
-      coverItem.value = selectedSubMenu.value.cover;
-      sideData.value = [];
-      loading.value = true;
+// Check if option should be marked as selected
+const isOptionSelected = (option) => {
+  return state.value.activeOption?.id === option.id || option.cover === state.value.currentCover;
+};
 
-      setTimeout(() => {
-        loading.value = false;
-      }, 1000);
-    }
+// Handle selection change from Listbox
+const handleSelectionChange = (newValue) => {
+  // Prevent default Listbox selection behavior
+  selectedBox.value = null;
+  console.log(newValue);
+};
 
-    const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
-    if (itemElement != null) {
-      const rect = itemElement.getBoundingClientRect();
-      submenuPosition.value = {
-        top: `${rect.top + window.scrollY + rect.height / 2}px`,
-        left: `${rect.left + window.scrollX + 270}px`,
-      };
+// Handle main menu item click
+const handleMainClick = (event, option) => {
+  if (!option) return;
 
-      setTimeout(() => {
-        status.value = 'click';
-      }, 500);
-      isVisible.value = true;
+  // Reset submenu state
+  state.value.submenuVisible = false;
+  state.value.submenuStatus = '';
 
-      nextTick(() => {
-        if (refSubMenu.value) {
-          const rectSubmenu = refSubMenu.value.getBoundingClientRect();
+  // Update selection state only if cover is different
+  if (state.value.currentCover !== option.cover) {
+    state.value.activeOption = option;
+    state.value.currentCover = option.cover;
+    state.value.loading = true;
+    sideData.value = [];
 
-          let desiredTop = rect.top + window.scrollY + rect.height / 2 - rectSubmenu.height / 2;
-
-          if (desiredTop + rectSubmenu.height > window.innerHeight) {
-            desiredTop = window.innerHeight - rectSubmenu.height;
-          }
-
-          console.info('desiredTop', desiredTop);
-
-          const headerHeight = 85;
-          if (desiredTop < headerHeight) {
-            desiredTop = headerHeight;
-          }
-          submenuPosition.value = {
-            top: `${desiredTop}px`,
-            left: `${rect.left + 200}px`,
-          };
-        }
-      });
-    }
-  } else {
-    submenuPosition.value = { top: '0px', left: '0px' };
+    // Simulate loading
+    setTimeout(() => {
+      state.value.loading = false;
+    }, 1000);
   }
 };
 
+const handleArrowClick = async (event, option) => {
+  event.stopPropagation();
+  if (!option) return;
+
+  if (state.value.submenuVisible) {
+    state.value.submenuVisible = false;
+    return;
+  }
+
+  state.value.submenuVisible = false;
+  state.value.submenuStatus = '';
+  state.value.activeOption = option;
+  selectedSubMenu.value = option;
+
+  const itemElement = event.target.closest('.menu-item');
+  if (!itemElement) return;
+
+  const rect = itemElement.getBoundingClientRect();
+  submenuPosition.value = {
+    top: `${rect.top + window.scrollY + rect.height / 2}px`,
+    left: `${rect.left + window.scrollX + 270}px`,
+  };
+
+  state.value.submenuVisible = true;
+
+  setTimeout(() => {
+    state.value.submenuStatus = 'click';
+  }, 500);
+
+  await nextTick();
+  if (refSubMenu.value) {
+    const rectSubmenu = refSubMenu.value.getBoundingClientRect();
+    let desiredTop = rect.top + window.scrollY + rect.height / 2 - rectSubmenu.height / 2;
+
+    desiredTop = Math.min(desiredTop, window.innerHeight - rectSubmenu.height);
+    desiredTop = Math.max(desiredTop, 85);
+
+    submenuPosition.value = {
+      top: `${desiredTop}px`,
+      left: `${rect.left + 255}px`,
+    };
+  }
+};
+
+// Event handlers
 const hideSpinner = () => {
-  loading.value = false;
+  state.value.loading = false;
 };
 
 const handleClickOutside = () => {
-  if (isVisible.value && status.value === 'click') {
-    isVisible.value = false;
-    const itemElement = document.querySelector('.p-listbox-option.p-listbox-option-selected');
-    if (itemElement) {
-      itemElement.classList.remove('p-listbox-option-selected');
-    }
+  if (state.value.submenuVisible && state.value.submenuStatus === 'click') {
+    state.value.submenuVisible = false;
   }
 };
 
 const handleItemClick = (clickableItem) => {
+  if (!clickableItem?.data) return;
+
   sideData.value = clickableItem.data;
-  loading.value = true;
+  state.value.loading = true;
 };
 
+// Lifecycle hooks
 watchEffect(() => {
   accordionItems.value = props.data;
 });
 
 onMounted(async () => {
-  loading.value = true;
+  state.value.loading = true;
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (props.firstData?.cover) {
-      coverItem.value = props.firstData.cover;
+      state.value.currentCover = props.firstData.cover;
+      state.value.activeOption = props.data.find((item) => item.cover === props.firstData.cover);
     }
   } catch (error) {
     console.error('Error during mounted lifecycle:', error);
   } finally {
-    loading.value = false;
+    state.value.loading = false;
   }
 });
 </script>
@@ -177,20 +242,106 @@ onMounted(async () => {
 <style scoped>
 .menu-sidebar {
   z-index: 1000;
+  font-size: 16px;
+  font-weight: 600;
+  border-right: 1px solid #cdd5e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  color: #687489 !important;
+  overflow: hidden;
+}
+
+/* Listbox Scroll */
+.menu .p-listbox-list {
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cdd5e0 transparent;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar-thumb {
+  background-color: #cdd5e0;
+  border-radius: 10px;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Override default Listbox styles */
+.custom-listbox {
+  max-height: calc(100vh - 20vh);
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.custom-listbox::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-listbox::-webkit-scrollbar-thumb {
+  background-color: #cdd5e0;
+  border-radius: 10px;
+}
+
+.custom-listbox::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Custom menu item styles */
+.menu-item {
+  padding: 1rem 0.4rem;
+  transition: background-color 0.2s ease;
+}
+
+.menu-item-selected {
+  background-color: rgba(133, 167, 218, 0.1);
 }
 
 .submenu {
   position: absolute;
+  color: #687489;
+  font-weight: 600;
   z-index: 1010;
   border-radius: 10px;
-  background: rgb(255, 255, 255);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.sublist {
+  background-size: cover;
+  background-image: url('~/assets/images/bg-diamond.jpg') !important;
+}
+
+.bg-img {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  transform: scaleX(-1);
+  transform: origin;
+  background-position: left bottom;
+}
+
+.bg-color {
+  position: absolute;
+  inset: 0;
+  background: #85a7da94;
+  border-radius: 4px;
+  color: #000080 !important;
+  border-bottom: 2px solid #000080;
 }
 
 .spinner-overlay {
   position: absolute;
   top: 0;
   left: 0;
+  margin-left: 250px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -198,5 +349,16 @@ onMounted(async () => {
   justify-content: center;
   background-color: white;
   z-index: 999;
+}
+
+/* Fade transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
