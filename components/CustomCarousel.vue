@@ -90,7 +90,6 @@
                   class="top-0 left-0 w-full h-full"
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
                 />
               </div>
             </div>
@@ -177,16 +176,15 @@ const getEmbedUrl = (url) => {
     const urlObj = new URL(url);
     if (urlObj.hostname.includes('youtube.com')) {
       const videoId = urlObj.searchParams.get('v');
-      return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1` : url;
+      return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&fs=0` : url;
     }
     if (urlObj.hostname.includes('youtu.be')) {
       const videoId = urlObj.pathname.slice(1);
-      return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1` : url;
+      return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&fs=0` : url;
     }
     return url;
   } catch (error) {
-    console.log(error);
-    console.warn('Invalid URL:', url);
+    console.error('Invalid URL:', url, error);
     return url;
   }
 };
