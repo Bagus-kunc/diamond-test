@@ -62,8 +62,14 @@ defineComponent({
   },
 });
 
-const goToHomepage = () => {
-  router.push('/dashboard');
+const goToHomepage = async () => {
+  if (document.referrer.includes('/dashboard')) {
+    // Tunggu hingga Vue selesai melakukan render
+    await nextTick();
+    window.location.reload();
+  } else {
+    router.push('/dashboard');
+  }
 };
 
 const handlePin = async () => {
@@ -81,7 +87,11 @@ const handlePin = async () => {
     });
 
     if (response.status) {
-      // console.log('Berhasil');
+      // Generate a unique token on successful login
+      const uniqueToken = generateUniqueToken();
+      localStorage.setItem('auth_token', uniqueToken);
+
+      // Navigate to the homepage/dashboard
       goToHomepage();
     }
   } catch (err) {
@@ -91,6 +101,13 @@ const handlePin = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+// Function to generate a unique token
+const generateUniqueToken = () => {
+  const timestamp = Date.now();
+  const uuid = crypto.randomUUID();
+  return `token-${uuid}-${timestamp}`; // Format: token-uuid-timestamp
 };
 </script>
 
