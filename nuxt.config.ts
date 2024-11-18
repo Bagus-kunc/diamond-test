@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'nuxt-swiper',
     '@nuxt/icon',
+    '@pinia/nuxt',
   ],
   app: {
     head: {

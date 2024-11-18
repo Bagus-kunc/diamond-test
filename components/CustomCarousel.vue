@@ -121,18 +121,15 @@ const props = defineProps({
   data: {
     type: Array,
     required: true,
+    default: () => {},
   },
   cover: {
     type: String,
     default: '',
   },
-  autoplay: {
-    type: Boolean,
-    default: false,
-  },
 });
 
-const emit = defineEmits(['image-loaded', 'slide-change']);
+const emit = defineEmits(['image-loaded']);
 
 // Refs
 const swiperRef = ref(null);

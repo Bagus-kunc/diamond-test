@@ -1,9 +1,48 @@
 <template>
-  <div class="header">
-    <img
-      src="./../assets/images/logo.png"
-      class="h-24 ml-4"
-      alt="Header Logo"
-    />
+  <div
+    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] h-[80px] ml-[250px]"
+    :style="{ maxWidth: 'calc(100vw - 250px)' }"
+  >
+    <ul class="flex text-wrap justify-center w-full gap-6 text-[#AAAAAAFC]">
+      <li
+        v-for="item in apiDataStore.data?.categories || []"
+        :key="item.id"
+        class="transition-colors duration-200 cursor-pointer px-1 rounded"
+        :class="{
+          'bg-[#AAAAAAFC] text-white hover:text-white': selectedItem === item.id,
+          'hover:bg-[#f0f0f0] hover:text-[#AAAAAAFC]': selectedItem !== item.id,
+        }"
+        @click="handleItem(item.data, item.id)"
+      >
+        {{ item.title?.toUpperCase() || 'UNTITLED' }}
+      </li>
+    </ul>
   </div>
 </template>
+
+<script setup>
+import { useApiDataStore } from '@/composables/useApiDataStores';
+
+const apiDataStore = useApiDataStore();
+
+const selectedItem = ref(null);
+const dataItem = ref([]);
+
+const handleItem = (data, id) => {
+  selectedItem.value = id;
+  dataItem.value = data;
+  console.log(id, data);
+};
+
+onMounted(async () => {
+  if (!apiDataStore.data || !apiDataStore.data.categories?.length) {
+    await apiDataStore.fetchData();
+  }
+
+  // Handle kategori pertama hanya jika data ada
+  if (apiDataStore.data?.categories?.length) {
+    const firstCategory = apiDataStore.data.categories[0];
+    handleItem(firstCategory.data, firstCategory.id);
+  }
+});
+</script>
