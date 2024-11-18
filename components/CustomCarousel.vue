@@ -46,7 +46,7 @@
 
             <Icon
               v-if="coverSubMenu"
-              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
+              class="absolute bottom-8 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
               :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
               size="35"
               @click="toggleFullscreen"
@@ -68,17 +68,18 @@
 
             <!-- Fullscreen Button -->
 
+              <!-- v-if="!isVideoType(product)" -->
             <Icon
-              v-if="!isVideoType(product)"
-              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+              class="absolute bottom-8 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
               :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
               size="35"
               @click="toggleFullscreen"
             />
 
             <!-- Video Content -->
-            <div v-else-if="isVideoType(product)" class="relative w-full h-full flex items-center justify-center">
+            <div class="relative w-full h-full flex items-center justify-center">
               <img
+              v-if="isVideoType(product)"
                 src="~/assets/images/bg-diamond.jpg"
                 layout="fill"
                 class="top-0 left-0 w-full h-full"
@@ -90,8 +91,8 @@
                   class="top-0 left-0 w-full h-full"
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
                 />
+                  <!-- allowfullscreen -->
               </div>
             </div>
           </SwiperSlide>
@@ -111,8 +112,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, watchEffect } from 'vue';
-import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -152,7 +151,7 @@ const paginationOptions = computed(() => ({
   clickable: true,
   el: '.swiper-pagination',
   type: 'bullets',
-  dynamicBullets: true,
+  dynamicBullets: false,
 }));
 
 const navigationOptions = computed(() => ({
@@ -278,23 +277,23 @@ watchEffect(() => {
 <style scoped>
 .swiper-pagination-container {
   position: absolute;
-  top: 10px;
+  top:25px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   padding: 4px;
   background-color: transparent;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 
 :deep(.swiper-pagination-bullet) {
-  @apply w-16 h-2 bg-gray-400 rounded-full opacity-50;
-  margin: 0 1px !important;
+  @apply w-28 h-2 bg-gray-400 rounded-full opacity-50; /* Semua bullet memiliki panjang 80px (w-20) */
+  margin: 0 4px !important; /* Memberi jarak antar bullet */
   transition: all 0.3s ease;
 }
 
 :deep(.swiper-pagination-bullet-active) {
-  @apply bg-[#000080] opacity-100 scale-125;
+  @apply bg-[#000080] opacity-100; /* Bullet aktif memiliki warna berbeda */
 }
 
 .card {
