@@ -24,25 +24,24 @@
 import { useApiDataStore } from '@/composables/useApiDataStores';
 
 const apiDataStore = useApiDataStore();
-const {data} = storeToRefs(apiDataStore)
+const { data } = storeToRefs(apiDataStore);
 
 const props = defineProps({
-  selected: Number
-})
-const emit = defineEmits(['update:selected'])
-
-const selectedItem = ref(null);
-const dataItem = ref([]);
+  selected: Number,
+});
+const emit = defineEmits(['update:selected']);
 
 const handleItem = (dataMenu, id) => {
-  emit('update:selected', id)
+  if (dataMenu.length === 0) {
+    console.log('data', dataMenu.length);
+  }
+  emit('update:selected', id);
 };
 
 onMounted(async () => {
   if (!apiDataStore.data || !apiDataStore.data.categories?.length) {
     await apiDataStore.fetchData();
   }
-
 
   // Handle kategori pertama hanya jika data ada
   if (apiDataStore.data?.categories?.length) {

@@ -5,7 +5,7 @@
       <div class="flex">
         <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
       </div>
-      <h1>Menu</h1>
+      <!-- <h1>Menu</h1> -->
     </div>
 
     <!-- Listbox Section -->
@@ -19,9 +19,12 @@
         v-model="state.selectedBox"
         @click="menuClick(state.selectedBox)"
       >
+        <template #header>
+          <h1 class="unselectable px-1">Menu</h1>
+        </template>
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
-          <div v-if="isOptionSelected(option)" class="bg-color"></div>
+          <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
             class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
             :class="{ 'menu-item-selected text-[#000080]': isOptionSelected(option) }"
@@ -67,15 +70,12 @@
 </template>
 
 <script setup>
-import Button from 'primevue/button';
-import { registerSW } from 'virtual:pwa-register'
-// Props
 const props = defineProps({
   data: { type: Array, required: true, default: () => {} },
   firstData: { type: Object, default: () => ({}) },
 });
 
-const emit = defineEmits(['item-selected']);
+const emit = defineEmits(['item-selected', 'not-found', 'first-click']);
 
 // State management
 const state = ref({
@@ -88,12 +88,22 @@ const state = ref({
   loading: false,
 });
 
-const accordionItems = computed(() => props.data || []);
+const accordionItems = computed(() =>
+  (props.data || []).map((item) => ({
+    ...item,
+    clicked: false,
+    data: (item.data || []).map((subItem) => ({
+      ...subItem,
+      clicked: false,
+    })),
+  })),
+);
 const sideData = ref([]);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
 const coverItem = computed(() => state.value.currentCover);
 const loading = computed(() => state.value.loading);
+const notFound = ref(false);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
@@ -106,6 +116,7 @@ const handleMainClick = (option) => {
     state.value.activeOption = option;
     state.value.currentCover = option.cover;
     emit('item-selected', sideData.value, option.cover);
+    emit('not-found', false);
     state.value.loading = true;
     sideData.value = [];
 
@@ -113,10 +124,6 @@ const handleMainClick = (option) => {
       state.value.loading = false;
     }, 1000);
   }
-};
-
-const hideSpinner = () => {
-  state.value.loading = false;
 };
 
 const handleArrowClick = (option) => {
@@ -138,19 +145,39 @@ const handleClickOutside = () => {
 };
 
 const handleItemClick = (item) => {
+  if (!item.clicked) {
+    item.clicked = true;
+  } else {
+    item.clicked = false;
+  }
+  emit('first-click', item.clicked);
+
   sideData.value = item?.data || [];
 
   emit('item-selected', item.data, state.value.currentCover);
-  // console.log('sideData', item.data);
-  setTimeout(()=> {
-    state.value.submenuVisible = false
-  }, 500)
+
+  if (item.data.length === 0) {
+    state.value.loading = false;
+    emit('not-found', true);
+  } else {
+    emit('not-found', false);
+  }
+
+  setTimeout(() => {
+    state.value.submenuVisible = false;
+  }, 500);
   state.value.loading = true;
 };
 
 const menuClick = (item) => {
-      emit('item-selected', sideData.value, item.cover);
-}
+  emit('item-selected', sideData.value, item.cover);
+  if (!item.clicked) {
+    item.clicked = true;
+  } else {
+    item.clicked = false;
+  }
+  emit('first-click', item.clicked);
+};
 
 // Lifecycle hooks
 onMounted(() => {
@@ -159,6 +186,7 @@ onMounted(() => {
     if (props.firstData?.cover) {
       state.value.currentCover = props.firstData.cover;
       emit('item-selected', sideData.value, props.firstData.cover);
+      emit('not-found', false);
       state.value.activeOption = props.data.find((item) => item.cover === props.firstData.cover);
     }
     state.value.loading = false;
@@ -167,6 +195,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.unselectable {
+  pointer-events: none;
+  user-select: none;
+  color: black;
+}
 .menu-sidebar {
   z-index: 1000;
   font-size: 16px;

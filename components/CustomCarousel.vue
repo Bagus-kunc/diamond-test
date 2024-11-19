@@ -38,19 +38,21 @@
                 v-if="coverSubMenu"
                 :src="coverSubMenu"
                 alt="Cover Image"
+                format="webp"
                 class="object-cover h-full"
                 loading="lazy"
+                fetchpriority="high"
+                :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @load="handleImageLoad"
               />
-            <Icon
-              v-if="coverSubMenu"
-              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
-              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
-              size="35"
-              @click="toggleFullscreen"
-            />
+              <Icon
+                v-if="coverSubMenu"
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
+              />
             </div>
-
           </SwiperSlide>
 
           <!-- Content Slides -->
@@ -61,25 +63,32 @@
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
                 class="object-cover h-full"
+                format="webp"
                 loading="lazy"
+                fetchpriority="high"
+                :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @load="handleImageLoad"
               />
               <!-- Fullscreen Button -->
-            <Icon
-              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
-              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
-              size="35"
-              @click="toggleFullscreen"
-            />
-
+              <Icon
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
+              />
             </div>
             <!-- Video Content -->
-            <div v-else-if="isVideoType(product)" class="relative w-full h-full max-h-full flex items-center justify-center">
+            <div
+              v-else-if="isVideoType(product)"
+              class="relative w-full h-full max-h-full flex items-center justify-center"
+            >
               <img
                 src="~/assets/images/bg-diamond.jpg"
+                format="webp"
                 layout="fill"
                 class="top-0 left-0 w-full h-full"
                 alt="Background Image"
+                fetchpriority="high"
               />
               <div class="absolute w-full aspect-[16/9]">
                 <iframe
@@ -90,17 +99,16 @@
                 />
               </div>
 
-               <!-- Fullscreen Button -->
-            <Icon
-              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
-              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
-              size="35"
-              @click="toggleFullscreen"
-            />
+              <!-- Fullscreen Button -->
+              <Icon
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
+              />
             </div>
           </SwiperSlide>
         </Swiper>
-
       </div>
 
       <!-- Next Button -->
@@ -229,11 +237,9 @@ const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       await fullscreenDiv.value.requestFullscreen();
       isFullScreen.value = true;
-      console.log('fullscreen active');
     } else {
       await document.exitFullscreen();
       isFullScreen.value = false;
-      console.log('fullscreen non-active');
     }
   } catch (error) {
     console.warn('Fullscreen API error:', error);
