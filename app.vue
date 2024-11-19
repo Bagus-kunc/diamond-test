@@ -8,4 +8,13 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useApiDataStore } from '@/composables/useApiDataStores';
+
+const apiDataStore = useApiDataStore();
+
+onMounted(()=>{
+
+  apiDataStore.fetchData()
+})
+</script>

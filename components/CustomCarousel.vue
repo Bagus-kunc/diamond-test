@@ -100,6 +100,7 @@
             </div>
           </SwiperSlide>
         </Swiper>
+
       </div>
 
       <!-- Next Button -->
@@ -115,7 +116,6 @@
 </template>
 
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -125,7 +125,7 @@ const props = defineProps({
   data: {
     type: Array,
     required: true,
-    default: () => {},
+    default: [],
   },
   cover: {
     type: String,
@@ -221,7 +221,7 @@ const onSlideChange = () => {
     }
   });
 
-  emit('slide-change', currentIndex);
+  // emit('slide-change', currentIndex);
 };
 
 const toggleFullscreen = async () => {
@@ -263,13 +263,13 @@ watch(
   () => props.cover,
   async (newCover) => {
     isLoading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 300));
+
     coverSubMenu.value = newCover;
     isLoading.value = false;
   },
 );
 
-watch(() => {
+watchEffect(() => {
   products.value = props.data || [];
 });
 </script>

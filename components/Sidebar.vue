@@ -17,6 +17,7 @@
         listStyle="max-height:calc(100vh - 25vh); overflow-y:scroll; scrollbar-width:none;"
         pt:list:class="gap-[5px]"
         v-model="state.selectedBox"
+        @click="menuClick(state.selectedBox)"
       >
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
@@ -61,13 +62,13 @@
           </div>
         </transition>
       </Teleport>
-
     </div>
   </div>
 </template>
 
 <script setup>
 import Button from 'primevue/button';
+import { registerSW } from 'virtual:pwa-register'
 // Props
 const props = defineProps({
   data: { type: Array, required: true, default: () => {} },
@@ -146,6 +147,10 @@ const handleItemClick = (item) => {
   }, 500)
   state.value.loading = true;
 };
+
+const menuClick = (item) => {
+      emit('item-selected', sideData.value, item.cover);
+}
 
 // Lifecycle hooks
 onMounted(() => {

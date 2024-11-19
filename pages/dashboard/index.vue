@@ -4,7 +4,7 @@
   </div>
 
   <div v-else class="w-full h-screen flex flex-col">
-    <Header />
+    <Header  v-model:selected="selectedHeader" />
 
     <div class="flex flex-1">
       <Sidebar
@@ -38,14 +38,15 @@ definePageMeta({
 
 const apiDataStore = useApiDataStore();
 
-const selectedData = ref(null);
+const selectedHeader = ref(1)
+const selectedData = ref([]);
 const coverItem = ref('');
 const loading = ref(false);
 
 const sidebarData = computed(() => {
-  return Array.isArray(apiDataStore.data?.categories?.[0]?.data)
-    ? apiDataStore.data.categories[0].data
-    : [];
+   const filter = apiDataStore.data.categories.find((item)=>item.id===selectedHeader.value)
+      console.log(filter)
+   return filter?.data || []
 });
 
 const sidebarFirstData = computed(() => {
@@ -61,6 +62,10 @@ const handleSidebarSelection = (item, cover) => {
 const hideSpinner = () => {
   loading.value = false;
 };
+
+watchEffect(()=>{
+  console.log(selectedHeader.value)
+})
 </script>
 
 <style scoped>

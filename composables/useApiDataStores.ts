@@ -11,7 +11,7 @@ export const useApiDataStore = defineStore('apiData', {
   state: (): ApiDataState => ({
     data: null,
     error: null,
-    loading: false,
+    loading: true,
   }),
   actions: {
     async fetchData(): Promise<void> {

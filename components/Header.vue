@@ -5,12 +5,12 @@
   >
     <ul class="flex text-wrap justify-center w-full gap-6 text-[#AAAAAAFC]">
       <li
-        v-for="item in apiDataStore.data?.categories || []"
+        v-for="item in data.categories || []"
         :key="item.id"
         class="transition-colors duration-200 cursor-pointer px-1 rounded"
         :class="{
-          'bg-[#AAAAAAFC] text-white hover:text-white': selectedItem === item.id,
-          'hover:bg-[#f0f0f0] hover:text-[#AAAAAAFC]': selectedItem !== item.id,
+          'bg-[#AAAAAAFC] text-white hover:text-white': selected === item.id,
+          'hover:bg-[#f0f0f0] hover:text-[#AAAAAAFC]': selected !== item.id,
         }"
         @click="handleItem(item.data, item.id)"
       >
@@ -24,20 +24,25 @@
 import { useApiDataStore } from '@/composables/useApiDataStores';
 
 const apiDataStore = useApiDataStore();
+const {data} = storeToRefs(apiDataStore)
+
+const props = defineProps({
+  selected: Number
+})
+const emit = defineEmits(['update:selected'])
 
 const selectedItem = ref(null);
 const dataItem = ref([]);
 
-const handleItem = (data, id) => {
-  selectedItem.value = id;
-  dataItem.value = data;
-  console.log(id, data);
+const handleItem = (dataMenu, id) => {
+  emit('update:selected', id)
 };
 
 onMounted(async () => {
   if (!apiDataStore.data || !apiDataStore.data.categories?.length) {
     await apiDataStore.fetchData();
   }
+
 
   // Handle kategori pertama hanya jika data ada
   if (apiDataStore.data?.categories?.length) {
