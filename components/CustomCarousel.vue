@@ -32,18 +32,16 @@
           @lazy-image-load="handleImageLoad"
         >
           <!-- Empty State -->
-          <SwiperSlide v-if="!products.length" class="flex items-center justify-center">
-            <div class="relative w-full h-full">
+          <SwiperSlide v-if="!products.length" class="relative !w-[100%]">
+            <div class="relative w-full h-full max-h-full">
               <nuxt-img
                 v-if="coverSubMenu"
                 :src="coverSubMenu"
                 alt="Cover Image"
-                class="object-cover"
+                class="object-cover h-full"
                 loading="lazy"
                 @load="handleImageLoad"
               />
-            </div>
-
             <Icon
               v-if="coverSubMenu"
               class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
@@ -51,33 +49,32 @@
               size="35"
               @click="toggleFullscreen"
             />
+            </div>
+
           </SwiperSlide>
 
           <!-- Content Slides -->
-          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !h-[100%]">
+          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !w-[100%]">
             <!-- Image Content -->
-            <div v-if="isImageType(product)" class="relative w-full">
+            <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
               <nuxt-img
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
-                class="object-cover"
+                class="object-cover h-full"
                 loading="lazy"
                 @load="handleImageLoad"
               />
-            </div>
-
-            <!-- Fullscreen Button -->
-
+              <!-- Fullscreen Button -->
             <Icon
-              v-if="!isVideoType(product)"
               class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
               :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
               size="35"
               @click="toggleFullscreen"
             />
 
+            </div>
             <!-- Video Content -->
-            <div v-else-if="isVideoType(product)" class="relative w-full h-full flex items-center justify-center">
+            <div v-else-if="isVideoType(product)" class="relative w-full h-full max-h-full flex items-center justify-center">
               <img
                 src="~/assets/images/bg-diamond.jpg"
                 layout="fill"
@@ -92,6 +89,14 @@
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
               </div>
+
+               <!-- Fullscreen Button -->
+            <Icon
+              class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+              size="35"
+              @click="toggleFullscreen"
+            />
             </div>
           </SwiperSlide>
         </Swiper>
@@ -110,7 +115,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, watchEffect } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules';
 import 'swiper/css';
@@ -265,7 +269,7 @@ watch(
   },
 );
 
-watchEffect(() => {
+watch(() => {
   products.value = props.data || [];
 });
 </script>

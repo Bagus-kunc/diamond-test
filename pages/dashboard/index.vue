@@ -4,12 +4,9 @@
   </div>
 
   <div v-else class="w-full h-screen flex flex-col">
-    <!-- Header -->
     <Header />
 
-    <!-- Main Content -->
     <div class="flex flex-1">
-      <!-- Sidebar -->
       <Sidebar
         :data="sidebarData"
         :firstData="sidebarFirstData"
@@ -17,14 +14,11 @@
         class="sidebar"
       />
 
-      <!-- Main Content Area -->
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <!-- Spinner -->
         <div v-if="loading" class="spinner-overlay">
           <ProgressSpinner />
         </div>
 
-        <!-- CustomCarousel -->
         <CustomCarousel :data="selectedData" :cover="coverItem" @image-loaded="hideSpinner" class="flex-1" />
       </div>
     </div>
@@ -32,7 +26,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
 import { useApiDataStore } from '~/composables/useApiDataStores';
 import Sidebar from '~/components/Sidebar.vue';
 import Header from '~/components/Header.vue';
@@ -41,27 +34,25 @@ import ProgressSpinner from 'primevue/progressspinner';
 
 const apiDataStore = useApiDataStore();
 
-// State untuk data yang dipilih
 const selectedData = ref(null);
 const coverItem = ref('');
 const loading = ref(false);
 
-// Menyusun data dan firstData untuk Sidebar
-const sidebarData = computed(() => apiDataStore.data?.categories?.[0]?.data || []);
-const sidebarFirstData = computed(() => apiDataStore.data?.categories?.[0]?.data?.[0] || {});
+const sidebarData = computed(() => {
+  return Array.isArray(apiDataStore.data?.categories?.[0]?.data)
+    ? apiDataStore.data.categories[0].data
+    : [];
+});
 
-// Event handler untuk mendapatkan data dari Sidebar
+const sidebarFirstData = computed(() => {
+  return sidebarData.value.length > 0 ? sidebarData.value[0] : {};
+});
+
 const handleSidebarSelection = (item, cover) => {
   selectedData.value = item;
   coverItem.value = cover;
   loading.value = true;
 };
-
-onMounted(() => {
-  if (apiDataStore.data?.categories?.[0]?.data?.[0]) {
-    coverItem.value = apiDataStore.data.categories[0].data[0].cover;
-  }
-});
 
 const hideSpinner = () => {
   loading.value = false;

@@ -127,7 +127,7 @@ const handleArrowClick = (option) => {
     const rect = itemElement.getBoundingClientRect();
     submenuPosition.value = {
       top: `${rect.top + window.scrollY}px`,
-      left: `${rect.left + 270}px`,
+      left: `${rect.left + 240}px`,
     };
   }
 };
@@ -138,8 +138,12 @@ const handleClickOutside = () => {
 
 const handleItemClick = (item) => {
   sideData.value = item?.data || [];
+
   emit('item-selected', item.data, state.value.currentCover);
-  console.log('sideData', item.data);
+  // console.log('sideData', item.data);
+  setTimeout(()=> {
+    state.value.submenuVisible = false
+  }, 500)
   state.value.loading = true;
 };
 
@@ -149,6 +153,7 @@ onMounted(() => {
   setTimeout(() => {
     if (props.firstData?.cover) {
       state.value.currentCover = props.firstData.cover;
+      emit('item-selected', sideData.value, props.firstData.cover);
       state.value.activeOption = props.data.find((item) => item.cover === props.firstData.cover);
     }
     state.value.loading = false;
