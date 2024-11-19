@@ -32,6 +32,10 @@ import Header from '~/components/Header.vue';
 import CustomCarousel from '~/components/CustomCarousel.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const apiDataStore = useApiDataStore();
 
 const selectedData = ref(null);

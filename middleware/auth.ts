@@ -1,3 +1,5 @@
+import { useCookie, useRequestHeaders } from '#app';
+
 type VerifyTokenResponse = {
   status: number;
   data: {
@@ -5,44 +7,52 @@ type VerifyTokenResponse = {
   };
 };
 
-const isTokenverify = ref(false);
+const isTokenVerified = ref(false);
 
-export default defineNuxtRouteMiddleware(async (to) => {
-  if (import.meta.client) {
-    const authToken = localStorage.getItem('auth_token');
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  // Mengecek apakah middleware berjalan di sisi server atau klien
+  const isClient = process.client;
+  const authToken = isClient
+    ? useCookie('TOKEN').value
+    : useRequestHeaders().cookie?.split(';').find(cookie => cookie.trim().startsWith('TOKEN='))?.split('=')[1];
 
-    if (!authToken) {
-      if (to.path !== '/') {
-        // Menambahkan penundaan untuk memberi waktu bagi rendering halaman
-        setTimeout(() => {
-          navigateTo('/');
-        }, 500); // Penundaan 500ms
-      }
-      return;
+  // Jika ada token dan tujuan halaman adalah '/', arahkan ke dashboard atau halaman lain
+  if (authToken) {
+    if (to.path === '/') {
+      return navigateTo('/dashboard'); // Ganti dengan halaman tujuan Anda, seperti '/dashboard'
+    }
+  }
+
+  // Jika tidak ada token, arahkan ke halaman login
+  if (!authToken) {
+    if (to.path !== '/') {
+      return navigateTo('/'); // Arahkan ke halaman login
+    }
+    return; // Jika sudah di halaman login, tidak perlu melakukan apa-apa
+  }
+
+  // Verifikasi token dengan API di sisi server atau klien
+  try {
+    const response = await $fetch<VerifyTokenResponse>('/api/verify-token', {
+      method: 'POST',
+      body: { token: authToken },
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    // Jika token tidak valid, arahkan ke halaman login
+    if (!response?.data?.valid) {
+      console.warn('Token is invalid, redirecting to login.');
+      return navigateTo('/'); // Arahkan ke halaman login
     }
 
-    try {
-      const response = await $fetch<VerifyTokenResponse>('/api/verify-token', {
-        method: 'POST',
-        body: { token: authToken },
-        headers: { 'Content-Type': 'application/json' },
-      });
+    // Tandai token valid
+    isTokenVerified.value = true;
 
-      if (!response.status || !response.data?.valid) {
-        if (to.path !== '/') {
-          setTimeout(() => {
-            navigateTo('/');
-          }, 500); // Penundaan 500ms
-        }
-      }
-      isTokenverify.value = true;
-    } catch (err) {
-      console.error('Error while verifying token', err);
-      if (to.path !== '/') {
-        setTimeout(() => {
-          navigateTo('/');
-        }, 500); // Penundaan 500ms
-      }
-    }
+    // Jika token valid, lanjutkan ke halaman tujuan
+    return;
+  } catch (err) {
+    console.error('Error while verifying token:', err);
+    // Jika terjadi error dalam verifikasi token, arahkan ke halaman login
+    return navigateTo('/');
   }
 });

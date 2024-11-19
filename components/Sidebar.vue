@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col">
+  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
     <!-- Header Section -->
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
       <div class="flex">
@@ -61,8 +61,8 @@
           </div>
         </transition>
       </Teleport>
+
     </div>
-    <Button class="">Update</Button>
   </div>
 </template>
 
