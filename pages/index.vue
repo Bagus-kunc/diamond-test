@@ -50,11 +50,10 @@ const isLoading = ref(false);
 const error = ref('');
 const router = useRouter();
 
-const TOKEN = useCookie('TOKEN');
-
 const isValidPin = computed(() => valuePin.value.length === 4);
 
 definePageMeta({
+  middleware: 'guest',
   layout: 'dashboard',
 });
 
@@ -88,6 +87,8 @@ const handlePin = async () => {
     });
 
     if (response.status) {
+      const TOKEN = useCookie('TOKEN', { maxAge: 7 * 24 * 60 * 60 * 1000 });
+
       const uniqueToken = generateUniqueToken();
       TOKEN.value = uniqueToken;
 
