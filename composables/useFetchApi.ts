@@ -37,9 +37,6 @@ const useFetchApi = async <T>(
   const TOKEN = useCookie<string | null>('TOKEN');
   const USER = useCookie<Record<string, any> | null>('USER');
   const VALID_PASSWORD = useCookie<boolean | null>('VALID_PASSWORD');
-  const LOCALE = useCookie<string>('LOCALE', {
-    default: () => 'en', // Default language
-  });
 
   const clearAuth = () => {
     localStorage.clear();
@@ -61,7 +58,6 @@ const useFetchApi = async <T>(
       },
       params: {
         ...opts.params,
-        lang: LOCALE.value,
       },
       onRequestError({ error }) {
         console.error('Request error:', error);
