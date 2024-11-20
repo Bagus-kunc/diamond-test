@@ -160,7 +160,7 @@ const paginationOptions = computed(() => ({
   clickable: true,
   el: '.swiper-pagination',
   type: 'bullets',
-  dynamicBullets: true,
+  dynamicBullets: false,
 }));
 
 const navigationOptions = computed(() => ({
@@ -283,23 +283,23 @@ watchEffect(() => {
 <style scoped>
 .swiper-pagination-container {
   position: absolute;
-  top: 10px;
+  top:25px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   padding: 4px;
   background-color: transparent;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 
 :deep(.swiper-pagination-bullet) {
-  @apply w-16 h-2 bg-gray-400 rounded-full opacity-50;
-  margin: 0 1px !important;
+  @apply w-28 h-2 bg-gray-400 rounded-full opacity-50;
+  margin: 0 4px !important;
   transition: all 0.3s ease;
 }
 
 :deep(.swiper-pagination-bullet-active) {
-  @apply bg-[#000080] opacity-100 scale-125;
+  @apply bg-[#000080] opacity-100;
 }
 
 .card {
