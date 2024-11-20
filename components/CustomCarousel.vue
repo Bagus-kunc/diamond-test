@@ -53,6 +53,8 @@
                 @click="toggleFullscreen"
               />
             </div>
+
+           
           </SwiperSlide>
 
           <!-- Content Slides -->
@@ -82,7 +84,9 @@
               v-else-if="isVideoType(product)"
               class="relative w-full h-full max-h-full flex items-center justify-center"
             >
+
               <img
+              v-if="isVideoType(product)"
                 src="~/assets/images/bg-diamond.jpg"
                 format="webp"
                 layout="fill"
@@ -97,6 +101,7 @@
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
+                  <!-- allowfullscreen -->
               </div>
 
               <!-- Fullscreen Button -->
@@ -295,11 +300,13 @@ watchEffect(() => {
 :deep(.swiper-pagination-bullet) {
   @apply w-28 h-2 bg-gray-400 rounded-full opacity-50;
   margin: 0 4px !important;
+
   transition: all 0.3s ease;
 }
 
 :deep(.swiper-pagination-bullet-active) {
   @apply bg-[#000080] opacity-100;
+ 
 }
 
 .card {
