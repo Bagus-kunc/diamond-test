@@ -1,43 +1,42 @@
 <template>
-  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col">
+  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
     <!-- Header Section -->
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
       <div class="flex">
         <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
       </div>
-      <h1>Menu</h1>
+      <!-- <h1>Menu</h1> -->
     </div>
 
     <!-- Listbox Section -->
-    <div class="flex-1">
+    <div class="flex-1 overflow-y-auto" style="max-height:calc(100vh - 20vh)">
+
       <Listbox
         v-if="accordionItems.length > 0"
-        class="menu w-full border-none rounded-none custom-listbox"
+        class="menu w-full border-none rounded-none custom-listbox pt-2"
         :options="accordionItems"
-        listStyle="max-height:calc(100vh - 25vh); overflow-y:scroll; scrollbar-width:none;"
+        listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
-        :modelValue="selectedBox"
-        @update:modelValue="handleSelectionChange"
+        v-model="state.selectedBox"
+        @click="menuClick(state.selectedBox)"
       >
-        <h1 class="text-black">Menu</h1>
+      <template #header>
+        <h1 class="px-5">Menu</h1>
+      </template>
         <template #option="{ option }">
-          <img v-show="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
-          <div v-show="isOptionSelected(option)" class="bg-color"></div>
+          <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
+          <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
-            :class="[
-              'menu-item flex justify-between cursor-pointer z-50 relative items-center w-full',
-              { 'menu-item-selected text-[#000080]': isOptionSelected(option) },
-            ]"
-            @click="handleMainClick($event, option)"
+            class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
+            :class="{ 'menu-item-selected text-[#000080]': isOptionSelected(option) }"
+            @click="handleMainClick(option)"
           >
-            <div class="flex justify-between">
-              {{ option.title }}
-            </div>
+            <div class="flex justify-between">{{ option.title }}</div>
             <img
               v-if="isOptionSelected(option)"
               src="~/assets/icons/double-arrow-blue.svg"
               alt="double arrow icon"
-              @click.stop="handleArrowClick($event, option)"
+              @click.stop="handleArrowClick(option)"
             />
             <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" />
           </div>
@@ -52,194 +51,156 @@
             ref="refSubMenu"
             v-click-outside="handleClickOutside"
             class="submenu"
-            pt:list:class="gap-[5px]"
-            :style="{ top: submenuPosition.top, left: submenuPosition.left }"
+            :style="submenuPosition"
           >
             <Listbox
-              v-if="isVisible && selectedSubMenu?.data?.length > 0"
-              v-model="selectedSubItem"
-              :options="selectedSubMenu.data"
+              v-if="isVisible && state.selectedSubMenu?.data?.length > 0"
+              v-model="state.selectedSubItem"
+              :options="state.selectedSubMenu.data"
               optionLabel="title"
               pt:root:class="bg-image-submenu"
               class="w-full sublist"
               listStyle="max-height:550px"
-              @change="handleItemClick(selectedSubItem)"
+              @change="handleItemClick(state.selectedSubItem)"
             />
           </div>
         </transition>
       </Teleport>
     </div>
   </div>
-
-  <div class="flex-1 flex flex-col ml-[250px]" style="max-width: calc(100vw - 250px)">
-    <div v-if="loading" class="spinner-overlay ml-[250px]" style="max-width: calc(100vw - 250px)">
-      <ProgressSpinner />
-    </div>
-
-    <CustomCarousel :data="sideData" :cover="coverItem" @image-loaded="hideSpinner" />
-  </div>
 </template>
 
 <script setup>
-import { ref, watchEffect, nextTick, onMounted } from 'vue';
-import CustomCarousel from '~/components/CustomCarousel.vue';
-import ProgressSpinner from 'primevue/progressspinner';
-
 const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-  },
-  firstData: {
-    type: Object,
-    required: false,
-    default: () => ({}),
-  },
+  data: { type: Array, required: true, default: () => {} },
+  firstData: { type: Object, default: () => ({}) },
 });
+
+const emit = defineEmits(['item-selected', 'not-found', 'first-click']);
 
 // State management
 const state = ref({
+  selectedBox: null,
+  selectedSubMenu: null,
+  selectedSubItem: null,
   activeOption: null,
   currentCover: '',
   submenuVisible: false,
-  submenuStatus: '',
   loading: false,
 });
 
-// UI related refs
-const selectedBox = ref(null);
-const selectedSubItem = ref(null);
-const selectedSubMenu = ref(null);
-const refSubMenu = ref(null);
-const submenuPosition = ref({ top: '0px', left: '0px' });
-const accordionItems = ref([]);
+const accordionItems = computed(() =>
+  (props.data || []).map((item) => ({
+    ...item,
+    clicked: false,
+    data: (item.data || []).map((subItem) => ({
+      ...subItem,
+      clicked: false,
+    })),
+  })),
+);
 const sideData = ref([]);
-
-// Computed values for cleaner template
+const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
 const coverItem = computed(() => state.value.currentCover);
 const loading = computed(() => state.value.loading);
+const notFound = ref(false);
 
-// Check if option should be marked as selected
-const isOptionSelected = (option) => {
-  return state.value.activeOption?.id === option.id || option.cover === state.value.currentCover;
-};
+const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
-// Handle selection change from Listbox
-const handleSelectionChange = (newValue) => {
-  // Prevent default Listbox selection behavior
-  selectedBox.value = null;
-  console.log(newValue);
-};
-
-// Handle main menu item click
-const handleMainClick = (event, option) => {
+const handleMainClick = (option) => {
   if (!option) return;
 
-  // Reset submenu state
   state.value.submenuVisible = false;
-  state.value.submenuStatus = '';
 
-  // Update selection state only if cover is different
   if (state.value.currentCover !== option.cover) {
     state.value.activeOption = option;
     state.value.currentCover = option.cover;
+    emit('item-selected', sideData.value, option.cover);
+    emit('not-found', false);
     state.value.loading = true;
     sideData.value = [];
 
-    // Simulate loading
     setTimeout(() => {
       state.value.loading = false;
     }, 1000);
   }
 };
 
-const handleArrowClick = async (event, option) => {
-  event.stopPropagation();
-  if (!option) return;
-
-  if (state.value.submenuVisible) {
-    state.value.submenuVisible = false;
-    return;
-  }
-
-  state.value.submenuVisible = false;
-  state.value.submenuStatus = '';
-  state.value.activeOption = option;
-  selectedSubMenu.value = option;
+const handleArrowClick = (option) => {
+  state.value.submenuVisible = true;
+  state.value.selectedSubMenu = option;
 
   const itemElement = event.target.closest('.menu-item');
-  if (!itemElement) return;
-
-  const rect = itemElement.getBoundingClientRect();
-  submenuPosition.value = {
-    top: `${rect.top + window.scrollY + rect.height / 2}px`,
-    left: `${rect.left + window.scrollX + 270}px`,
-  };
-
-  state.value.submenuVisible = true;
-
-  setTimeout(() => {
-    state.value.submenuStatus = 'click';
-  }, 500);
-
-  await nextTick();
-  if (refSubMenu.value) {
-    const rectSubmenu = refSubMenu.value.getBoundingClientRect();
-    let desiredTop = rect.top + window.scrollY + rect.height / 2 - rectSubmenu.height / 2;
-
-    desiredTop = Math.min(desiredTop, window.innerHeight - rectSubmenu.height);
-    desiredTop = Math.max(desiredTop, 85);
-
+  if (itemElement) {
+    const rect = itemElement.getBoundingClientRect();
     submenuPosition.value = {
-      top: `${desiredTop}px`,
-      left: `${rect.left + 255}px`,
+      top: `${rect.top + window.scrollY}px`,
+      left: `${rect.left + 240}px`,
     };
   }
 };
 
-// Event handlers
-const hideSpinner = () => {
-  state.value.loading = false;
-};
-
 const handleClickOutside = () => {
-  if (state.value.submenuVisible && state.value.submenuStatus === 'click') {
-    state.value.submenuVisible = false;
-  }
+  state.value.submenuVisible = false;
 };
 
-const handleItemClick = (clickableItem) => {
-  if (!clickableItem?.data) return;
+const handleItemClick = (item) => {
+  if (!item.clicked) {
+    item.clicked = true;
+  } else {
+    item.clicked = false;
+  }
+  emit('first-click', item.clicked);
 
-  sideData.value = clickableItem.data;
+  sideData.value = item?.data || [];
+
+  emit('item-selected', item.data, state.value.currentCover);
+
+  if (item.data.length === 0) {
+    state.value.loading = false;
+    emit('not-found', true);
+  } else {
+    emit('not-found', false);
+  }
+
+  setTimeout(() => {
+    state.value.submenuVisible = false;
+  }, 500);
   state.value.loading = true;
+};
+
+const menuClick = (item) => {
+  emit('item-selected', sideData.value, item.cover);
+  if (!item.clicked) {
+    item.clicked = true;
+  } else {
+    item.clicked = false;
+  }
+  emit('first-click', item.clicked);
 };
 
 // Lifecycle hooks
-watchEffect(() => {
-  accordionItems.value = props.data;
-});
-
-onMounted(async () => {
+onMounted(() => {
   state.value.loading = true;
-
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
+  setTimeout(() => {
     if (props.firstData?.cover) {
       state.value.currentCover = props.firstData.cover;
+      emit('item-selected', sideData.value, props.firstData.cover);
+      emit('not-found', false);
       state.value.activeOption = props.data.find((item) => item.cover === props.firstData.cover);
     }
-  } catch (error) {
-    console.error('Error during mounted lifecycle:', error);
-  } finally {
     state.value.loading = false;
-  }
+  }, 1000);
 });
 </script>
 
 <style scoped>
+.unselectable {
+  pointer-events: none;
+  user-select: none;
+  color: black;
+}
 .menu-sidebar {
   z-index: 1000;
   font-size: 16px;

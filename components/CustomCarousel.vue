@@ -32,58 +32,67 @@
           @lazy-image-load="handleImageLoad"
         >
           <!-- Empty State -->
-          <SwiperSlide v-if="!products.length" class="flex items-center justify-center">
-            <div class="relative w-full h-full">
+          <SwiperSlide v-if="!products.length" class="relative !w-[100%]">
+            <div class="relative w-full h-full max-h-full">
               <nuxt-img
                 v-if="coverSubMenu"
                 :src="coverSubMenu"
                 alt="Cover Image"
-                class="object-cover"
+                format="webp"
+                class="object-cover h-full"
                 loading="lazy"
+                fetchpriority="high"
+                :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @load="handleImageLoad"
+              />
+              <Icon
+                v-if="coverSubMenu"
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
               />
             </div>
 
-            <Icon
-              v-if="coverSubMenu"
-              class="absolute bottom-8 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
-              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
-              size="35"
-              @click="toggleFullscreen"
-            />
+           
           </SwiperSlide>
 
           <!-- Content Slides -->
-          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !h-[100%]">
+          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !w-[100%]">
             <!-- Image Content -->
-            <div v-if="isImageType(product)" class="relative w-full">
+            <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
               <nuxt-img
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
-                class="object-cover"
+                class="object-cover h-full"
+                format="webp"
                 loading="lazy"
+                fetchpriority="high"
+                :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @load="handleImageLoad"
               />
+              <!-- Fullscreen Button -->
+              <Icon
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
+              />
             </div>
-
-            <!-- Fullscreen Button -->
-
-              <!-- v-if="!isVideoType(product)" -->
-            <Icon
-              class="absolute bottom-8 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
-              :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
-              size="35"
-              @click="toggleFullscreen"
-            />
-
             <!-- Video Content -->
-            <div class="relative w-full h-full flex items-center justify-center">
+            <div
+              v-else-if="isVideoType(product)"
+              class="relative w-full h-full max-h-full flex items-center justify-center"
+            >
+
               <img
               v-if="isVideoType(product)"
                 src="~/assets/images/bg-diamond.jpg"
+                format="webp"
                 layout="fill"
                 class="top-0 left-0 w-full h-full"
                 alt="Background Image"
+                fetchpriority="high"
               />
               <div class="absolute w-full aspect-[16/9]">
                 <iframe
@@ -94,6 +103,14 @@
                 />
                   <!-- allowfullscreen -->
               </div>
+
+              <!-- Fullscreen Button -->
+              <Icon
+                class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
+                :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
+                size="35"
+                @click="toggleFullscreen"
+              />
             </div>
           </SwiperSlide>
         </Swiper>
@@ -121,18 +138,15 @@ const props = defineProps({
   data: {
     type: Array,
     required: true,
+    default: [],
   },
   cover: {
     type: String,
     default: '',
   },
-  autoplay: {
-    type: Boolean,
-    default: false,
-  },
 });
 
-const emit = defineEmits(['image-loaded', 'slide-change']);
+const emit = defineEmits(['image-loaded']);
 
 // Refs
 const swiperRef = ref(null);
@@ -220,7 +234,7 @@ const onSlideChange = () => {
     }
   });
 
-  emit('slide-change', currentIndex);
+  // emit('slide-change', currentIndex);
 };
 
 const toggleFullscreen = async () => {
@@ -228,11 +242,9 @@ const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       await fullscreenDiv.value.requestFullscreen();
       isFullScreen.value = true;
-      console.log('fullscreen active');
     } else {
       await document.exitFullscreen();
       isFullScreen.value = false;
-      console.log('fullscreen non-active');
     }
   } catch (error) {
     console.warn('Fullscreen API error:', error);
@@ -262,7 +274,7 @@ watch(
   () => props.cover,
   async (newCover) => {
     isLoading.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 300));
+
     coverSubMenu.value = newCover;
     isLoading.value = false;
   },
@@ -286,13 +298,15 @@ watchEffect(() => {
 }
 
 :deep(.swiper-pagination-bullet) {
-  @apply w-28 h-2 bg-gray-400 rounded-full opacity-50; /* Semua bullet memiliki panjang 80px (w-20) */
-  margin: 0 4px !important; /* Memberi jarak antar bullet */
+  @apply w-28 h-2 bg-gray-400 rounded-full opacity-50;
+  margin: 0 4px !important;
+
   transition: all 0.3s ease;
 }
 
 :deep(.swiper-pagination-bullet-active) {
-  @apply bg-[#000080] opacity-100; /* Bullet aktif memiliki warna berbeda */
+  @apply bg-[#000080] opacity-100;
+ 
 }
 
 .card {

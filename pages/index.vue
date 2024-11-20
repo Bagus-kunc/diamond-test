@@ -50,6 +50,8 @@ const isLoading = ref(false);
 const error = ref('');
 const router = useRouter();
 
+const TOKEN = useCookie('TOKEN');
+
 const isValidPin = computed(() => valuePin.value.length === 4);
 
 definePageMeta({
@@ -64,7 +66,6 @@ defineComponent({
 
 const goToHomepage = async () => {
   if (document.referrer.includes('/dashboard')) {
-    // Tunggu hingga Vue selesai melakukan render
     await nextTick();
     window.location.reload();
   } else {
@@ -87,9 +88,8 @@ const handlePin = async () => {
     });
 
     if (response.status) {
-      // Generate a unique token on successful login
       const uniqueToken = generateUniqueToken();
-      localStorage.setItem('auth_token', uniqueToken);
+      TOKEN.value = uniqueToken;
 
       // Navigate to the homepage/dashboard
       goToHomepage();
