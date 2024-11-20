@@ -2,7 +2,7 @@
   <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
     <!-- Header Section -->
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
-      <div class="flex pb-2">
+      <div class="flex">
         <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
       </div>
       <!-- <h1>Menu</h1> -->
@@ -13,14 +13,15 @@
 
       <Listbox
         v-if="accordionItems.length > 0"
-        class="menu w-full border-none rounded-none custom-listbox"
+        class="menu w-full border-none rounded-none custom-listbox pt-2"
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
         v-model="state.selectedBox"
+        @click="menuClick(state.selectedBox)"
       >
-      <template #header >
-        <h1 class="px-2 text-black">Menu</h1>
+      <template #header>
+        <h1 class="px-5">Menu</h1>
       </template>
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
@@ -130,10 +131,6 @@ const handleArrowClick = (option) => {
   state.value.submenuVisible = true;
   state.value.selectedSubMenu = option;
 
-
-  // console.log('box',state.value.selectedBox)
-  // console.log('option',option)
-
   const itemElement = event.target.closest('.menu-item');
   if (itemElement) {
     const rect = itemElement.getBoundingClientRect();
@@ -174,6 +171,7 @@ const handleItemClick = (item) => {
 };
 
 const menuClick = (item) => {
+  emit('item-selected', sideData.value, item.cover);
   if (!item.clicked) {
     item.clicked = true;
   } else {
@@ -215,6 +213,47 @@ onMounted(() => {
 .menu {
   color: #687489 !important;
   overflow: hidden;
+}
+
+/* Listbox Scroll */
+.menu .p-listbox-list {
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cdd5e0 transparent;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar-thumb {
+  background-color: #cdd5e0;
+  border-radius: 10px;
+}
+
+.menu .p-listbox-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Override default Listbox styles */
+.custom-listbox {
+  max-height: calc(100vh - 20vh);
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.custom-listbox::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-listbox::-webkit-scrollbar-thumb {
+  background-color: #cdd5e0;
+  border-radius: 10px;
+}
+
+.custom-listbox::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* Custom menu item styles */
