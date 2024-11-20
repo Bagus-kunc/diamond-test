@@ -17,12 +17,12 @@
       />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="loading && !isFirstClick" class="spinner-overlay"></div>
+        <div v-if="loading" class="spinner-overlay"></div>
         <div v-if="isFirstClick && loading" class="spinner-overlay">
           <ProgressSpinner />
         </div>
 
-        <div v-if="notFound" class="not-found"></div>
+        <div v-if="notFound" class="not-found">Not Found</div>
 
         <CustomCarousel :data="selectedData" :cover="coverItem" @image-loaded="hideSpinner" class="flex-1" />
       </div>
@@ -71,7 +71,7 @@ const handleSidebarSelection = (item, cover) => {
 
 const handleFirstClick = (click) => {
   isFirstClick.value = click;
-  console.log('click menu', click);
+  // console.log('click menu', click);
 };
 
 const handleNotFound = (status) => {
@@ -83,7 +83,7 @@ const hideSpinner = () => {
 };
 
 watchEffect(() => {
-  console.log(selectedHeader.value);
+  // console.log(selectedHeader.value);
   if (selectedHeader.value === 0) {
     notFound.value = true;
   }
@@ -144,6 +144,8 @@ watchEffect(() => {
   height: 100%;
   display: flex;
   align-items: center;
+  font-size: 3rem;
+  color: #687489;
   justify-content: center;
   background: url('/images/contents/background.jpg');
   background-position: center;
