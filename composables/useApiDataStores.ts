@@ -26,7 +26,7 @@ export const useApiDataStore = defineStore('apiData', {
         this.data = res;
       } catch (err: unknown) {
         if (err instanceof Error) {
-          this.error = err;
+          console.log('ada error', err.message);
         } else {
           this.error = new Error('Unknown error occurred');
         }

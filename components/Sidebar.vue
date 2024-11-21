@@ -1,7 +1,7 @@
 <template>
   <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
     <!-- Header Section -->
-    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
+    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 pb-2">
       <div class="flex">
         <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
       </div>
@@ -9,22 +9,19 @@
     </div>
 
     <!-- Listbox Section -->
-    <div class="flex-1 overflow-y-auto" style="max-height:calc(100vh - 20vh)">
-
+    <div class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 20vh)">
+      <h1 class="px-5 unselectable">Menu</h1>
       <Listbox
         v-if="accordionItems.length > 0"
-        class="menu w-full border-none rounded-none custom-listbox pt-2"
+        v-model="state.selectedBox"
+        class="menu w-full border-none rounded-none custom-listbox"
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
-        v-model="state.selectedBox"
         @click="menuClick(state.selectedBox)"
       >
-      <template #header>
-        <h1 class="px-5">Menu</h1>
-      </template>
         <template #option="{ option }">
-          <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
+          <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" >
           <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
             class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
@@ -37,8 +34,8 @@
               src="~/assets/icons/double-arrow-blue.svg"
               alt="double arrow icon"
               @click.stop="handleArrowClick(option)"
-            />
-            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" />
+            >
+            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" >
           </div>
         </template>
       </Listbox>
@@ -66,11 +63,15 @@
           </div>
         </transition>
       </Teleport>
+
+      <ButtonUpdate>Update</ButtonUpdate>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useApiDataStore } from '@/composables/useApiDataStores';
+
 const props = defineProps({
   data: { type: Array, required: true, default: () => {} },
   firstData: { type: Object, default: () => ({}) },
@@ -99,7 +100,9 @@ const accordionItems = computed(() =>
     })),
   })),
 );
+
 const sideData = ref([]);
+const apiDataStore = useApiDataStore()
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
 const coverItem = computed(() => state.value.currentCover);
@@ -180,6 +183,7 @@ const menuClick = (item) => {
   emit('first-click', item.clicked);
 };
 
+
 // Lifecycle hooks
 onMounted(() => {
   state.value.loading = true;
@@ -213,47 +217,6 @@ onMounted(() => {
 .menu {
   color: #687489 !important;
   overflow: hidden;
-}
-
-/* Listbox Scroll */
-.menu .p-listbox-list {
-  max-height: calc(100% - 20px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #cdd5e0 transparent;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar-thumb {
-  background-color: #cdd5e0;
-  border-radius: 10px;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Override default Listbox styles */
-.custom-listbox {
-  max-height: calc(100vh - 20vh);
-  overflow-y: scroll;
-  scrollbar-width: none;
-}
-
-.custom-listbox::-webkit-scrollbar {
-  display: none;
-}
-
-.custom-listbox::-webkit-scrollbar-thumb {
-  background-color: #cdd5e0;
-  border-radius: 10px;
-}
-
-.custom-listbox::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 /* Custom menu item styles */
@@ -310,6 +273,9 @@ onMounted(() => {
   justify-content: center;
   background-color: white;
   z-index: 999;
+}
+
+.btn-update {
 }
 
 /* Fade transition */

@@ -9,11 +9,11 @@
     <div class="flex flex-1">
       <Sidebar
         :data="sidebarData"
+        class="sidebar"
         :firstData="sidebarFirstData"
         @item-selected="handleSidebarSelection"
         @not-found="handleNotFound"
         @first-click="handleFirstClick"
-        class="sidebar"
       />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
@@ -24,7 +24,7 @@
 
         <div v-if="notFound" class="not-found">Not Found</div>
 
-        <CustomCarousel :data="selectedData" :cover="coverItem" @image-loaded="hideSpinner" class="flex-1" />
+        <CustomCarousel :data="selectedData" :cover="coverItem" class="flex-1" @image-loaded="hideSpinner" />
       </div>
     </div>
   </div>
