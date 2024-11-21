@@ -9,8 +9,7 @@
     </div>
 
     <!-- Listbox Section -->
-    <div class="flex-1 overflow-y-auto" style="max-height:calc(100vh - 20vh)">
-
+    <div class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 20vh)">
       <Listbox
         v-if="accordionItems.length > 0"
         class="menu w-full border-none rounded-none custom-listbox pt-2"
@@ -20,9 +19,9 @@
         v-model="state.selectedBox"
         @click="menuClick(state.selectedBox)"
       >
-      <template #header>
-        <h1 class="px-5">Menu</h1>
-      </template>
+        <template #header>
+          <h1 class="px-5">Menu</h1>
+        </template>
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
@@ -36,9 +35,10 @@
               v-if="isOptionSelected(option)"
               src="~/assets/icons/double-arrow-blue.svg"
               alt="double arrow icon"
-              @click.stop="handleArrowClick(option)"
+              width="18"
+              @click.stop="(event) => handleArrowClick(event, option)"
             />
-            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" />
+            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
           </div>
         </template>
       </Listbox>
@@ -62,7 +62,22 @@
               class="w-full sublist"
               listStyle="max-height:550px"
               @change="handleItemClick(state.selectedSubItem)"
-            />
+            >
+              <template #option="{ option }">
+                <div class="w-full flex justify-between">
+                  <span>
+                    {{ option.title }}
+                  </span>
+                  <div class="flex-none ml-2 w-6">
+                    <ProgressSpinner
+                      v-if="option.loading"
+                      style="width: 24px; height: 24px"
+                      pt:circle:class="!text-gray-300"
+                    />
+                  </div>
+                </div>
+              </template>
+            </Listbox>
           </div>
         </transition>
       </Teleport>
@@ -102,9 +117,6 @@ const accordionItems = computed(() =>
 const sideData = ref([]);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
-const coverItem = computed(() => state.value.currentCover);
-const loading = computed(() => state.value.loading);
-const notFound = ref(false);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
@@ -127,9 +139,14 @@ const handleMainClick = (option) => {
   }
 };
 
-const handleArrowClick = (option) => {
+const handleArrowClick = async (event, option) => {
   state.value.submenuVisible = true;
-  state.value.selectedSubMenu = option;
+  state.value.selectedSubMenu = {
+    ...option,
+    data: await Promise.all(
+      option.data.map(async (subMenu) => ({ ...subMenu, loading: await checkImageOnCache(subMenu.data) })),
+    ),
+  };
 
   const itemElement = event.target.closest('.menu-item');
   if (itemElement) {
@@ -179,6 +196,101 @@ const menuClick = (item) => {
   }
   emit('first-click', item.clicked);
 };
+
+const selectedSubMenu = computed(async () => {
+  return {
+    ...state.value.selectedSubMenu,
+    data: await Promise.all(
+      state.value.selectedSubMenu.data.map(async (subMenu) => ({
+        ...subMenu,
+        loading: await checkImageOnCache(subMenu.data),
+      })),
+    ),
+  };
+});
+
+const checkImageOnCache = async (data) => {
+  console.log(data);
+  if (data.length < 1) {
+    return false;
+  }
+
+  const urlsToCache = data
+    .map((i) => i.url)
+    .filter((i) => i.endsWith('.jpg') || i.endsWith('.png') || i.endsWith('.jpeg'));
+
+  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
+  try {
+    const cache = await caches.open(CACHE_NAME);
+
+    const cachedRequests = await cache.keys();
+
+    const cachedUrls = cachedRequests.map((request) => request.url);
+    const isCompletelyCached = urlsToCache.every((url) => cachedUrls.some((cachedUrl) => cachedUrl.includes(url)));
+
+    console.log(isCompletelyCached);
+    return !isCompletelyCached;
+  } catch (error) {
+    console.error('Error checking cache:', error);
+    return false;
+  }
+};
+
+const fetchAndCacheImage = async (url) => {
+  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
+
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(url);
+
+    if (cachedResponse) {
+      console.log('Image found in cache.');
+      return cachedResponse.url;
+    }
+
+    console.log('Fetching image from network...');
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    await cache.put(url, response.clone());
+    return response.url;
+  } catch (error) {
+    console.error('Error fetching or caching image:', error);
+    return null;
+  }
+};
+
+watch(
+  () => props.data,
+  async (newData) => {
+    console.log(newData);
+    await Promise.all(
+      newData.map(async (menu) => {
+        if (menu.cover) {
+          await fetchAndCacheImage(menu.cover);
+        }
+        await Promise.all(
+          menu.data.map(async (submenu) => {
+            await Promise.all(
+              submenu.data.map(async (item) => {
+                if (
+                  item.url &&
+                  (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
+                ) {
+                  console.log(item.url);
+                  await fetchAndCacheImage(item.url);
+                }
+              }),
+            );
+          }),
+        );
+      }),
+    );
+  },
+);
 
 // Lifecycle hooks
 onMounted(() => {

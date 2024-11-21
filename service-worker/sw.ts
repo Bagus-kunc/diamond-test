@@ -1,14 +1,14 @@
 /// <reference lib="WebWorker" />
 /// <reference types="vite/client" />
 import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
-import { clientsClaim, cacheNames } from 'workbox-core';
+import { clientsClaim } from 'workbox-core';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 // Declare self for TypeScript
 declare let self: ServiceWorkerGlobalScope;
 
 // Define custom cache name and assets
-const CACHE_NAME = cacheNames.runtime;
+const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
 const ASSETS_TO_CACHE = [
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',
   'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
@@ -49,9 +49,9 @@ self.addEventListener('message', async (event) => {
 // Custom cache clearing for old versions of the manual cache
 // self.addEventListener('activate', (event) => {
 //   event.waitUntil(
-//     caches.keys().then((cacheNames) => {
+//     caches.keys().then) => {
 //       return Promise.all(
-//         cacheNames.map((cacheName) => {
+//       .map((cacheName) => {
 //           if (cacheName !== CACHE_NAME) {
 //             console.log('Deleting old cache:', cacheName);
 //             return caches.delete(cacheName);
