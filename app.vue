@@ -13,8 +13,7 @@ import { useApiDataStore } from '@/composables/useApiDataStores';
 
 const apiDataStore = useApiDataStore();
 
-onMounted(()=>{
-
-  apiDataStore.fetchData()
-})
+onMounted(() => {
+  apiDataStore.fetchData();
+});
 </script>

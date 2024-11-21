@@ -54,7 +54,7 @@
               />
             </div>
 
-           
+
           </SwiperSlide>
 
           <!-- Content Slides -->
@@ -133,17 +133,25 @@ import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useMenuStore } from '@/composables/menuStore';
+
+const menuStore = useMenuStore();
 
 const props = defineProps({
   data: {
     type: Array,
     required: true,
+    // eslint-disable-next-line vue/require-valid-default-prop
     default: [],
   },
   cover: {
     type: String,
     default: '',
   },
+  selectedHeader: {
+    type: Number,
+    default: 1
+  }
 });
 
 const emit = defineEmits(['image-loaded']);
@@ -234,7 +242,6 @@ const onSlideChange = () => {
     }
   });
 
-  // emit('slide-change', currentIndex);
 };
 
 const toggleFullscreen = async () => {
@@ -269,12 +276,18 @@ onMounted(() => {
   });
 });
 
+watch(
+  () => menuStore.selected,
+  () => {
+    coverSubMenu.value = '/images/contents/background.jpg'
+  }
+);
+
 // Watchers
 watch(
   () => props.cover,
   async (newCover) => {
     isLoading.value = true;
-
     coverSubMenu.value = newCover;
     isLoading.value = false;
   },
@@ -282,6 +295,9 @@ watch(
 
 watchEffect(() => {
   products.value = props.data || [];
+  if (props.selectedHeader !== props.selectedHeader) {
+    coverSubMenu.value = '/images/contents/background.jpg'
+  }
 });
 </script>
 
@@ -306,7 +322,7 @@ watchEffect(() => {
 
 :deep(.swiper-pagination-bullet-active) {
   @apply bg-[#000080] opacity-100;
- 
+
 }
 
 .card {

@@ -22,11 +22,16 @@
 
 <script setup>
 import { useApiDataStore } from '@/composables/useApiDataStores';
+import { useMenuStore } from '@/composables/menuStore';
+
+const menuStore = useMenuStore();
 
 const apiDataStore = useApiDataStore();
 const { data } = storeToRefs(apiDataStore);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
+  // eslint-disable-next-line vue/require-default-prop
   selected: Number,
 });
 const emit = defineEmits(['update:selected']);
@@ -35,6 +40,8 @@ const handleItem = (dataMenu, id) => {
   if (dataMenu.length === 0) {
     console.log('data', dataMenu.length);
   }
+
+  menuStore.setSelected(id);
   emit('update:selected', id);
 };
 

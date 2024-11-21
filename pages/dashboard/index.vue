@@ -17,14 +17,14 @@
       />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="loading" class="spinner-overlay"></div>
+        <div v-if="loading" class="spinner-overlay"/>
         <div v-if="isFirstClick && loading" class="spinner-overlay">
           <ProgressSpinner />
         </div>
 
         <div v-if="notFound" class="not-found">Not Found</div>
 
-        <CustomCarousel :data="selectedData" :cover="coverItem" class="flex-1" @image-loaded="hideSpinner" />
+        <CustomCarousel :data="selectedData" :cover="coverItem" :selectedCategory="selectedHeader" class="flex-1" @image-loaded="hideSpinner" />
       </div>
     </div>
   </div>

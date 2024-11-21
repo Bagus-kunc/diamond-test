@@ -1,16 +1,12 @@
 <template>
-  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
+  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10">
     <!-- Header Section -->
-    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 pb-2">
-      <div class="flex">
-        <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
-      </div>
-      <!-- <h1>Menu</h1> -->
+    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
+      <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
     </div>
 
-    <!-- Listbox Section -->
-    <div class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 20vh)">
-      <h1 class="px-5 unselectable">Menu</h1>
+    <div class="overflow-y-auto" style="max-height: calc(100vh - 20vh)">
+      <h1 class="px-7 unselectable">Menu</h1>
       <Listbox
         v-if="accordionItems.length > 0"
         v-model="state.selectedBox"
@@ -21,7 +17,7 @@
         @click="menuClick(state.selectedBox)"
       >
         <template #option="{ option }">
-          <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" >
+          <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
             class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
@@ -34,8 +30,13 @@
               src="~/assets/icons/double-arrow-blue.svg"
               alt="double arrow icon"
               @click.stop="handleArrowClick(option)"
-            >
-            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" >
+            />
+            <img
+              v-else
+              src="~/assets/icons/double-arrow-gray.svg"
+              alt="double arrow icon"
+              @click.stop="handleArrowClick(option)"
+            />
           </div>
         </template>
       </Listbox>
@@ -64,14 +65,12 @@
         </transition>
       </Teleport>
 
-      <ButtonUpdate>Update</ButtonUpdate>
+      <ButtonUpdate label="Update" className="hover:!bg-green-600" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { useApiDataStore } from '@/composables/useApiDataStores';
-
 const props = defineProps({
   data: { type: Array, required: true, default: () => {} },
   firstData: { type: Object, default: () => ({}) },
@@ -102,12 +101,8 @@ const accordionItems = computed(() =>
 );
 
 const sideData = ref([]);
-const apiDataStore = useApiDataStore()
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
-const coverItem = computed(() => state.value.currentCover);
-const loading = computed(() => state.value.loading);
-const notFound = ref(false);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
@@ -130,10 +125,16 @@ const handleMainClick = (option) => {
   }
 };
 
+const handleClick = (show) => {
+  console.log(show);
+};
+
 const handleArrowClick = (option) => {
+  state.value.activeOption = option;
   state.value.submenuVisible = true;
   state.value.selectedSubMenu = option;
 
+  // Posisi submenu
   const itemElement = event.target.closest('.menu-item');
   if (itemElement) {
     const rect = itemElement.getBoundingClientRect();
@@ -180,9 +181,9 @@ const menuClick = (item) => {
   } else {
     item.clicked = false;
   }
+
   emit('first-click', item.clicked);
 };
-
 
 // Lifecycle hooks
 onMounted(() => {
@@ -221,8 +222,8 @@ onMounted(() => {
 
 /* Custom menu item styles */
 .menu-item {
-  padding: 1rem 0.4rem;
-  transition: background-color 0.2s ease;
+  padding: 1rem 0.8rem;
+  /* transition: background-color 0.2s ease; */
 }
 
 .menu-item-selected {
@@ -246,7 +247,7 @@ onMounted(() => {
 .bg-img {
   position: absolute;
   top: -5px;
-  left: 0;
+  left: 50px;
   transform: scaleX(-1);
   transform: origin;
   background-position: left bottom;
