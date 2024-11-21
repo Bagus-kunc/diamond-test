@@ -197,20 +197,7 @@ const menuClick = (item) => {
   emit('first-click', item.clicked);
 };
 
-const selectedSubMenu = computed(async () => {
-  return {
-    ...state.value.selectedSubMenu,
-    data: await Promise.all(
-      state.value.selectedSubMenu.data.map(async (subMenu) => ({
-        ...subMenu,
-        loading: await checkImageOnCache(subMenu.data),
-      })),
-    ),
-  };
-});
-
 const checkImageOnCache = async (data) => {
-  console.log(data);
   if (data.length < 1) {
     return false;
   }
@@ -228,7 +215,6 @@ const checkImageOnCache = async (data) => {
     const cachedUrls = cachedRequests.map((request) => request.url);
     const isCompletelyCached = urlsToCache.every((url) => cachedUrls.some((cachedUrl) => cachedUrl.includes(url)));
 
-    console.log(isCompletelyCached);
     return !isCompletelyCached;
   } catch (error) {
     console.error('Error checking cache:', error);
@@ -266,7 +252,6 @@ const fetchAndCacheImage = async (url) => {
 watch(
   () => props.data,
   async (newData) => {
-    console.log(newData);
     await Promise.all(
       newData.map(async (menu) => {
         if (menu.cover) {
@@ -280,7 +265,6 @@ watch(
                   item.url &&
                   (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
                 ) {
-                  console.log(item.url);
                   await fetchAndCacheImage(item.url);
                 }
               }),
@@ -291,6 +275,39 @@ watch(
     );
   },
 );
+
+const setSelectedSubMenu = async () => {
+  state.value.selectedSubMenu = {
+    ...state.value.selectedSubMenu,
+    data: await Promise.all(
+      state.value.selectedSubMenu.data.map(async (subMenu) => ({
+        ...subMenu,
+        loading: await checkImageOnCache(subMenu.data),
+      })),
+    ),
+  };
+};
+
+const checkLoadedSelectedSubMenu = () => {
+  return state.value.selectedSubMenu.data.every((subMenu) => !subMenu.loading);
+};
+
+let intervals;
+watchEffect(async () => {
+  if (isVisible.value) {
+    intervals = setInterval(() => {
+      setSelectedSubMenu();
+
+      if (checkLoadedSelectedSubMenu()) {
+        clearInterval(intervals);
+      }
+    }, 1000);
+  }
+
+  if (!isVisible.value) {
+    clearInterval(intervals);
+  }
+});
 
 // Lifecycle hooks
 onMounted(() => {
