@@ -26,6 +26,10 @@ const Progress = () => {
   toast.add({ severity: 'info', summary: 'Updating...', detail: 'Cache update in progress', life: 3000 });
 };
 
+const Error = () => {
+  toast.add({ severity: 'error', summary: 'Error', detail: 'Cache update failed', life: 3000 });
+};
+
 const props = defineProps({
   label: {
     type: String,
@@ -37,6 +41,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['click']);
+
 const isLoading = ref(false);
 
 const updateCache = () => {
@@ -45,11 +51,17 @@ const updateCache = () => {
   Progress();
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.active?.postMessage({
-        action: 'update-cache',
+    navigator.serviceWorker.ready
+      .then((registration) => {
+        registration.active?.postMessage({
+          action: 'update-cache',
+        });
+      })
+      .catch((error) => {
+        console.error('Service Worker error:', error);
+        Error();
+        isLoading.value = false;
       });
-    });
   }
 
   emit('click', true);
