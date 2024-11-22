@@ -195,6 +195,7 @@ const handleItemClick = (item) => {
 };
 
 const menuClick = (item) => {
+  if (!item) return;
   emit('item-selected', sideData.value, item.cover);
   if (!item.clicked) {
     item.clicked = true;
