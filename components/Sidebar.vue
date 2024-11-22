@@ -32,13 +32,6 @@
           >
             <div class="flex justify-between">{{ option.title }}</div>
             <div class="flex gap-2 flex-none items-center">
-              <div class="flex-none w-6 pt-1">
-                <ProgressSpinner
-                  v-if="option.loading"
-                  style="width: 24px; height: 24px"
-                  pt:circle:class="!text-gray-300"
-                />
-              </div>
               <img
                 v-if="isOptionSelected(option)"
                 src="~/assets/icons/double-arrow-blue.svg"
@@ -82,6 +75,7 @@
                       v-if="option.loading"
                       style="width: 24px; height: 24px"
                       pt:circle:class="!text-gray-300"
+                      strokeWidth="3"
                     />
                   </div>
                 </div>
@@ -101,6 +95,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['item-selected', 'not-found', 'first-click']);
+
+const toast = useToast();
 
 // State management
 const state = ref({
@@ -255,19 +251,29 @@ const fetchAndCacheImage = async (url) => {
   }
 };
 
-const loadDataImage = async (data) => {
+const loadDataImage = async () => {
+  const apiDataStore = useApiDataStore();
+  const { data } = storeToRefs(apiDataStore);
+
   await Promise.all(
-    data.map(async (menu) => {
-      if (menu.cover) {
-        await fetchAndCacheImage(menu.cover);
-      }
+    data.value.categories.map(async (category) => {
       await Promise.all(
-        menu.data.map(async (submenu) => {
+        category.data.map(async (menu) => {
+          if (menu.cover) {
+            await fetchAndCacheImage(menu.cover);
+          }
           await Promise.all(
-            submenu.data.map(async (item) => {
-              if (item.url && (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))) {
-                await fetchAndCacheImage(item.url);
-              }
+            menu.data.map(async (submenu) => {
+              await Promise.all(
+                submenu.data.map(async (item) => {
+                  if (
+                    item.url &&
+                    (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
+                  ) {
+                    await fetchAndCacheImage(item.url);
+                  }
+                }),
+              );
             }),
           );
         }),
@@ -315,7 +321,6 @@ watch(
   async (newData) => {
     clearInterval(intervalCheckMenu);
 
-    loadDataImage(newData);
     setAccordionItems(newData);
 
     intervalCheckMenu = setInterval(() => {
@@ -349,6 +354,39 @@ const checkLoadedSelectedSubMenu = () => {
   return state.value.selectedSubMenu.data.every((subMenu) => !subMenu.loading);
 };
 
+let intervalCheckAllImages;
+const checkAllImageLoaded = async () => {
+  const apiDataStore = useApiDataStore();
+  const { data } = storeToRefs(apiDataStore);
+
+  const images = [];
+
+  data.value.categories.map((category) => {
+    category.data.map((menu) => {
+      if (menu.cover) {
+        images.push(menu.cover);
+      }
+      menu.data.map((submenu) => {
+        submenu.data.map((item) => {
+          if (item.url) {
+            images.push(item.url);
+          }
+        });
+      });
+    });
+  });
+
+  intervalCheckAllImages = setInterval(async () => {
+    const response = await checkImageOnCache(images);
+
+    if (!response) {
+      clearInterval(intervalCheckAllImages);
+      console.log('All images are loaded');
+      toast.add({ severity: 'info', summary: 'Info', detail: 'All images are loaded', life: 5000 });
+    }
+  }, 1000);
+};
+
 let intervalCheckSubMenu;
 watchEffect(async () => {
   if (isVisible.value) {
@@ -368,6 +406,8 @@ watchEffect(async () => {
 
 // Lifecycle hooks
 onMounted(() => {
+  loadDataImage();
+  checkAllImageLoaded();
   state.value.loading = true;
   setTimeout(() => {
     if (props.firstData?.cover) {
@@ -385,6 +425,8 @@ const unwatch = watchEffect(() => {});
 onUnmounted(() => {
   unwatch();
   clearInterval(intervalCheckSubMenu);
+  clearInterval(intervalCheckMenu);
+  clearInterval(intervalCheckAllImages);
   state.value.selectedSubMenu = [];
   accordionItems.value = [];
 });
