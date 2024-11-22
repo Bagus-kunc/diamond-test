@@ -34,7 +34,7 @@
           <!-- Empty State -->
           <SwiperSlide v-if="!products.length" class="relative !w-[100%]">
             <div class="relative w-full h-full max-h-full">
-              <nuxt-img
+              <img
                 v-if="coverSubMenu"
                 :src="coverSubMenu"
                 alt="Cover Image"
@@ -53,8 +53,6 @@
                 @click="toggleFullscreen"
               />
             </div>
-
-
           </SwiperSlide>
 
           <!-- Content Slides -->
@@ -84,9 +82,8 @@
               v-else-if="isVideoType(product)"
               class="relative w-full h-full max-h-full flex items-center justify-center"
             >
-
               <img
-              v-if="isVideoType(product)"
+                v-if="isVideoType(product)"
                 src="~/assets/images/bg-diamond.jpg"
                 format="webp"
                 layout="fill"
@@ -101,7 +98,7 @@
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
-                  <!-- allowfullscreen -->
+                <!-- allowfullscreen -->
               </div>
 
               <!-- Fullscreen Button -->
@@ -150,8 +147,8 @@ const props = defineProps({
   },
   selectedHeader: {
     type: Number,
-    default: 1
-  }
+    default: 1,
+  },
 });
 
 const emit = defineEmits(['image-loaded']);
@@ -241,7 +238,6 @@ const onSlideChange = () => {
       iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     }
   });
-
 };
 
 const toggleFullscreen = async () => {
@@ -276,13 +272,6 @@ onMounted(() => {
   });
 });
 
-watch(
-  () => menuStore.selected,
-  () => {
-    coverSubMenu.value = '/images/contents/background.jpg'
-  }
-);
-
 // Watchers
 watch(
   () => props.cover,
@@ -294,9 +283,15 @@ watch(
 );
 
 watchEffect(() => {
+  if (menuStore.selected) {
+    coverSubMenu.value = '/images/contents/background.jpg';
+  }
+});
+
+watchEffect(() => {
   products.value = props.data || [];
   if (props.selectedHeader !== props.selectedHeader) {
-    coverSubMenu.value = '/images/contents/background.jpg'
+    coverSubMenu.value = '/images/contents/background.jpg';
   }
 });
 </script>
@@ -304,7 +299,7 @@ watchEffect(() => {
 <style scoped>
 .swiper-pagination-container {
   position: absolute;
-  top:25px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -322,7 +317,6 @@ watchEffect(() => {
 
 :deep(.swiper-pagination-bullet-active) {
   @apply bg-[#000080] opacity-100;
-
 }
 
 .card {
