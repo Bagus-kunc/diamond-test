@@ -9,8 +9,7 @@
     </div>
 
     <!-- Listbox Section -->
-    <div class="flex-1 overflow-y-auto" style="max-height:calc(100vh - 20vh)">
-
+    <div class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 20vh)">
       <Listbox
         v-if="accordionItems.length > 0"
         class="menu w-full border-none rounded-none custom-listbox pt-2"
@@ -20,9 +19,9 @@
         v-model="state.selectedBox"
         @click="menuClick(state.selectedBox)"
       >
-      <template #header>
-        <h1 class="px-5">Menu</h1>
-      </template>
+        <template #header>
+          <h1 class="px-5">Menu</h1>
+        </template>
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
@@ -32,13 +31,16 @@
             @click="handleMainClick(option)"
           >
             <div class="flex justify-between">{{ option.title }}</div>
-            <img
-              v-if="isOptionSelected(option)"
-              src="~/assets/icons/double-arrow-blue.svg"
-              alt="double arrow icon"
-              @click.stop="handleArrowClick(option)"
-            />
-            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" />
+            <div class="flex gap-2 flex-none items-center">
+              <img
+                v-if="isOptionSelected(option)"
+                src="~/assets/icons/double-arrow-blue.svg"
+                alt="double arrow icon"
+                width="18"
+                @click.stop="(event) => handleArrowClick(event, option)"
+              />
+              <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
+            </div>
           </div>
         </template>
       </Listbox>
@@ -62,7 +64,23 @@
               class="w-full sublist"
               listStyle="max-height:550px"
               @change="handleItemClick(state.selectedSubItem)"
-            />
+            >
+              <template #option="{ option }">
+                <div class="w-full flex justify-between">
+                  <span>
+                    {{ option.title }}
+                  </span>
+                  <div class="flex-none ml-2 w-6">
+                    <ProgressSpinner
+                      v-if="option.loading"
+                      style="width: 24px; height: 24px"
+                      pt:circle:class="!text-gray-300"
+                      strokeWidth="3"
+                    />
+                  </div>
+                </div>
+              </template>
+            </Listbox>
           </div>
         </transition>
       </Teleport>
@@ -78,6 +96,8 @@ const props = defineProps({
 
 const emit = defineEmits(['item-selected', 'not-found', 'first-click']);
 
+const toast = useToast();
+
 // State management
 const state = ref({
   selectedBox: null,
@@ -89,22 +109,10 @@ const state = ref({
   loading: false,
 });
 
-const accordionItems = computed(() =>
-  (props.data || []).map((item) => ({
-    ...item,
-    clicked: false,
-    data: (item.data || []).map((subItem) => ({
-      ...subItem,
-      clicked: false,
-    })),
-  })),
-);
+const accordionItems = ref([]);
 const sideData = ref([]);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
-const coverItem = computed(() => state.value.currentCover);
-const loading = computed(() => state.value.loading);
-const notFound = ref(false);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
@@ -127,9 +135,21 @@ const handleMainClick = (option) => {
   }
 };
 
-const handleArrowClick = (option) => {
+const handleArrowClick = async (event, option) => {
   state.value.submenuVisible = true;
-  state.value.selectedSubMenu = option;
+  state.value.selectedSubMenu = {
+    ...option,
+    data: await Promise.all(
+      option.data.map(async (subMenu) => {
+        const images = subMenu.data.map((item) => item.url).filter((item) => item);
+
+        return {
+          ...subMenu,
+          loading: await checkImageOnCache(images),
+        };
+      }),
+    ),
+  };
 
   const itemElement = event.target.closest('.menu-item');
   if (itemElement) {
@@ -171,6 +191,7 @@ const handleItemClick = (item) => {
 };
 
 const menuClick = (item) => {
+  if (!item) return;
   emit('item-selected', sideData.value, item.cover);
   if (!item.clicked) {
     item.clicked = true;
@@ -180,8 +201,213 @@ const menuClick = (item) => {
   emit('first-click', item.clicked);
 };
 
+const checkImageOnCache = async (data) => {
+  if (data.length < 1) {
+    return false;
+  }
+
+  const urlsToCache = data.filter((i) => i.endsWith('.jpg') || i.endsWith('.png') || i.endsWith('.jpeg'));
+
+  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
+  try {
+    const cache = await caches.open(CACHE_NAME);
+
+    const cachedRequests = await cache.keys();
+
+    const cachedUrls = cachedRequests.map((request) => request.url);
+    const isCompletelyCached = urlsToCache.every((url) => cachedUrls.some((cachedUrl) => cachedUrl.includes(url)));
+
+    return !isCompletelyCached;
+  } catch (error) {
+    console.error('Error checking cache:', error);
+    return false;
+  }
+};
+
+const fetchAndCacheImage = async (url) => {
+  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
+
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(url);
+
+    if (cachedResponse) {
+      console.log('Image found in cache.');
+      return cachedResponse.url;
+    }
+
+    console.log('Fetching image from network...');
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    await cache.put(url, response.clone());
+    return response.url;
+  } catch (error) {
+    console.error('Error fetching or caching image:', error);
+    return null;
+  }
+};
+
+const loadDataImage = async () => {
+  const apiDataStore = useApiDataStore();
+  const { data } = storeToRefs(apiDataStore);
+
+  await Promise.all(
+    data.value.categories.map(async (category) => {
+      await Promise.all(
+        category.data.map(async (menu) => {
+          if (menu.cover) {
+            await fetchAndCacheImage(menu.cover);
+          }
+          await Promise.all(
+            menu.data.map(async (submenu) => {
+              await Promise.all(
+                submenu.data.map(async (item) => {
+                  if (
+                    item.url &&
+                    (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
+                  ) {
+                    await fetchAndCacheImage(item.url);
+                  }
+                }),
+              );
+            }),
+          );
+        }),
+      );
+    }),
+  );
+};
+
+const checkLoadedMenu = () => {
+  return accordionItems.value.every((menu) => !menu.loading);
+};
+
+const setAccordionItems = async (data) => {
+  accordionItems.value = await Promise.all(
+    data.map(async (item) => {
+      const images = [];
+      if (item.cover) {
+        images.push(item.cover);
+      }
+
+      const subItems = item.data.map((subItem) => ({
+        ...subItem,
+        clicked: false,
+        data: subItem.data.map((i) => {
+          if (i.url) {
+            images.push(i.url);
+          }
+          return { ...i };
+        }),
+      }));
+
+      return {
+        ...item,
+        clicked: false,
+        loading: await checkImageOnCache(images),
+        data: subItems,
+      };
+    }),
+  );
+};
+
+let intervalCheckMenu;
+watch(
+  () => props.data,
+  async (newData) => {
+    clearInterval(intervalCheckMenu);
+
+    setAccordionItems(newData);
+
+    intervalCheckMenu = setInterval(() => {
+      setAccordionItems(newData);
+
+      if (checkLoadedMenu()) {
+        clearInterval(intervalCheckMenu);
+      }
+    }, 1000);
+  },
+  { immediate: true },
+);
+
+const setSelectedSubMenu = async () => {
+  state.value.selectedSubMenu = {
+    ...state.value.selectedSubMenu,
+    data: await Promise.all(
+      state.value.selectedSubMenu.data.map(async (subMenu) => {
+        const images = subMenu.data.map((item) => item.url).filter((item) => item);
+
+        return {
+          ...subMenu,
+          loading: await checkImageOnCache(images),
+        };
+      }),
+    ),
+  };
+};
+
+const checkLoadedSelectedSubMenu = () => {
+  return state.value.selectedSubMenu.data.every((subMenu) => !subMenu.loading);
+};
+
+let intervalCheckAllImages;
+const checkAllImageLoaded = async () => {
+  const apiDataStore = useApiDataStore();
+  const { data } = storeToRefs(apiDataStore);
+
+  const images = [];
+
+  data.value.categories.map((category) => {
+    category.data.map((menu) => {
+      if (menu.cover) {
+        images.push(menu.cover);
+      }
+      menu.data.map((submenu) => {
+        submenu.data.map((item) => {
+          if (item.url) {
+            images.push(item.url);
+          }
+        });
+      });
+    });
+  });
+
+  intervalCheckAllImages = setInterval(async () => {
+    const response = await checkImageOnCache(images);
+
+    if (!response) {
+      clearInterval(intervalCheckAllImages);
+      console.log('All images are loaded');
+      toast.add({ severity: 'info', summary: 'Info', detail: 'All images are loaded', life: 5000 });
+    }
+  }, 1000);
+};
+
+let intervalCheckSubMenu;
+watchEffect(async () => {
+  if (isVisible.value) {
+    intervalCheckSubMenu = setInterval(() => {
+      setSelectedSubMenu();
+
+      if (checkLoadedSelectedSubMenu()) {
+        clearInterval(intervalCheckSubMenu);
+      }
+    }, 1000);
+  }
+
+  if (!isVisible.value) {
+    clearInterval(intervalCheckSubMenu);
+  }
+});
+
 // Lifecycle hooks
 onMounted(() => {
+  loadDataImage();
+  checkAllImageLoaded();
   state.value.loading = true;
   setTimeout(() => {
     if (props.firstData?.cover) {
@@ -192,6 +418,17 @@ onMounted(() => {
     }
     state.value.loading = false;
   }, 1000);
+});
+
+const unwatch = watchEffect(() => {});
+
+onUnmounted(() => {
+  unwatch();
+  clearInterval(intervalCheckSubMenu);
+  clearInterval(intervalCheckMenu);
+  clearInterval(intervalCheckAllImages);
+  state.value.selectedSubMenu = [];
+  accordionItems.value = [];
 });
 </script>
 
