@@ -60,7 +60,7 @@ export default defineNuxtConfig({
   primevue: {
     autoImport: false,
     components: {
-      include: ['Button', 'Card', 'Carousel', 'Listbox'],
+      include: ['Button', 'Card', 'Carousel', 'Listbox', 'Toast'],
     },
     options: {
       theme: 'none',

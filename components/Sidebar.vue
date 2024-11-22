@@ -125,10 +125,6 @@ const handleMainClick = (option) => {
   }
 };
 
-const handleClick = (show) => {
-  console.log(show);
-};
-
 const handleArrowClick = (option) => {
   state.value.activeOption = option;
   state.value.submenuVisible = true;
