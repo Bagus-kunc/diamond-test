@@ -17,8 +17,8 @@
       />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="loading" class="spinner-overlay"/>
-        <div v-if="isFirstClick && loading" class="spinner-overlay">
+        <!-- <div v-if="loading" class="spinner-overlay"/> -->
+        <div v-if="loading" class="spinner-overlay">
           <ProgressSpinner />
         </div>
 

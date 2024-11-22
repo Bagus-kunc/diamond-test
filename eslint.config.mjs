@@ -6,5 +6,8 @@ export default withNuxt({
     'vue/multi-word-component-names': 0,
     '@typescript-eslint/no-this-alias': 'off',
     'vue/attribute-hyphenation': 'off',
+    "vue/html-self-closing": ["error", {
+      "img":"never"
+    }]
   },
 });

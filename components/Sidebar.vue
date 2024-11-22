@@ -14,7 +14,6 @@
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
-        @click="menuClick(state.selectedBox)"
       >
         <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
@@ -170,16 +169,20 @@ const handleItemClick = (item) => {
   state.value.loading = true;
 };
 
-const menuClick = (item) => {
-  emit('item-selected', sideData.value, item.cover);
-  if (!item.clicked) {
-    item.clicked = true;
-  } else {
-    item.clicked = false;
-  }
+watchEffect(() => {
+  if (state.value.selectedBox) {
+    const item = state.value.selectedBox
+    console.log(item)
+    emit('item-selected', sideData.value, item.cover);
+    if (!item.clicked) {
+      item.clicked = true;
+    } else {
+      item.clicked = false;
+    }
 
-  emit('first-click', item.clicked);
-};
+    emit('first-click', item.clicked);
+  }
+});
 
 // Lifecycle hooks
 onMounted(() => {

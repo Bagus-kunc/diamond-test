@@ -272,15 +272,13 @@ onMounted(() => {
   });
 });
 
-// Watchers
-watch(
-  () => props.cover,
-  async (newCover) => {
+watchEffect(() => {
+  if (props.cover ) {
     isLoading.value = true;
-    coverSubMenu.value = newCover;
+    coverSubMenu.value = props.cover;
     isLoading.value = false;
-  },
-);
+  }
+})
 
 watchEffect(() => {
   if (menuStore.selected) {
