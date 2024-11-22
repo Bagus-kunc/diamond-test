@@ -31,14 +31,23 @@
             @click="handleMainClick(option)"
           >
             <div class="flex justify-between">{{ option.title }}</div>
-            <img
-              v-if="isOptionSelected(option)"
-              src="~/assets/icons/double-arrow-blue.svg"
-              alt="double arrow icon"
-              width="18"
-              @click.stop="(event) => handleArrowClick(event, option)"
-            />
-            <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
+            <div class="flex gap-2 flex-none items-center">
+              <div class="flex-none w-6 pt-1">
+                <ProgressSpinner
+                  v-if="option.loading"
+                  style="width: 24px; height: 24px"
+                  pt:circle:class="!text-gray-300"
+                />
+              </div>
+              <img
+                v-if="isOptionSelected(option)"
+                src="~/assets/icons/double-arrow-blue.svg"
+                alt="double arrow icon"
+                width="18"
+                @click.stop="(event) => handleArrowClick(event, option)"
+              />
+              <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
+            </div>
           </div>
         </template>
       </Listbox>
@@ -104,16 +113,7 @@ const state = ref({
   loading: false,
 });
 
-const accordionItems = computed(() =>
-  (props.data || []).map((item) => ({
-    ...item,
-    clicked: false,
-    data: (item.data || []).map((subItem) => ({
-      ...subItem,
-      clicked: false,
-    })),
-  })),
-);
+const accordionItems = ref([]);
 const sideData = ref([]);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
@@ -144,7 +144,14 @@ const handleArrowClick = async (event, option) => {
   state.value.selectedSubMenu = {
     ...option,
     data: await Promise.all(
-      option.data.map(async (subMenu) => ({ ...subMenu, loading: await checkImageOnCache(subMenu.data) })),
+      option.data.map(async (subMenu) => {
+        const images = subMenu.data.map((item) => item.url).filter((item) => item);
+
+        return {
+          ...subMenu,
+          loading: await checkImageOnCache(images),
+        };
+      }),
     ),
   };
 
@@ -202,9 +209,7 @@ const checkImageOnCache = async (data) => {
     return false;
   }
 
-  const urlsToCache = data
-    .map((i) => i.url)
-    .filter((i) => i.endsWith('.jpg') || i.endsWith('.png') || i.endsWith('.jpeg'));
+  const urlsToCache = data.filter((i) => i.endsWith('.jpg') || i.endsWith('.png') || i.endsWith('.jpeg'));
 
   const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
   try {
@@ -249,41 +254,92 @@ const fetchAndCacheImage = async (url) => {
   }
 };
 
+const loadDataImage = async (data) => {
+  await Promise.all(
+    data.map(async (menu) => {
+      if (menu.cover) {
+        await fetchAndCacheImage(menu.cover);
+      }
+      await Promise.all(
+        menu.data.map(async (submenu) => {
+          await Promise.all(
+            submenu.data.map(async (item) => {
+              if (item.url && (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))) {
+                await fetchAndCacheImage(item.url);
+              }
+            }),
+          );
+        }),
+      );
+    }),
+  );
+};
+
+const checkLoadedMenu = () => {
+  return accordionItems.value.every((menu) => !menu.loading);
+};
+
+const setAccordionItems = async (data) => {
+  accordionItems.value = await Promise.all(
+    data.map(async (item) => {
+      const images = [];
+      if (item.cover) {
+        images.push(item.cover);
+      }
+
+      const subItems = item.data.map((subItem) => ({
+        ...subItem,
+        clicked: false,
+        data: subItem.data.map((i) => {
+          if (i.url) {
+            images.push(i.url);
+          }
+          return { ...i };
+        }),
+      }));
+
+      return {
+        ...item,
+        clicked: false,
+        loading: await checkImageOnCache(images),
+        data: subItems,
+      };
+    }),
+  );
+};
+
+let intervalCheckMenu;
 watch(
   () => props.data,
   async (newData) => {
-    await Promise.all(
-      newData.map(async (menu) => {
-        if (menu.cover) {
-          await fetchAndCacheImage(menu.cover);
-        }
-        await Promise.all(
-          menu.data.map(async (submenu) => {
-            await Promise.all(
-              submenu.data.map(async (item) => {
-                if (
-                  item.url &&
-                  (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
-                ) {
-                  await fetchAndCacheImage(item.url);
-                }
-              }),
-            );
-          }),
-        );
-      }),
-    );
+    clearInterval(intervalCheckMenu);
+
+    loadDataImage(newData);
+    setAccordionItems(newData);
+
+    intervalCheckMenu = setInterval(() => {
+      setAccordionItems(newData);
+
+      if (checkLoadedMenu()) {
+        clearInterval(intervalCheckMenu);
+      }
+    }, 1000);
   },
+  { immediate: true },
 );
 
 const setSelectedSubMenu = async () => {
   state.value.selectedSubMenu = {
     ...state.value.selectedSubMenu,
     data: await Promise.all(
-      state.value.selectedSubMenu.data.map(async (subMenu) => ({
-        ...subMenu,
-        loading: await checkImageOnCache(subMenu.data),
-      })),
+      state.value.selectedSubMenu.data.map(async (subMenu) => {
+        const images = subMenu.data.map((item) => item.url).filter((item) => item);
+
+        return {
+          ...subMenu,
+          loading: await checkImageOnCache(images),
+        };
+      }),
     ),
   };
 };
@@ -292,20 +348,20 @@ const checkLoadedSelectedSubMenu = () => {
   return state.value.selectedSubMenu.data.every((subMenu) => !subMenu.loading);
 };
 
-let intervals;
+let intervalCheckSubMenu;
 watchEffect(async () => {
   if (isVisible.value) {
-    intervals = setInterval(() => {
+    intervalCheckSubMenu = setInterval(() => {
       setSelectedSubMenu();
 
       if (checkLoadedSelectedSubMenu()) {
-        clearInterval(intervals);
+        clearInterval(intervalCheckSubMenu);
       }
     }, 1000);
   }
 
   if (!isVisible.value) {
-    clearInterval(intervals);
+    clearInterval(intervalCheckSubMenu);
   }
 });
 
@@ -321,6 +377,15 @@ onMounted(() => {
     }
     state.value.loading = false;
   }, 1000);
+});
+
+const unwatch = watchEffect(() => {});
+
+onUnmounted(() => {
+  unwatch();
+  clearInterval(intervalCheckSubMenu);
+  state.value.selectedSubMenu = [];
+  accordionItems.value = [];
 });
 </script>
 
