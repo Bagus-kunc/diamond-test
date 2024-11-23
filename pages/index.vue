@@ -79,14 +79,14 @@ const handlePin = async () => {
   error.value = '';
 
   try {
-    const response = await useFetchApi('POST', 'user_pin', {
+    const { data, status } = await useFetchApi('POST', 'user_pin', {
       body: { pin: parseInt(valuePin.value) },
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    if (response.status) {
+    if (status) {
       const TOKEN = useCookie('TOKEN', { maxAge: 7 * 24 * 60 * 60 * 1000 });
 
       const uniqueToken = generateUniqueToken();
@@ -97,7 +97,7 @@ const handlePin = async () => {
     }
   } catch (err) {
     console.log('Error: Unable to verify PIN', err);
-    error.value = err?._data.message || '';
+    // error.value = err?._data.message || '';
     valuePin.value = '';
   } finally {
     isLoading.value = false;

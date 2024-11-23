@@ -1,13 +1,14 @@
 /// <reference lib="WebWorker" />
 /// <reference types="vite/client" />
 import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
-import { clientsClaim, cacheNames } from 'workbox-core';
+import { clientsClaim } from 'workbox-core';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 declare let self: ServiceWorkerGlobalScope;
 
-const CACHE_NAME = cacheNames.runtime;
 const FALLBACK_IMAGE = '/images/contents/background.jpg';
+// Define custom cache name and assets
+const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
 const ASSETS_TO_CACHE = [
   FALLBACK_IMAGE,
   'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap',

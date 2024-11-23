@@ -7,7 +7,12 @@
       </div>
 
       <!-- Navigation Buttons -->
-      <button v-show="products.length > 1" class="px-3 bg-white" :disabled="!isInitialized" @click="handlePrev">
+      <button
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound"
+        class="px-3 bg-white"
+        :disabled="!isInitialized"
+        @click="handlePrev"
+      >
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
@@ -32,10 +37,12 @@
           @lazy-image-load="handleImageLoad"
         >
           <!-- Empty State -->
-          <SwiperSlide v-if="!products.length" class="relative !w-[100%]">
+          <SwiperSlide
+            v-if="(!products.length && coverSubMenu) || (menuStore.notFound && coverSubMenu)"
+            class="relative !w-[100%]"
+          >
             <div class="relative w-full h-full max-h-full">
-              <img
-                v-if="coverSubMenu"
+              <nuxt-img
                 :src="coverSubMenu"
                 alt="Cover Image"
                 format="webp"
@@ -46,7 +53,6 @@
                 @load="handleImageLoad"
               />
               <Icon
-                v-if="coverSubMenu"
                 class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
                 :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
                 size="35"
@@ -56,7 +62,12 @@
           </SwiperSlide>
 
           <!-- Content Slides -->
-          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !w-[100%]">
+          <SwiperSlide
+            v-else
+            v-for="(product, index) in products"
+            :key="`${product.id}-${index}`"
+            class="relative !w-[100%]"
+          >
             <!-- Image Content -->
             <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
               <nuxt-img
@@ -114,7 +125,12 @@
       </div>
 
       <!-- Next Button -->
-      <button v-show="products.length > 1" class="px-3 bg-white" :disabled="!isInitialized" @click="handleNext">
+      <button
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound"
+        class="px-3 bg-white"
+        :disabled="!isInitialized"
+        @click="handleNext"
+      >
         <Icon
           name="ic:baseline-arrow-circle-right"
           size="30"
@@ -130,28 +146,22 @@ import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { useMenuStore } from '@/composables/menuStore';
-
-const menuStore = useMenuStore();
+import { useMenuStore } from '~/composables/menuStore';
 
 const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-    // eslint-disable-next-line vue/require-valid-default-prop
-    default: [],
-  },
+  // data: {
+  //   type: Array,
+  //   required: true,
+  //   default: [],
+  // },
   cover: {
     type: String,
     default: '',
   },
-  selectedHeader: {
-    type: Number,
-    default: 1,
-  },
 });
 
 const emit = defineEmits(['image-loaded']);
+const menuStore = useMenuStore();
 
 // Refs
 const swiperRef = ref(null);
@@ -238,6 +248,8 @@ const onSlideChange = () => {
       iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     }
   });
+
+  // emit('slide-change', currentIndex);
 };
 
 const toggleFullscreen = async () => {
@@ -256,7 +268,9 @@ const toggleFullscreen = async () => {
 
 const handleImageLoad = () => {
   isLoading.value = false;
-  emit('image-loaded');
+  setTimeout(() => {
+    menuStore.setLoading(false);
+  }, 500);
 };
 
 // Lifecycle
@@ -273,25 +287,17 @@ onMounted(() => {
 });
 
 watchEffect(() => {
-  if (props.cover ) {
-    isLoading.value = true;
+  // if (menuStore.notFound) {
+  //   menuStore.setCover('/images/contents/background.jpg');
+  // } else {
+  products.value = menuStore.dataSideMenu || [];
+  if (props.cover !== coverSubMenu.value) {
     coverSubMenu.value = props.cover;
-    isLoading.value = false;
   }
-})
-
-watchEffect(() => {
-  if (menuStore.selected) {
-    coverSubMenu.value = '/images/contents/background.jpg';
-  }
+  // }
 });
 
-watchEffect(() => {
-  products.value = props.data || [];
-  if (props.selectedHeader !== props.selectedHeader) {
-    coverSubMenu.value = '/images/contents/background.jpg';
-  }
-});
+watchEffect(() => {});
 </script>
 
 <style scoped>

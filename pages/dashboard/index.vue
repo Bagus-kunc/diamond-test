@@ -7,24 +7,18 @@
     <Header v-model:selected="selectedHeader" />
 
     <div class="flex flex-1">
-      <Sidebar
-        :data="sidebarData"
-        class="sidebar"
-        :firstData="sidebarFirstData"
-        @item-selected="handleSidebarSelection"
-        @not-found="handleNotFound"
-        @first-click="handleFirstClick"
-      />
+      <Sidebar class="sidebar" :data="sidebarData" />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <!-- <div v-if="loading" class="spinner-overlay"/> -->
-        <div v-if="loading" class="spinner-overlay">
-          <ProgressSpinner />
+        <div v-if="menuStore.loading" class="spinner-overlay">
+          <!-- <div v-if="!!menuStore.imagesLoaded">
+            <ProgressSpinner />
+          </div> -->
         </div>
 
-        <div v-if="notFound" class="not-found">Not Found</div>
+        <!-- <div v-if="menuStore.notFound" class="not-found">Not Found</div> -->
 
-        <CustomCarousel :data="selectedData" :cover="coverItem" :selectedCategory="selectedHeader" class="flex-1" @image-loaded="hideSpinner" />
+        <CustomCarousel class="flex-1" :cover="menuStore.cover" />
       </div>
     </div>
   </div>
@@ -32,6 +26,7 @@
 
 <script setup>
 import { useApiDataStore } from '~/composables/useApiDataStores';
+import { useMenuStore } from '~/composables/menuStore';
 import Sidebar from '~/components/Sidebar.vue';
 import Header from '~/components/Header.vue';
 import CustomCarousel from '~/components/CustomCarousel.vue';
@@ -42,51 +37,24 @@ definePageMeta({
 });
 
 const apiDataStore = useApiDataStore();
+const menuStore = useMenuStore();
 
-const isFirstClick = ref(true);
-const selectedHeader = ref(1);
-const selectedData = ref([]);
-const coverItem = ref('');
-const loading = ref(false);
+const selectedHeader = ref();
 const notFound = ref(false);
 
 const sidebarData = computed(() => {
-  const filter = apiDataStore.data.categories.find((item) => item.id === selectedHeader.value);
+  const filter = apiDataStore.data.categories.find((item) => item.id === menuStore.selected);
   return filter?.data || [];
 });
 
-const sidebarFirstData = computed(() => {
-  return sidebarData.value.length > 0 ? sidebarData.value[0] : {};
-});
-
-const handleSidebarSelection = (item, cover) => {
-  selectedData.value = item;
-  coverItem.value = cover;
-  if (notFound.value === true) {
-    loading.value = false;
-  } else {
-    loading.value = true;
-  }
-};
-
-const handleFirstClick = (click) => {
-  isFirstClick.value = click;
-  // console.log('click menu', click);
-};
-
-const handleNotFound = (status) => {
-  notFound.value = status;
-};
-
-const hideSpinner = () => {
-  loading.value = false;
-};
+// const handleNotFound = () => {
+//   if (menuStore.notFound) {
+//     menuStore.setCover('/images/contents/background.jpg');
+//   }
+// };
 
 watchEffect(() => {
-  // console.log(selectedHeader.value);
-  if (selectedHeader.value === 0) {
-    notFound.value = true;
-  }
+  // handleNotFound();
 });
 </script>
 
@@ -122,17 +90,14 @@ watchEffect(() => {
 
 /* Main Layout */
 .spinner-overlay {
-  position: absolute;
   top: 0;
   left: 0;
-  padding-left: 250px;
-  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
-  z-index: 999;
+  z-index: 1000;
 }
 
 .not-found {

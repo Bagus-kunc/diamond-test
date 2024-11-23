@@ -21,6 +21,7 @@ export const useApiDataStore = defineStore('apiData', {
       }
 
       this.loading = true;
+
       try {
         const res = await useFetchApi('GET', 'json');
         this.data = res;
@@ -32,7 +33,9 @@ export const useApiDataStore = defineStore('apiData', {
         }
         console.error('Fetch error:', this.error);
       } finally {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 2000);
       }
     },
   },

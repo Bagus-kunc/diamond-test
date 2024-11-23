@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] h-[80px] ml-[250px]"
+    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] ml-[250px]"
     :style="{ maxWidth: 'calc(100vw - 250px)' }"
   >
     <ul class="flex text-wrap justify-center w-full gap-6 text-[#AAAAAAFC]">
@@ -37,6 +37,7 @@ const props = defineProps({
 const emit = defineEmits(['update:selected']);
 
 const handleItem = (dataMenu, id) => {
+  menuStore.setCover('/images/contents/background.jpg');
   if (dataMenu.length === 0) {
     console.log('data', dataMenu.length);
   }
