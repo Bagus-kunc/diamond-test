@@ -21,18 +21,21 @@ export const useApiDataStore = defineStore('apiData', {
       }
 
       this.loading = true;
+
       try {
         const res = await useFetchApi('GET', 'json');
         this.data = res;
       } catch (err: unknown) {
         if (err instanceof Error) {
-          this.error = err;
+          console.log('ada error', err.message);
         } else {
           this.error = new Error('Unknown error occurred');
         }
         console.error('Fetch error:', this.error);
       } finally {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 2000);
       }
     },
   },

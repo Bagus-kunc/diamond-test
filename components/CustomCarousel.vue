@@ -7,7 +7,12 @@
       </div>
 
       <!-- Navigation Buttons -->
-      <button v-show="products.length > 1" class="px-3 bg-white" :disabled="!isInitialized" @click="handlePrev">
+      <button
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
+        class="px-3 bg-white"
+        :disabled="!isInitialized"
+        @click="handlePrev"
+      >
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
@@ -32,10 +37,10 @@
           @lazy-image-load="handleImageLoad"
         >
           <!-- Empty State -->
-          <SwiperSlide v-if="!products.length" class="relative !w-[100%]">
+          <SwiperSlide v-if="coverSubMenu !== ''" class="relative !w-[100%]">
             <div class="relative w-full h-full max-h-full">
-              <nuxt-img
-                v-if="coverSubMenu"
+              <img
+                placeholder
                 :src="coverSubMenu"
                 alt="Cover Image"
                 format="webp"
@@ -43,25 +48,29 @@
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
+                @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
               />
               <Icon
-                v-if="coverSubMenu"
                 class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
                 :name="isFullScreen ? 'ic:baseline-fullscreen-exit' : 'ic:sharp-fullscreen'"
                 size="35"
                 @click="toggleFullscreen"
               />
             </div>
-
-           
           </SwiperSlide>
 
           <!-- Content Slides -->
-          <SwiperSlide v-for="(product, index) in products" :key="`${product.id}-${index}`" class="relative !w-[100%]">
+          <SwiperSlide
+            v-else
+            v-for="(product, index) in products"
+            :key="`${product.id}-${index}`"
+            class="relative !w-[100%]"
+          >
             <!-- Image Content -->
             <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
-              <nuxt-img
+              <LazyNuxtImg
+                placeholder
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
                 class="object-cover h-full"
@@ -69,6 +78,7 @@
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
+                @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
               />
               <!-- Fullscreen Button -->
@@ -84,9 +94,8 @@
               v-else-if="isVideoType(product)"
               class="relative w-full h-full max-h-full flex items-center justify-center"
             >
-
               <img
-              v-if="isVideoType(product)"
+                v-if="isVideoType(product)"
                 src="~/assets/images/bg-diamond.jpg"
                 format="webp"
                 layout="fill"
@@ -101,7 +110,7 @@
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
-                  <!-- allowfullscreen -->
+                <!-- allowfullscreen -->
               </div>
 
               <!-- Fullscreen Button -->
@@ -117,7 +126,12 @@
       </div>
 
       <!-- Next Button -->
-      <button v-show="products.length > 1" class="px-3 bg-white" :disabled="!isInitialized" @click="handleNext">
+      <button
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
+        class="px-3 bg-white"
+        :disabled="!isInitialized"
+        @click="handleNext"
+      >
         <Icon
           name="ic:baseline-arrow-circle-right"
           size="30"
@@ -133,13 +147,14 @@ import { Pagination, Navigation, Autoplay, EffectCreative } from 'swiper/modules
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { useMenuStore } from '~/composables/menuStore';
 
 const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-    default: [],
-  },
+  // data: {
+  //   type: Array,
+  //   required: true,
+  //   default: [],
+  // },
   cover: {
     type: String,
     default: '',
@@ -147,6 +162,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['image-loaded']);
+const menuStore = useMenuStore();
 
 // Refs
 const swiperRef = ref(null);
@@ -251,9 +267,15 @@ const toggleFullscreen = async () => {
   }
 };
 
+const handleImageStartLoad = () => {
+  isLoading.value = true;
+  menuStore.setLoading(true);
+};
+
 const handleImageLoad = () => {
   isLoading.value = false;
-  emit('image-loaded');
+  menuStore.setLoading(false);
+  menuStore.setImagesLoaded(false);
 };
 
 // Lifecycle
@@ -269,26 +291,21 @@ onMounted(() => {
   });
 });
 
-// Watchers
-watch(
-  () => props.cover,
-  async (newCover) => {
-    isLoading.value = true;
-
-    coverSubMenu.value = newCover;
-    isLoading.value = false;
-  },
-);
-
 watchEffect(() => {
-  products.value = props.data || [];
+  products.value = menuStore.dataSideMenu || [];
+  if (props.cover !== coverSubMenu.value) {
+    coverSubMenu.value = props.cover;
+  }
+  // }
 });
+
+watchEffect(() => {});
 </script>
 
 <style scoped>
 .swiper-pagination-container {
   position: absolute;
-  top:25px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -306,7 +323,6 @@ watchEffect(() => {
 
 :deep(.swiper-pagination-bullet-active) {
   @apply bg-[#000080] opacity-100;
- 
 }
 
 .card {

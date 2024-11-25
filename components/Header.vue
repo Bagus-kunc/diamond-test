@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] h-[80px] ml-[250px]"
+    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] ml-[250px]"
     :style="{ maxWidth: 'calc(100vw - 250px)' }"
   >
     <ul class="flex text-wrap justify-center w-full gap-6 text-[#AAAAAAFC]">
@@ -22,19 +22,35 @@
 
 <script setup>
 import { useApiDataStore } from '@/composables/useApiDataStores';
+import { useMenuStore } from '@/composables/menuStore';
+
+const menuStore = useMenuStore();
 
 const apiDataStore = useApiDataStore();
 const { data } = storeToRefs(apiDataStore);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
+  // eslint-disable-next-line vue/require-default-prop
   selected: Number,
 });
+
 const emit = defineEmits(['update:selected']);
+
+const isFirstLoad = ref(true);
 
 const handleItem = (dataMenu, id) => {
   if (dataMenu.length === 0) {
     console.log('data', dataMenu.length);
   }
+
+  if (menuStore.selected !== id) {
+    menuStore.setSelected(id);
+    if (!isFirstLoad.value) {
+      menuStore.setCover('/images/contents/background.jpg');
+    }
+  }
+
   emit('update:selected', id);
 };
 
@@ -43,10 +59,12 @@ onMounted(async () => {
     await apiDataStore.fetchData();
   }
 
-  // Handle kategori pertama hanya jika data ada
   if (apiDataStore.data?.categories?.length) {
+    menuStore.setCover('');
     const firstCategory = apiDataStore.data.categories[0];
     handleItem(firstCategory.data, firstCategory.id);
+
+    isFirstLoad.value = false;
   }
 });
 </script>

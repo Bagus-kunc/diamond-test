@@ -13,7 +13,7 @@ export interface FetchOptions extends RequestInit {
 // constants.ts
 export const API_ENDPOINTS = {
   GACHA_SPIN: 'gacha/spin',
-  // Add other endpoints here
+  D_CLINIC: 'd/clinic',
 } as const;
 
 // useFetchApi.ts
@@ -46,6 +46,9 @@ const useFetchApi = async <T>(
     VALID_PASSWORD.value = null;
   };
 
+  let loading = true; // Indikator loading
+  let errorMessage = ''; // Pesan error
+
   try {
     const response = await $fetch<ApiResponse<T>>(url, {
       ...opts,
@@ -61,38 +64,36 @@ const useFetchApi = async <T>(
       },
       onRequestError({ error }) {
         console.error('Request error:', error);
-        return Promise.reject(error);
+        throw new Error('Network request error');
       },
       onResponseError({ response }) {
         const status = response?.status;
 
         if (status === 401) {
-          if (url === API_ENDPOINTS.GACHA_SPIN) {
-            clearAuth();
-            return Promise.reject('refetch');
-          }
-
           clearAuth();
           navigateTo('/');
-          return Promise.reject(new Error('Unauthorized access'));
+          throw new Error('Unauthorized access');
         }
 
         if (status === 404) {
-          return Promise.reject(new Error('Resource not found'));
+          throw new Error('Resource not found');
         }
 
         if (status >= 500) {
-          return Promise.reject(new Error('Server error occurred'));
+          throw new Error('Server error occurred');
         }
 
-        return Promise.reject(response);
+        throw response; // Lemparkan error untuk kondisi lainnya
       },
     });
 
+    loading = false;
     return response;
   } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
+    loading = false;
+    errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('API call failed:', errorMessage);
+    throw new Error(errorMessage);
   }
 };
 

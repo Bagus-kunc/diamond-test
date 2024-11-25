@@ -1,46 +1,42 @@
 <template>
-  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar px-2 flex flex-col h-full pb-10">
-    <!-- Header Section -->
-    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4">
-      <div class="flex">
-        <nuxt-img src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
-      </div>
-      <!-- <h1>Menu</h1> -->
+  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10">
+    <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
+      <NuxtImg src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
     </div>
 
-    <!-- Listbox Section -->
-    <div class="flex-1 overflow-y-auto" style="max-height: calc(100vh - 20vh)">
+    <div class="overflow-y-auto" style="max-height: calc(100vh - 20vh)">
+      <h1 class="px-7 unselectable">Menu</h1>
       <Listbox
         v-if="accordionItems.length > 0"
-        class="menu w-full border-none rounded-none custom-listbox pt-2"
+        v-model="state.selectedBox"
+        class="menu w-full border-none rounded-none custom-listbox"
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
-        v-model="state.selectedBox"
-        @click="menuClick(state.selectedBox)"
       >
-        <template #header>
-          <h1 class="px-5">Menu</h1>
-        </template>
-        <template #option="{ option }">
+        <template #option="{ option, index }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
             class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
             :class="{ 'menu-item-selected text-[#000080]': isOptionSelected(option) }"
-            @click="handleMainClick(option)"
+            @click="handleMainClick(option, index)"
           >
             <div class="flex justify-between">{{ option.title }}</div>
-            <div class="flex gap-2 flex-none items-center">
-              <img
-                v-if="isOptionSelected(option)"
-                src="~/assets/icons/double-arrow-blue.svg"
-                alt="double arrow icon"
-                width="18"
-                @click.stop="(event) => handleArrowClick(event, option)"
-              />
-              <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
-            </div>
+            <img
+              v-if="isOptionSelected(option)"
+              src="~/assets/icons/double-arrow-blue.svg"
+              alt="double arrow icon"
+              width="18"
+              @click.stop="handleArrowClick(option, $event)"
+            />
+            <img
+              v-else
+              src="~/assets/icons/double-arrow-gray.svg"
+              alt="double arrow icon"
+              width="18"
+              @click.stop="handleArrowClick(option, $event)"
+            />
           </div>
         </template>
       </Listbox>
@@ -84,19 +80,21 @@
           </div>
         </transition>
       </Teleport>
+
+      <ButtonUpdate label="Update" className="hover:!bg-green-600" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { useMenuStore } from '~/composables/menuStore';
+
 const props = defineProps({
   data: { type: Array, required: true, default: () => {} },
-  firstData: { type: Object, default: () => ({}) },
 });
 
-const emit = defineEmits(['item-selected', 'not-found', 'first-click']);
-
 const toast = useToast();
+const menuStore = useMenuStore();
 
 // State management
 const state = ref({
@@ -110,39 +108,39 @@ const state = ref({
 });
 
 const accordionItems = ref([]);
-const sideData = ref([]);
+const isClicked = ref(false);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
-const handleMainClick = (option) => {
-  if (!option) return;
+const handleMainClick = (option, index) => {
 
-  state.value.submenuVisible = false;
+  menuStore.setDataSideMenu([]);
+  menuStore.setCover(option.cover);
 
-  if (state.value.currentCover !== option.cover) {
-    state.value.activeOption = option;
-    state.value.currentCover = option.cover;
-    emit('item-selected', sideData.value, option.cover);
-    emit('not-found', false);
-    state.value.loading = true;
-    sideData.value = [];
+  state.value.activeOption = option;
 
-    setTimeout(() => {
-      state.value.loading = false;
-    }, 1000);
-  }
+  setTimeout(() => {
+    state.value.loading = false;
+  }, 1000);
 };
 
-const handleArrowClick = async (event, option) => {
-  state.value.submenuVisible = true;
+const handleArrowClick = async (option, event) => {
+  const menuItem = event.target.closest('.menu-item');
+  if (!menuItem) {
+    console.warn('Menu item tidak ditemukan');
+    return;
+  }
+
+  const index = accordionItems.value.findIndex((item) => item.id === option.id);
+  state.value.activeOption = option;
+
   state.value.selectedSubMenu = {
     ...option,
     data: await Promise.all(
       option.data.map(async (subMenu) => {
-        const images = subMenu.data.map((item) => item.url).filter((item) => item);
-
+        const images = subMenu.data.map((item) => item.url).filter(Boolean);
         return {
           ...subMenu,
           loading: await checkImageOnCache(images),
@@ -151,14 +149,23 @@ const handleArrowClick = async (event, option) => {
     ),
   };
 
-  const itemElement = event.target.closest('.menu-item');
-  if (itemElement) {
-    const rect = itemElement.getBoundingClientRect();
+  state.value.submenuVisible = true;
+
+  requestAnimationFrame(() => {
+    const rect = menuItem.getBoundingClientRect();
+    const submenuWidth = 250;
+    const viewportWidth = window.innerWidth;
+    let leftPosition = rect.right + window.scrollX;
+
+    if (leftPosition + submenuWidth > viewportWidth) {
+      leftPosition = rect.left - submenuWidth + window.scrollX;
+    }
+
     submenuPosition.value = {
       top: `${rect.top + window.scrollY}px`,
-      left: `${rect.left + 240}px`,
+      left: `${leftPosition}px`,
     };
-  }
+  });
 };
 
 const handleClickOutside = () => {
@@ -166,40 +173,30 @@ const handleClickOutside = () => {
 };
 
 const handleItemClick = (item) => {
-  if (!item.clicked) {
-    item.clicked = true;
-  } else {
-    item.clicked = false;
-  }
-  emit('first-click', item.clicked);
+  menuStore.setLoading(true);
 
-  sideData.value = item?.data || [];
-
-  emit('item-selected', item.data, state.value.currentCover);
+  menuStore.setCover('');
 
   if (item.data.length === 0) {
-    state.value.loading = false;
-    emit('not-found', true);
+    menuStore.setNotFound(true);
+    console.log('tidak ada data');
+    menuStore.setCover('/images/contents/background.jpg');
   } else {
-    emit('not-found', false);
+    menuStore.setNotFound(false);
+    menuStore.setDataSideMenu(item.data);
+    console.log('ada');
   }
 
   setTimeout(() => {
     state.value.submenuVisible = false;
-  }, 500);
-  state.value.loading = true;
+  }, 300);
 };
 
-const menuClick = (item) => {
-  if (!item) return;
-  emit('item-selected', sideData.value, item.cover);
-  if (!item.clicked) {
-    item.clicked = true;
-  } else {
-    item.clicked = false;
+watchEffect(() => {
+  if (state.value.selectedBox) {
+    const item = state.value.selectedBox;
   }
-  emit('first-click', item.clicked);
-};
+});
 
 const checkImageOnCache = async (data) => {
   if (data.length < 1) {
@@ -237,6 +234,8 @@ const fetchAndCacheImage = async (url) => {
     }
 
     console.log('Fetching image from network...');
+    menuStore.setImagesLoaded(true);
+
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -410,11 +409,11 @@ onMounted(() => {
   checkAllImageLoaded();
   state.value.loading = true;
   setTimeout(() => {
-    if (props.firstData?.cover) {
-      state.value.currentCover = props.firstData.cover;
-      emit('item-selected', sideData.value, props.firstData.cover);
-      emit('not-found', false);
-      state.value.activeOption = props.data.find((item) => item.cover === props.firstData.cover);
+    if (props.data) {
+      state.value.currentCover = props.data[0].cover;
+      menuStore.setCover(props.data[0].cover);
+
+      state.value.activeOption = props.data.find((item) => item.cover === props.data[0].cover);
     }
     state.value.loading = false;
   }, 1000);
@@ -452,64 +451,29 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-/* Listbox Scroll */
-.menu .p-listbox-list {
-  max-height: calc(100% - 20px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #cdd5e0 transparent;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar-thumb {
-  background-color: #cdd5e0;
-  border-radius: 10px;
-}
-
-.menu .p-listbox-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Override default Listbox styles */
-.custom-listbox {
-  max-height: calc(100vh - 20vh);
-  overflow-y: scroll;
-  scrollbar-width: none;
-}
-
-.custom-listbox::-webkit-scrollbar {
-  display: none;
-}
-
-.custom-listbox::-webkit-scrollbar-thumb {
-  background-color: #cdd5e0;
-  border-radius: 10px;
-}
-
-.custom-listbox::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Custom menu item styles */
-.menu-item {
-  padding: 1rem 0.4rem;
-  transition: background-color 0.2s ease;
-}
-
 .menu-item-selected {
   background-color: rgba(133, 167, 218, 0.1);
 }
 
 .submenu {
-  position: absolute;
+  position: fixed;
   color: #687489;
   font-weight: 600;
+  margin-left: 25px;
   z-index: 1010;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: auto;
+}
+
+.menu-item {
+  position: relative;
+  padding: 1rem 0.8rem;
+}
+
+.menu-item img {
+  position: relative;
+  z-index: 1;
 }
 
 .sublist {
@@ -520,7 +484,7 @@ onUnmounted(() => {
 .bg-img {
   position: absolute;
   top: -5px;
-  left: 0;
+  left: 50px;
   transform: scaleX(-1);
   transform: origin;
   background-position: left bottom;
@@ -547,6 +511,9 @@ onUnmounted(() => {
   justify-content: center;
   background-color: white;
   z-index: 999;
+}
+
+.btn-update {
 }
 
 /* Fade transition */

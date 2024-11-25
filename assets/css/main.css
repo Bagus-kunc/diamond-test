@@ -86,10 +86,6 @@ body {
   overflow: hidden;
 }
 
-.submenu .p-listbox-option.p-listbox-option-selected,
-.menu-sidebar .p-listbox-option.p-listbox-option-selected {
-}
-
 .submenu .p-listbox-option,
 .menu-sidebar .p-listbox-option {
   color: #687489;
