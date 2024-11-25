@@ -87,13 +87,13 @@ const useFetchApi = async <T>(
       },
     });
 
-    loading = false; // Berhasil
+    loading = false;
     return response;
   } catch (error) {
-    loading = false; // Set loading ke false
+    loading = false;
     errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     console.error('API call failed:', errorMessage);
-    throw new Error(errorMessage); // Lemparkan error untuk ditangani di UI
+    throw new Error(errorMessage);
   }
 };
 

@@ -8,7 +8,7 @@
 
       <!-- Navigation Buttons -->
       <button
-        v-show="products.length > 1 && isInitialized && !menuStore.notFound"
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
         class="px-3 bg-white"
         :disabled="!isInitialized"
         @click="handlePrev"
@@ -37,12 +37,10 @@
           @lazy-image-load="handleImageLoad"
         >
           <!-- Empty State -->
-          <SwiperSlide
-            v-if="(!products.length && coverSubMenu) || (menuStore.notFound && coverSubMenu)"
-            class="relative !w-[100%]"
-          >
+          <SwiperSlide v-if="coverSubMenu !== ''" class="relative !w-[100%]">
             <div class="relative w-full h-full max-h-full">
-              <nuxt-img
+              <LazyNuxtImg
+                placeholder
                 :src="coverSubMenu"
                 alt="Cover Image"
                 format="webp"
@@ -70,7 +68,8 @@
           >
             <!-- Image Content -->
             <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
-              <nuxt-img
+              <LazyNuxtImg
+                placeholder
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
                 class="object-cover h-full"
@@ -126,7 +125,7 @@
 
       <!-- Next Button -->
       <button
-        v-show="products.length > 1 && isInitialized && !menuStore.notFound"
+        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
         class="px-3 bg-white"
         :disabled="!isInitialized"
         @click="handleNext"
@@ -267,6 +266,7 @@ const toggleFullscreen = async () => {
 };
 
 const handleImageLoad = () => {
+  menuStore.setLoading(true);
   isLoading.value = false;
   setTimeout(() => {
     menuStore.setLoading(false);

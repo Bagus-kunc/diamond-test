@@ -48,7 +48,7 @@ const isLoading = ref(false);
 const updateCache = () => {
   isLoading.value = true;
 
-  Progress();
+  toast.add({ severity: 'info', summary: 'Updating...', detail: 'Cache update in progress', life: 3000 });
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
@@ -59,7 +59,9 @@ const updateCache = () => {
       })
       .catch((error) => {
         console.error('Service Worker error:', error);
-        Error();
+
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Cache update failed', life: 3000 });
+
         isLoading.value = false;
       });
   }
@@ -67,7 +69,8 @@ const updateCache = () => {
   emit('click', true);
 
   setTimeout(() => {
-    Success();
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Cache has been updated', life: 3000 });
+
     setTimeout(() => {
       emit('click', false);
       isLoading.value = false;

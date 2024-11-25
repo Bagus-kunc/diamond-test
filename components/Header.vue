@@ -34,15 +34,23 @@ const props = defineProps({
   // eslint-disable-next-line vue/require-default-prop
   selected: Number,
 });
+
 const emit = defineEmits(['update:selected']);
 
+const isFirstLoad = ref(true);
+
 const handleItem = (dataMenu, id) => {
-  menuStore.setCover('/images/contents/background.jpg');
   if (dataMenu.length === 0) {
     console.log('data', dataMenu.length);
   }
 
-  menuStore.setSelected(id);
+  if (menuStore.selected !== id) {
+    menuStore.setSelected(id);
+    if (!isFirstLoad.value) {
+      menuStore.setCover('/images/contents/background.jpg');
+    }
+  }
+
   emit('update:selected', id);
 };
 
@@ -51,10 +59,12 @@ onMounted(async () => {
     await apiDataStore.fetchData();
   }
 
-  // Handle kategori pertama hanya jika data ada
   if (apiDataStore.data?.categories?.length) {
+    menuStore.setCover('');
     const firstCategory = apiDataStore.data.categories[0];
     handleItem(firstCategory.data, firstCategory.id);
+
+    isFirstLoad.value = false;
   }
 });
 </script>

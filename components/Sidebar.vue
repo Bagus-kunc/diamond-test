@@ -115,11 +115,11 @@ const isVisible = computed(() => state.value.submenuVisible);
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
 const handleMainClick = (option, index) => {
-  isClicked.value = true;
+  // isClicked.value = true;
 
-  if (!isClicked.value) {
-    menuStore.setLoading(true);
-  }
+  // if (!isClicked.value) {
+  //   menuStore.setLoading(true);
+  // }
 
   menuStore.setDataSideMenu([]);
   menuStore.setCover(option.cover);
@@ -135,7 +135,6 @@ const handleArrowClick = async (option, event) => {
     return;
   }
 
-  // Pastikan submenu visible hanya satu kali
   const index = accordionItems.value.findIndex((item) => item.id === option.id);
   state.value.activeOption = option;
 
@@ -154,9 +153,7 @@ const handleArrowClick = async (option, event) => {
 
   state.value.submenuVisible = true;
 
-  // Gunakan window.requestAnimationFrame untuk memastikan perhitungan posisi setelah DOM render
   requestAnimationFrame(() => {
-    // Hitung posisi submenu
     const rect = menuItem.getBoundingClientRect();
     const submenuWidth = 250;
     const viewportWidth = window.innerWidth;
@@ -179,6 +176,7 @@ const handleClickOutside = () => {
 
 const handleItemClick = (item) => {
   menuStore.setLoading(true);
+  menuStore.setCover('');
 
   if (item.data.length === 0) {
     menuStore.setNotFound(true);
@@ -192,7 +190,7 @@ const handleItemClick = (item) => {
 
   setTimeout(() => {
     state.value.submenuVisible = false;
-  }, 1000);
+  }, 300);
 };
 
 watchEffect(() => {
@@ -381,7 +379,6 @@ const checkAllImageLoaded = async () => {
 
     if (!response) {
       clearInterval(intervalCheckAllImages);
-      menuStore.setImagesLoaded(true);
       console.log('All images are loaded');
       toast.add({ severity: 'info', summary: 'Info', detail: 'All images are loaded', life: 5000 });
     }

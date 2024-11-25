@@ -76,29 +76,32 @@ const handlePin = async () => {
   if (!isValidPin.value || isLoading.value) return;
 
   isLoading.value = true;
-  error.value = '';
+  error.value = ''; // Reset error message
 
   try {
-    const { data, status } = await useFetchApi('POST', 'user_pin', {
+    const res = await useFetchApi('POST', 'user_pin', {
       body: { pin: parseInt(valuePin.value) },
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    if (status) {
+    if (res.status) {
       const TOKEN = useCookie('TOKEN', { maxAge: 7 * 24 * 60 * 60 * 1000 });
 
       const uniqueToken = generateUniqueToken();
       TOKEN.value = uniqueToken;
 
-      // Navigate to the homepage/dashboard
       goToHomepage();
+    } else {
+      error.value = message || 'An unexpected error occurred. Please try again.';
+      console.log(res.message);
+      valuePin.value = '';
     }
   } catch (err) {
-    console.log('Error: Unable to verify PIN', err);
-    // error.value = err?._data.message || '';
-    valuePin.value = '';
+    console.log('Error: Unable to verify PIN', err); // Log the actual error
+    error.value = 'PIN entered incorrect';
+    valuePin.value = ''; // Clear PIN input if error occurs
   } finally {
     isLoading.value = false;
   }

@@ -10,13 +10,7 @@
       <Sidebar class="sidebar" :data="sidebarData" />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="menuStore.loading" class="spinner-overlay">
-          <!-- <div v-if="!!menuStore.imagesLoaded">
-            <ProgressSpinner />
-          </div> -->
-        </div>
-
-        <!-- <div v-if="menuStore.notFound" class="not-found">Not Found</div> -->
+        <div v-if="menuStore.loading" class="spinner-overlay"></div>
 
         <CustomCarousel class="flex-1" :cover="menuStore.cover" />
       </div>
@@ -41,21 +35,14 @@ const menuStore = useMenuStore();
 
 const selectedHeader = ref();
 const notFound = ref(false);
+const isFirstLoad = ref(true);
 
 const sidebarData = computed(() => {
   const filter = apiDataStore.data.categories.find((item) => item.id === menuStore.selected);
   return filter?.data || [];
 });
 
-// const handleNotFound = () => {
-//   if (menuStore.notFound) {
-//     menuStore.setCover('/images/contents/background.jpg');
-//   }
-// };
-
-watchEffect(() => {
-  // handleNotFound();
-});
+onMounted(() => (isFirstLoad.value = false));
 </script>
 
 <style scoped>
@@ -70,7 +57,7 @@ watchEffect(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .loading-image {
@@ -112,7 +99,7 @@ watchEffect(() => {
   font-size: 3rem;
   color: #687489;
   justify-content: center;
-  background: url('/images/contents/background.jpg');
+  /* background: url('/images/contents/background.jpg'); */
   background-position: center;
   z-index: 999;
 }
