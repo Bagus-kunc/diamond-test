@@ -115,11 +115,7 @@ const isVisible = computed(() => state.value.submenuVisible);
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
 const handleMainClick = (option, index) => {
-  if (state.value.loading && menuStore.loading) return;
 
-  state.value.loading = true;
-
-  menuStore.setLoading(true);
   menuStore.setDataSideMenu([]);
   menuStore.setCover(option.cover);
 
