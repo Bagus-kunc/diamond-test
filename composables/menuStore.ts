@@ -6,7 +6,7 @@ export const useMenuStore = defineStore('menu', {
     dataSideMenu: [] as Array<any>,
     selected: 1 as number | null,
     cover: '',
-    imagesLoaded: true,
+    imagesLoaded: false,
     loading: false,
     notFound: false,
   }),

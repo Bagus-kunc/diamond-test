@@ -10,10 +10,9 @@
       <Sidebar class="sidebar" :data="sidebarData" />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="menuStore.loading" class="spinner-overlay">
-          <div v-if="!menuStore.imagesLoaded">
-            <ProgressSpinner />
-          </div>
+        <div v-if="menuStore.loading && !menuStore.imagesLoaded" class="spinner-overlay"></div>
+        <div v-if="menuStore.imagesLoaded" class="spinner-overlay">
+          <ProgressSpinner />
         </div>
 
         <CustomCarousel class="flex-1" :cover="menuStore.cover" />

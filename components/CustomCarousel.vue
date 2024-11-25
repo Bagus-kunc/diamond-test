@@ -48,6 +48,7 @@
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
+                @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
               />
               <Icon
@@ -77,6 +78,7 @@
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
+                @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
               />
               <!-- Fullscreen Button -->
@@ -263,6 +265,11 @@ const toggleFullscreen = async () => {
   } catch (error) {
     console.warn('Fullscreen API error:', error);
   }
+};
+
+const handleImageStartLoad = () => {
+  isLoading.value = true;
+  menuStore.setLoading(true);
 };
 
 const handleImageLoad = () => {

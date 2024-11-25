@@ -238,6 +238,8 @@ const fetchAndCacheImage = async (url) => {
     }
 
     console.log('Fetching image from network...');
+    menuStore.setImagesLoaded(true);
+
     const response = await fetch(url);
 
     if (!response.ok) {
