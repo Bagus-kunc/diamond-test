@@ -115,17 +115,19 @@ const isVisible = computed(() => state.value.submenuVisible);
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
 const handleMainClick = (option, index) => {
-  // isClicked.value = true;
+  if (state.value.loading && menuStore.loading) return;
 
-  // if (!isClicked.value) {
-  //   menuStore.setLoading(true);
-  // }
+  state.value.loading = true;
 
+  menuStore.setLoading(true);
   menuStore.setDataSideMenu([]);
   menuStore.setCover(option.cover);
-  menuStore.setNotFound(false);
 
   state.value.activeOption = option;
+
+  setTimeout(() => {
+    state.value.loading = false;
+  }, 1000);
 };
 
 const handleArrowClick = async (option, event) => {
@@ -176,6 +178,7 @@ const handleClickOutside = () => {
 
 const handleItemClick = (item) => {
   menuStore.setLoading(true);
+
   menuStore.setCover('');
 
   if (item.data.length === 0) {

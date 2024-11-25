@@ -10,7 +10,11 @@
       <Sidebar class="sidebar" :data="sidebarData" />
 
       <div class="flex-1 flex flex-col relative pl-[250px]">
-        <div v-if="menuStore.loading" class="spinner-overlay"></div>
+        <div v-if="menuStore.loading" class="spinner-overlay">
+          <div v-if="!menuStore.imagesLoaded">
+            <ProgressSpinner />
+          </div>
+        </div>
 
         <CustomCarousel class="flex-1" :cover="menuStore.cover" />
       </div>
@@ -42,7 +46,11 @@ const sidebarData = computed(() => {
   return filter?.data || [];
 });
 
-onMounted(() => (isFirstLoad.value = false));
+onMounted(() => {
+  setTimeout(() => {
+    menuStore.setImagesLoaded(false);
+  }, 2000);
+});
 </script>
 
 <style scoped>

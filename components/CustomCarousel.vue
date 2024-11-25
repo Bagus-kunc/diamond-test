@@ -39,7 +39,7 @@
           <!-- Empty State -->
           <SwiperSlide v-if="coverSubMenu !== ''" class="relative !w-[100%]">
             <div class="relative w-full h-full max-h-full">
-              <LazyNuxtImg
+              <img
                 placeholder
                 :src="coverSubMenu"
                 alt="Cover Image"
@@ -266,11 +266,9 @@ const toggleFullscreen = async () => {
 };
 
 const handleImageLoad = () => {
-  menuStore.setLoading(true);
   isLoading.value = false;
-  setTimeout(() => {
-    menuStore.setLoading(false);
-  }, 500);
+  menuStore.setLoading(false);
+  menuStore.setImagesLoaded(false);
 };
 
 // Lifecycle
@@ -287,9 +285,6 @@ onMounted(() => {
 });
 
 watchEffect(() => {
-  // if (menuStore.notFound) {
-  //   menuStore.setCover('/images/contents/background.jpg');
-  // } else {
   products.value = menuStore.dataSideMenu || [];
   if (props.cover !== coverSubMenu.value) {
     coverSubMenu.value = props.cover;
