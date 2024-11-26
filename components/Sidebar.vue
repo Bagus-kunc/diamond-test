@@ -4,8 +4,8 @@
       <NuxtImg src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
     </div>
 
-    <div class="overflow-y-auto" style="max-height: calc(100vh - 20vh)">
-      <h1 class="px-7 unselectable">Menu</h1>
+    <div class="overflow-y-auto" style="max-height: calc(100vh - 20vh)" @scroll="handleScroll">
+      <h1 class="px-7 unselectable text-gray-scorpion">Our Treatment:</h1>
       <Listbox
         v-if="accordionItems.length > 0"
         v-model="state.selectedBox"
@@ -115,7 +115,6 @@ const isVisible = computed(() => state.value.submenuVisible);
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
 const handleMainClick = (option, index) => {
-
   menuStore.setDataSideMenu([]);
   menuStore.setCover(option.cover);
 
@@ -403,6 +402,10 @@ watchEffect(async () => {
   }
 });
 
+const handleScroll = () => {
+  state.value.submenuVisible = false;
+};
+
 // Lifecycle hooks
 onMounted(() => {
   loadDataImage();
@@ -432,10 +435,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Aguafina+Script&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 .unselectable {
   pointer-events: none;
   user-select: none;
-  color: black;
+  font-size: 25px;
+  font-family: 'Aguafina Script', cursive;
+  font-weight: 400;
 }
 .menu-sidebar {
   z-index: 1000;

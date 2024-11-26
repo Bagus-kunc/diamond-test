@@ -1,9 +1,9 @@
 <template>
-  <div class="px-1">
+  <div class="px-1 flex justify-center">
     <Toast />
     <Button
       id="updateButton"
-      class="btn-update w-full px-5 mt-2 border-none"
+      class="btn-update px-5 mt-2 border-[1px] !border-gray-dark !text-gray-dark !bg-white hover:!bg-blue-hover rounded-full w-auto"
       :class="isLoading ? '!text-black' : className"
       :disabled="isLoading"
       @click="updateCache"
@@ -17,18 +17,6 @@
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
-
-const Success = () => {
-  toast.add({ severity: 'success', summary: 'Success', detail: 'Cache has been updated', life: 3000 });
-};
-
-const Progress = () => {
-  toast.add({ severity: 'info', summary: 'Updating...', detail: 'Cache update in progress', life: 3000 });
-};
-
-const Error = () => {
-  toast.add({ severity: 'error', summary: 'Error', detail: 'Cache update failed', life: 3000 });
-};
 
 const props = defineProps({
   label: {
@@ -90,9 +78,6 @@ if ('serviceWorker' in navigator) {
 
 <style scoped>
 .btn-update {
-  background-color: #4caf50;
-  color: white;
-  border-radius: 4px;
   padding: 10px 20px;
   text-align: center;
   cursor: pointer;
