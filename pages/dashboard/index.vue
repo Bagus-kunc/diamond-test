@@ -1,9 +1,7 @@
 <template>
-  <div v-if="apiDataStore.loading" class="loading-screen">
-    <img src="/images/logo-img.png" alt="Loading" class="loading-image" />
-  </div>
+  <SplashScreen v-show="coverIsReady" />
 
-  <div v-else class="w-full h-screen flex flex-col" style="font-family: 'Lato', sans-serif">
+  <div v-if="!apiDataStore.loading" class="w-full h-screen flex flex-col" style="font-family: 'Lato', sans-serif">
     <Header v-model:selected="selectedHeader" />
 
     <div class="flex flex-1">
@@ -37,51 +35,46 @@ const apiDataStore = useApiDataStore();
 const menuStore = useMenuStore();
 
 const selectedHeader = ref();
-const notFound = ref(false);
-const isFirstLoad = ref(true);
+const coverIsReady = ref(true);
 
 const sidebarData = computed(() => {
   const filter = apiDataStore.data.categories.find((item) => item.id === menuStore.selected);
   return filter?.data || [];
 });
 
+let intervalCheckAllImages;
+const checkAllImageLoaded = async () => {
+  const { data } = storeToRefs(apiDataStore);
+
+  const images = [];
+  data.value.categories.forEach((category) => {
+    category.data.forEach((menu) => {
+      if (menu.cover) {
+        images.push(menu.cover);
+      }
+    });
+  });
+
+  intervalCheckAllImages = setInterval(async () => {
+    const response = await checkImageOnCache(images);
+
+    if (!response) {
+      clearInterval(intervalCheckAllImages);
+      console.log('All cover are loaded');
+      coverIsReady.value = false;
+    }
+  }, 1000);
+};
+
 onMounted(() => {
   setTimeout(() => {
     menuStore.setImagesLoaded(false);
+    checkAllImageLoaded();
   }, 2000);
 });
 </script>
 
 <style scoped>
-/* Loading Screen */
-.loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-}
-
-.loading-image {
-  width: 100px;
-  height: auto;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* Main Layout */
 .spinner-overlay {
   top: 0;

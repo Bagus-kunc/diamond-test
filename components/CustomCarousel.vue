@@ -109,6 +109,7 @@
                   class="top-0 left-0 w-full h-full"
                   :title="product.title || 'Video content'"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  @load="handleImageLoad"
                 />
                 <!-- allowfullscreen -->
               </div>
@@ -279,7 +280,7 @@ const handleImageLoad = () => {
 };
 
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
   const handleFullscreenChange = () => {
     isFullScreen.value = !!document.fullscreenElement;
   };
@@ -296,7 +297,6 @@ watchEffect(() => {
   if (props.cover !== coverSubMenu.value) {
     coverSubMenu.value = props.cover;
   }
-  // }
 });
 
 watchEffect(() => {});

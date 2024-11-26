@@ -13,30 +13,29 @@
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
+        pt:option:class="!p-0"
       >
-        <template #option="{ option, index }">
+        <template #option="{ option }">
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
-            class="menu-item flex justify-between cursor-pointer z-50 relative items-center w-full"
+            class="menu-item flex justify-between h-full cursor-pointer z-50 relative items-center w-full"
             :class="{ 'menu-item-selected text-[#000080]': isOptionSelected(option) }"
-            @click="handleMainClick(option, index)"
+            @click="handleMainClick(option)"
           >
-            <div class="flex justify-between">{{ option.title }}</div>
-            <img
-              v-if="isOptionSelected(option)"
-              src="~/assets/icons/double-arrow-blue.svg"
-              alt="double arrow icon"
-              width="18"
+            <div class="flex justify-between pl-6">{{ option.title }}</div>
+            <div
+              class="pl-4 pr-6 h-full flex justify-center items-center"
               @click.stop="handleArrowClick(option, $event)"
-            />
-            <img
-              v-else
-              src="~/assets/icons/double-arrow-gray.svg"
-              alt="double arrow icon"
-              width="18"
-              @click.stop="handleArrowClick(option, $event)"
-            />
+            >
+              <img
+                v-if="isOptionSelected(option)"
+                src="~/assets/icons/double-arrow-blue.svg"
+                alt="double arrow icon"
+                width="18"
+              />
+              <img v-else src="~/assets/icons/double-arrow-gray.svg" alt="double arrow icon" width="18" />
+            </div>
           </div>
         </template>
       </Listbox>
@@ -53,19 +52,17 @@
           >
             <Listbox
               v-if="isVisible && state.selectedSubMenu?.data?.length > 0"
-              v-model="state.selectedSubItem"
               :options="state.selectedSubMenu.data"
+              :model-value="state.selectedSubItem"
               optionLabel="title"
               pt:root:class="bg-image-submenu"
               class="w-full sublist"
               listStyle="max-height:550px"
-              @change="handleItemClick(state.selectedSubItem)"
+              pt:option:class="!p-0"
             >
-              <template #option="{ option }">
-                <div class="w-full flex justify-between">
-                  <span>
-                    {{ option.title }}
-                  </span>
+              <template #option="{ option, selected }">
+                <div class="w-full flex justify-between px-3 py-2" @click.stop="handleItemClick(option)">
+                  <span> {{ option.title }} </span>
                   <div class="flex-none ml-2 w-6">
                     <ProgressSpinner
                       v-if="option.loading"
@@ -105,6 +102,7 @@ const state = ref({
   currentCover: '',
   submenuVisible: false,
   loading: false,
+  openedBox: null,
 });
 
 const accordionItems = ref([]);
@@ -114,11 +112,12 @@ const isVisible = computed(() => state.value.submenuVisible);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
-const handleMainClick = (option, index) => {
+const handleMainClick = (option) => {
   menuStore.setDataSideMenu([]);
   menuStore.setCover(option.cover);
 
   state.value.activeOption = option;
+  state.value.selectedSubItem = null;
 
   setTimeout(() => {
     state.value.loading = false;
@@ -132,8 +131,11 @@ const handleArrowClick = async (option, event) => {
     return;
   }
 
-  const index = accordionItems.value.findIndex((item) => item.id === option.id);
-  state.value.activeOption = option;
+  if (option?.data?.length > 0) {
+    state.value.openedBox = option;
+  } else {
+    handleMainClick(option);
+  }
 
   state.value.selectedSubMenu = {
     ...option,
@@ -154,14 +156,14 @@ const handleArrowClick = async (option, event) => {
     const rect = menuItem.getBoundingClientRect();
     const submenuWidth = 250;
     const viewportWidth = window.innerWidth;
-    let leftPosition = rect.right + window.scrollX;
+    let leftPosition = rect.right - 12 + window.scrollX;
 
     if (leftPosition + submenuWidth > viewportWidth) {
       leftPosition = rect.left - submenuWidth + window.scrollX;
     }
 
     submenuPosition.value = {
-      top: `${rect.top + window.scrollY}px`,
+      top: `${rect.top - 4 + window.scrollY}px`,
       left: `${leftPosition}px`,
     };
   });
@@ -172,7 +174,11 @@ const handleClickOutside = () => {
 };
 
 const handleItemClick = (item) => {
-  menuStore.setLoading(true);
+  if (!(item?.id === state.value.selectedSubItem?.id && item?.title === state.value.selectedSubItem?.title)) {
+    menuStore.setLoading(true);
+  }
+  state.value.selectedSubItem = item;
+  state.value.activeOption = state.value.openedBox;
 
   menuStore.setCover('');
 
@@ -180,6 +186,7 @@ const handleItemClick = (item) => {
     menuStore.setNotFound(true);
     console.log('tidak ada data');
     menuStore.setCover('/images/contents/background.jpg');
+    menuStore.setLoading(false);
   } else {
     menuStore.setNotFound(false);
     menuStore.setDataSideMenu(item.data);
@@ -196,89 +203,6 @@ watchEffect(() => {
     const item = state.value.selectedBox;
   }
 });
-
-const checkImageOnCache = async (data) => {
-  if (data.length < 1) {
-    return false;
-  }
-
-  const urlsToCache = data.filter((i) => i.endsWith('.jpg') || i.endsWith('.png') || i.endsWith('.jpeg'));
-
-  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
-  try {
-    const cache = await caches.open(CACHE_NAME);
-
-    const cachedRequests = await cache.keys();
-
-    const cachedUrls = cachedRequests.map((request) => request.url);
-    const isCompletelyCached = urlsToCache.every((url) => cachedUrls.some((cachedUrl) => cachedUrl.includes(url)));
-
-    return !isCompletelyCached;
-  } catch (error) {
-    console.error('Error checking cache:', error);
-    return false;
-  }
-};
-
-const fetchAndCacheImage = async (url) => {
-  const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
-
-  try {
-    const cache = await caches.open(CACHE_NAME);
-    const cachedResponse = await cache.match(url);
-
-    if (cachedResponse) {
-      console.log('Image found in cache.');
-      return cachedResponse.url;
-    }
-
-    console.log('Fetching image from network...');
-    menuStore.setImagesLoaded(true);
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    await cache.put(url, response.clone());
-    return response.url;
-  } catch (error) {
-    console.error('Error fetching or caching image:', error);
-    return null;
-  }
-};
-
-const loadDataImage = async () => {
-  const apiDataStore = useApiDataStore();
-  const { data } = storeToRefs(apiDataStore);
-
-  await Promise.all(
-    data.value.categories.map(async (category) => {
-      await Promise.all(
-        category.data.map(async (menu) => {
-          if (menu.cover) {
-            await fetchAndCacheImage(menu.cover);
-          }
-          await Promise.all(
-            menu.data.map(async (submenu) => {
-              await Promise.all(
-                submenu.data.map(async (item) => {
-                  if (
-                    item.url &&
-                    (item.url.endsWith('.jpg') || item.url.endsWith('.png') || item.url.endsWith('.jpeg'))
-                  ) {
-                    await fetchAndCacheImage(item.url);
-                  }
-                }),
-              );
-            }),
-          );
-        }),
-      );
-    }),
-  );
-};
 
 const checkLoadedMenu = () => {
   return accordionItems.value.every((menu) => !menu.loading);
@@ -405,10 +329,18 @@ watchEffect(async () => {
 const handleScroll = () => {
   state.value.submenuVisible = false;
 };
+watch(
+  () => menuStore.selected,
+  (selected) => {
+    state.value.selectedBox = null;
+    state.value.activeOption = null;
+    state.value.selectedSubItem = null;
+    state.value.openedBox = null;
+  },
+);
 
 // Lifecycle hooks
 onMounted(() => {
-  loadDataImage();
   checkAllImageLoaded();
   state.value.loading = true;
   setTimeout(() => {
@@ -475,7 +407,7 @@ onUnmounted(() => {
 
 .menu-item {
   position: relative;
-  padding: 1rem 0.8rem;
+  /* padding: 1rem 0.8rem; */
 }
 
 .menu-item img {

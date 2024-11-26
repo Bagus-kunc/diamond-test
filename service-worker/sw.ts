@@ -62,7 +62,12 @@ const clearCacheAndDownloadMedia = async () => {
 };
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.destination === 'image') {
+  if (
+    event.request.destination === 'image' ||
+    event.request.url.endsWith('.jpg') ||
+    event.request.url.endsWith('.jpeg') ||
+    event.request.url.endsWith('.png')
+  ) {
     event.respondWith(handleImageRequest(event));
   } else {
     event.respondWith(
@@ -75,16 +80,25 @@ self.addEventListener('fetch', (event) => {
 
 const handleImageRequest = async (event: FetchEvent) => {
   const cache = await caches.open(CACHE_NAME);
+  const response = await cache.match(event.request.url);
 
-  try {
-    const fetchResponse = await fetch(event.request);
-    cache.put(event.request, fetchResponse.clone());
-    return fetchResponse;
-  } catch (error) {
-    console.error(`Fetch failed for ${event.request.url}. Using fallback image.`);
-    const fallbackResponse = await cache.match(FALLBACK_IMAGE);
-    return fallbackResponse || new Response('Fallback image not found', { status: 404 });
+  if (!response) {
+    try {
+      const fetchResponse = await fetch(event.request);
+      cache.put(event.request, fetchResponse.clone());
+      return fetchResponse;
+    } catch (error) {
+      console.error(`Fetch failed for ${event.request.url}. Using fallback image.`);
+      const fallbackResponse = await cache.match(FALLBACK_IMAGE);
+
+      if (!fallbackResponse) {
+        return fallbackResponse || new Response('Fallback image not found', { status: 404 });
+      }
+      return fallbackResponse;
+    }
   }
+
+  return response;
 };
 
 let allowlist: undefined | RegExp[];

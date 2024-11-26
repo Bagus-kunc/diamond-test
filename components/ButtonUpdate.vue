@@ -62,7 +62,7 @@ const updateCache = () => {
     setTimeout(() => {
       emit('click', false);
       isLoading.value = false;
-      window.location.reload();
+      window.location.reload(true);
     }, 1000);
   }, 4000);
 };
