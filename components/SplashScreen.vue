@@ -18,7 +18,6 @@
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  animation: slide 1s cubic-bezier(0.455, 0.03, 0.515, 0.955) 2.6s both;
 }
 
 .loading-image {
@@ -48,16 +47,6 @@
 
   to {
     transform: scale3d(1, 1, 1);
-  }
-}
-
-@keyframes slide {
-  0% {
-    top: 0px;
-  }
-  100% {
-    top: -100vh;
-    opacity: 0;
   }
 }
 </style>

@@ -9,12 +9,11 @@ export const fetchAndCacheImage = async (url: string) => {
 
     if (cachedResponse) {
       console.log('Image found in cache.');
+      menuStore.setImagesLoaded(true);
       return cachedResponse.url;
     }
 
     console.log('Fetching image from network...');
-    menuStore.setImagesLoaded(true);
-
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -22,9 +21,13 @@ export const fetchAndCacheImage = async (url: string) => {
     }
 
     await cache.put(url, response.clone());
+    console.log('Image cached successfully.');
+
+    menuStore.setImagesLoaded(true);
     return response.url;
   } catch (error) {
     console.error('Error fetching or caching image:', error);
+    menuStore.setImagesLoaded(false);
     return null;
   }
 };
