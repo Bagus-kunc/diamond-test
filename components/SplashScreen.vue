@@ -1,6 +1,7 @@
 <template>
-  <div class="loading-screen">
-    <img src="/images/logo-img.png" alt="Loading" class="loading-image" />
+  <div class="loading-screen flex flex-col">
+    <img src="/images/logo-img.png" alt="Loading" class="loading-image w-[250px]" />
+    <h5 class="mt-4 font-bold text-lg text-black tracking-widest animate-pulse">LOADING...</h5>
   </div>
 </template>
 
@@ -17,12 +18,14 @@
   justify-content: center;
   align-items: center;
   z-index: 2000;
+  animation: slide 1s cubic-bezier(0.455, 0.03, 0.515, 0.955) 2.6s both;
 }
 
 .loading-image {
-  width: 100px;
   height: auto;
-  animation: fadeIn 0.5s ease-in-out;
+  animation:
+    fadeIn 0.5s ease-in-out,
+    pulse 1.3s ease-in-out infinite;
 }
 
 @keyframes fadeIn {
@@ -31,6 +34,30 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes slide {
+  0% {
+    top: 0px;
+  }
+  100% {
+    top: -100vh;
+    opacity: 0;
   }
 }
 </style>
