@@ -62,7 +62,8 @@ const updateCache = () => {
     setTimeout(() => {
       emit('click', false);
       isLoading.value = false;
-      window.location.reload(true);
+      // window.location.reload(true);
+      window.location.href = window.location.href.split('?')[0] + '?nocache=' + new Date().getTime();
     }, 1000);
   }, 4000);
 };
