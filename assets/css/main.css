@@ -113,3 +113,10 @@ body {
 .p-listbox-list-container {
   @apply overflow-hidden
 }
+
+@font-face {
+  font-family: 'BirdOfParadise';
+  src: url('~/assets/fonts/bird_of_paradise.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
