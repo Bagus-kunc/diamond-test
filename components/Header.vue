@@ -1,22 +1,28 @@
 <template>
   <div
-    class="sticky w-full z-[1000] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] ml-[250px]"
-    :style="{ maxWidth: 'calc(100vw - 250px)' }"
+    class="sticky w-full z-[998] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] sm:ml-[250px] sm:max-w-[calc(100vw-250px)]"
   >
-    <ul class="flex text-wrap justify-center w-full gap-6 text-[#AAAAAAFC]">
-      <li
-        v-for="item in data.categories || []"
-        :key="item.id"
-        class="transition-colors duration-200 cursor-pointer px-1 rounded"
-        :class="{
-          'bg-[#AAAAAAFC] text-white hover:text-white': selected === item.id,
-          'hover:bg-[#f0f0f0] hover:text-[#AAAAAAFC]': selected !== item.id,
-        }"
-        @click="handleItem(item.data, item.id)"
-      >
-        {{ item.title?.toUpperCase() || 'UNTITLED' }}
-      </li>
-    </ul>
+    <div class="flex sm:hidden items-center flex-none mr-1">
+      <Button class="!bg-white !border-gray-300 !text-gray-500" icon="pi pi-bars" @click="sidebarStore.toggle()">
+        <Icon name="ic:menu" size="24" />
+      </Button>
+    </div>
+    <div class="flex-1 overflow-x-auto">
+      <ul class="flex text-nowrap sm:justify-center gap-3 sm:gap-6 text-[#AAAAAAFC]">
+        <li
+          v-for="item in data.categories || []"
+          :key="item.id"
+          class="transition-colors duration-200 cursor-pointer px-1 rounded block"
+          :class="{
+            'bg-[#AAAAAAFC] text-white hover:text-white': selected === item.id,
+            'hover:bg-[#f0f0f0] hover:text-[#AAAAAAFC]': selected !== item.id,
+          }"
+          @click="handleItem(item.data, item.id)"
+        >
+          {{ item.title?.toUpperCase() || 'UNTITLED' }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -28,6 +34,8 @@ const menuStore = useMenuStore();
 
 const apiDataStore = useApiDataStore();
 const { data } = storeToRefs(apiDataStore);
+
+const sidebarStore = useSidebar();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({

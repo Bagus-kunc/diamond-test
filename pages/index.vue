@@ -8,7 +8,7 @@
     <div class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full" />
 
     <div class="flex flex-col items-center h-screen">
-      <div class="flex flex-col gap-3 items-center justify-center mt-[29px] z-20">
+      <div class="flex flex-col gap-3 items-center justify-center mt-[calc(15vh)] sm:mt-[29px] z-20">
         <nuxt-img src="/images/logo-img.png" class="md:w-[350px] sm:w-[250px] w-[200px] h-auto" alt="Header Logo" />
 
         <h1 class="text-[#757575] md:text-[28px] sm:text-[20px] text-[16px] mb-[40px] mt-[20px]">
@@ -29,7 +29,7 @@
 
         <p v-if="error" class="absolute -top-12 text-red-500 mt-2 text-sm">{{ error }}</p>
 
-        <p class="md:text-[16px] sm:text-[12px] text-[10px] mt-1 text-[#757575]">
+        <p class="md:text-[16px] sm:text-[12px] text-[10px] text-center mt-1 text-[#757575]">
           If there is a problem with the login process please contact
           <span class="font-bold">administator@gmail.com</span>
         </p>
