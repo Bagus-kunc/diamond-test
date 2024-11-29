@@ -373,7 +373,7 @@ onUnmounted(() => {
   pointer-events: none;
   user-select: none;
   font-size: 25px;
-  font-family: 'Aguafina Script', cursive;
+  font-family: 'BirdOfParadise', cursive;
   font-weight: 400;
 }
 .menu-sidebar {
