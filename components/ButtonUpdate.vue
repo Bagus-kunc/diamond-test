@@ -3,7 +3,7 @@
     <Toast />
     <Button
       id="updateButton"
-      class="btn-update px-5 mt-2 border-[1px] !border-gray-dark !text-gray-dark !bg-white hover:!bg-blue-hover rounded-full w-auto"
+      class="btn-update px-5 mt-2 border-[1px] !border-gray-dark !text-gray-dark hover:!bg-blue-hover hover:!text-white hover:!border-white !bg-white rounded-full w-auto"
       :class="isLoading ? '!text-black' : className"
       :disabled="isLoading"
       @click="updateCache"

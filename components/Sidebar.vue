@@ -1,15 +1,15 @@
 <template>
-  <div class="absolute bg-white top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10">
+  <div class="absolute bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10">
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
       <NuxtImg src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
     </div>
 
-    <div class="overflow-y-auto" style="max-height: calc(100vh - 20vh)" @scroll="handleScroll">
+    <div class="overflow-y-auto bg-transparent" style="max-height: calc(100vh - 20vh)" @scroll="handleScroll">
       <h1 class="px-7 unselectable text-gray-scorpion">Our Treatment:</h1>
       <Listbox
         v-if="accordionItems.length > 0"
         v-model="state.selectedBox"
-        class="menu w-full border-none rounded-none custom-listbox"
+        class="menu w-full border-none rounded-none custom-listbox bg-transparent"
         :options="accordionItems"
         listStyle="max-height:calc(100%); scrollbar-width:none;"
         pt:list:class="gap-[5px]"
@@ -19,7 +19,7 @@
           <img v-if="isOptionSelected(option)" src="~/assets/images/bg-diamond.jpg" class="bg-img" />
           <div v-if="isOptionSelected(option)" class="bg-color" />
           <div
-            class="menu-item flex justify-between h-full cursor-pointer z-50 relative items-center w-full"
+            class="menu-item flex justify-between h-full cursor-pointer z-50 relative items-center w-full bg-transparent"
             :class="{ 'menu-item-selected text-[#000080]': isOptionSelected(option) }"
             @click="handleMainClick(option)"
           >
@@ -78,7 +78,7 @@
         </transition>
       </Teleport>
 
-      <ButtonUpdate label="Update" className="hover:!bg-green-600" />
+      <ButtonUpdate label="Update" className="mt-2" />
     </div>
   </div>
 </template>
@@ -113,15 +113,14 @@ const isVisible = computed(() => state.value.submenuVisible);
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
 const handleMainClick = (option) => {
-  menuStore.setDataSideMenu([]);
+  if (!(option?.id === state.value.activeOption?.id && option?.title === state.value.activeOption?.title)) {
+    menuStore.setLoading(true);
+  }
+
   menuStore.setCover(option.cover);
 
   state.value.activeOption = option;
   state.value.selectedSubItem = null;
-
-  setTimeout(() => {
-    state.value.loading = false;
-  }, 1000);
 };
 
 const handleArrowClick = async (option, event) => {
@@ -344,11 +343,12 @@ onMounted(() => {
   checkAllImageLoaded();
   state.value.loading = true;
   setTimeout(() => {
-    if (props.data) {
+    if (props.data && props.data.length > 0) {
       state.value.currentCover = props.data[0].cover;
       menuStore.setCover(props.data[0].cover);
-
       state.value.activeOption = props.data.find((item) => item.cover === props.data[0].cover);
+    } else {
+      menuStore.setCover('/images/contents/background.jpg');
     }
     state.value.loading = false;
   }, 1000);
@@ -401,7 +401,7 @@ onUnmounted(() => {
   margin-left: 25px;
   z-index: 1010;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
   width: auto;
 }
 
@@ -435,7 +435,6 @@ onUnmounted(() => {
   background: #85a7da94;
   border-radius: 4px;
   color: #000080 !important;
-  border-bottom: 2px solid #000080;
 }
 
 .spinner-overlay {

@@ -84,6 +84,7 @@ body {
   height: 100%;
   width: 100vw;
   overflow: hidden;
+  background: radial-gradient(circle at 50% 230%, #c0c0c0bb 40%, transparent 80%);
 }
 
 .submenu .p-listbox-option,
