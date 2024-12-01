@@ -16,7 +16,7 @@
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
-      <div class="relative w-full flex justify-center bg-transparent">
+      <div class="relative w-full flex justify-center items-center md:items-stretch bg-white">
         <Swiper
           ref="swiperRef"
           :modules="swiperModules"
@@ -29,8 +29,8 @@
           :autoplay="autoplayOptions"
           :lazy="{ loadPrevNext: true, loadOnTransitionStart: true }"
           :class="{
-            'max-h-[100dvw] sm:max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
-            'max-h-[100dvw] sm:max-h-[91dvh] max-w-[100dvh]': !isFullScreen,
+            'max-h-[100dvw] md:max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
+            'max-h-[100dvw] md:max-h-[91dvh] max-w-[100dvh]': !isFullScreen,
           }"
           @swiper="handleSwiperInit"
           @slideChange="onSlideChange"

@@ -1,14 +1,14 @@
 <template>
   <div
-    class="sticky w-full z-[998] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] sm:ml-[250px] sm:max-w-[calc(100vw-250px)]"
+    class="sticky w-full z-[998] flex items-center justify-center gap-1 p-2 border-b border-[#cdd5e0] min-h-[80px] md:ml-[250px] md:max-w-[calc(100vw-250px)]"
   >
-    <div class="flex sm:hidden items-center flex-none mr-1">
+    <div class="flex md:hidden items-center flex-none mr-1">
       <Button class="!bg-white !border-gray-300 !text-gray-500" icon="pi pi-bars" @click="sidebarStore.toggle()">
         <Icon name="ic:menu" size="24" />
       </Button>
     </div>
     <div class="flex-1 overflow-x-auto">
-      <ul class="flex text-nowrap sm:justify-center gap-3 sm:gap-6 text-[#AAAAAAFC]">
+      <ul class="flex text-nowrap md:justify-center gap-3 md:gap-6 text-[#AAAAAAFC]">
         <li
           v-for="item in data.categories || []"
           :key="item.id"

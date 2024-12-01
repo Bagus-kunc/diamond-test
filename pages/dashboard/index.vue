@@ -7,7 +7,7 @@
     <div class="flex flex-1">
       <Sidebar :data="sidebarData" />
 
-      <div class="flex-1 flex flex-col relative sm:pl-[250px]">
+      <div class="flex-1 flex flex-col relative md:pl-[250px]">
         <div v-if="menuStore.loading && !menuStore.imagesLoaded" class="spinner-overlay"></div>
         <div v-if="menuStore.imagesLoaded" class="spinner-overlay">
           <ProgressSpinner />
