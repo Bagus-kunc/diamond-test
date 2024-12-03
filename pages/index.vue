@@ -1,15 +1,14 @@
 <template>
-  <div
-    class="relative max-h-screen bg-cover bg-center"
-    style="font-family: 'Lato', sans-serif"
-    :style="{ backgroundImage: `url(${BgDiamond})` }"
-  >
+  <div class="relative bg-cover h-[100svh] bg-center overflow-hidden" style="font-family: 'Lato', sans-serif">
     <!-- <Header class="mb-10" /> -->
-    <div class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full" />
+    <div
+      class="absolute bg-[url('/assets/images/bg-transparent.png')] bg-cover bg-center opacity-30 h-full w-full z-10"
+    />
+    <div class="absolute bg-[url('~/assets/images/bg-diamond.jpg')] bg-cover bg-center h-full w-full z-0" />
 
-    <div class="flex flex-col items-center h-screen">
-      <div class="flex flex-col gap-3 items-center justify-center mt-[29px] z-20">
-        <nuxt-img src="/images/logo-img.png" class="md:w-[350px] sm:w-[250px] w-[200px] h-auto" alt="Header Logo" />
+    <div class="flex flex-col items-center relative z-50 h-full overflow-y-auto">
+      <div class="flex flex-col gap-3 items-center justify-center mt-[calc(15vh)] sm:mt-[29px] z-20">
+        <nuxt-img src="/images/logo-img.png" class="md:w-[350px] 0sm:w-[250px] w-[200px] h-auto" alt="Header Logo" />
 
         <h1 class="text-[#757575] md:text-[28px] sm:text-[20px] text-[16px] mb-[40px] mt-[20px]">
           Enter the 4-digit passcode to enter
@@ -29,7 +28,7 @@
 
         <p v-if="error" class="absolute -top-12 text-red-500 mt-2 text-sm">{{ error }}</p>
 
-        <p class="md:text-[16px] sm:text-[12px] text-[10px] mt-1 text-[#757575]">
+        <p class="md:text-[16px] sm:text-[12px] text-[10px] text-center mt-1 text-[#757575]">
           If there is a problem with the login process please contact
           <span class="font-bold">administator@gmail.com</span>
         </p>
@@ -99,8 +98,11 @@ const handlePin = async () => {
       valuePin.value = '';
     }
   } catch (err) {
-    console.log('Error: Unable to verify PIN', err); // Log the actual error
-    error.value = 'PIN entered incorrect';
+    error.value = '';
+    console.log('Error: Unable to verify PIN'); // Log the actual error
+    if (err?._data?.message) {
+      error.value = err._data.message;
+    }
     valuePin.value = ''; // Clear PIN input if error occurs
   } finally {
     isLoading.value = false;
@@ -110,7 +112,7 @@ const handlePin = async () => {
 // Function to generate a unique token
 const generateUniqueToken = () => {
   const timestamp = Date.now();
-  const uuid = crypto.randomUUID();
+  const uuid = self.crypto.randomUUID();
   return `token-${uuid}-${timestamp}`; // Format: token-uuid-timestamp
 };
 </script>

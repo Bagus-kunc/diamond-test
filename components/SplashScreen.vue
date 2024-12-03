@@ -1,6 +1,6 @@
 <template>
   <div class="loading-screen flex flex-col">
-    <img src="/images/logo-img.png" alt="Loading" class="loading-image w-[250px]" />
+    <img src="/images/logo-img.png" alt="Loading" class="loading-image w-[180px] md:w-[250px]" />
     <h5 class="mt-4 font-bold text-lg text-black tracking-widest animate-pulse">LOADING...</h5>
   </div>
 </template>

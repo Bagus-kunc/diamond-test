@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row md:gap-14 sm:gap-10 gap-5">
+  <div class="flex flex-row md:gap-12 sm:gap-10 gap-5">
     <input
       v-for="(value, index) in otp"
       :key="index"
@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted } from 'vue';
 const props = defineProps({
   length: {
     type: Number,
@@ -26,7 +26,7 @@ const props = defineProps({
   },
   modelValue: {
     type: String,
-    default: "",
+    default: '',
   },
   clearField: {
     type: Boolean,
@@ -37,25 +37,20 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["update:modelValue"]);
-const otp = ref(
-  props.modelValue
-    .split("")
-    .concat(Array(props.length).fill(""))
-    .slice(0, props.length)
-);
+const emit = defineEmits(['update:modelValue']);
+const otp = ref(props.modelValue.split('').concat(Array(props.length).fill('')).slice(0, props.length));
 const otpRefs = ref([]);
 const isNumeric = (value) => /^[0-9]$/.test(value);
 const onInput = (index, event) => {
   const value = event.target.value;
   if (isNumeric(value)) {
     otp.value[index] = value;
-    emit("update:modelValue", otp.value.join(""));
+    emit('update:modelValue', otp.value.join(''));
     if (index < props.length - 1 && otp.value[index]) {
       otpRefs.value[index + 1]?.focus();
     }
   } else {
-    otp.value[index] = "";
+    otp.value[index] = '';
   }
 };
 const onBackspace = (index) => {
@@ -68,12 +63,12 @@ const onBackspace = (index) => {
 const onPaste = (event) => {
   event.preventDefault();
   const pasteData = event.clipboardData
-    .getData("text")
-    .split("")
+    .getData('text')
+    .split('')
     .filter((char) => !/[a-zA-Z]/.test(char))
     .slice(0, props.length);
-  otp.value = pasteData.concat(Array(props.length - pasteData.length).fill(""));
-  emit("update:modelValue", otp.value.join(""));
+  otp.value = pasteData.concat(Array(props.length - pasteData.length).fill(''));
+  emit('update:modelValue', otp.value.join(''));
   const firstEmptyIndex = otp.value.findIndex((val) => !val);
   if (firstEmptyIndex !== -1) {
     otpRefs.value[firstEmptyIndex]?.focus();
@@ -82,7 +77,7 @@ const onPaste = (event) => {
   }
 };
 const isBlocked = (index) => {
-  const otpLength = otp.value.join("").length;
+  const otpLength = otp.value.join('').length;
   return Math.min(otpLength, props.length - 1) !== index;
 };
 
@@ -90,19 +85,16 @@ watch(
   () => props.clearField,
   (newValue) => {
     if (newValue) {
-      otp.value = Array(props.length).fill("");
-      emit("update:modelValue", otp.value.join(""));
+      otp.value = Array(props.length).fill('');
+      emit('update:modelValue', otp.value.join(''));
     }
-  }
+  },
 );
 watch(
   () => props.modelValue,
   (newValue) => {
-    otp.value = newValue
-      .split("")
-      .concat(Array(props.length).fill(""))
-      .slice(0, props.length);
-  }
+    otp.value = newValue.split('').concat(Array(props.length).fill('')).slice(0, props.length);
+  },
 );
 onMounted(() => {
   otpRefs.value[0]?.focus();

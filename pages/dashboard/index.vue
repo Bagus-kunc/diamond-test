@@ -1,13 +1,13 @@
 <template>
   <SplashScreen v-show="coverIsReady" />
 
-  <div v-if="!apiDataStore.loading" class="w-full h-screen flex flex-col" style="font-family: 'Lato', sans-serif">
+  <div v-if="!apiDataStore.loading" class="w-full h-[100svh] flex flex-col" style="font-family: 'Lato', sans-serif">
     <Header v-model:selected="selectedHeader" />
 
     <div class="flex flex-1">
-      <Sidebar class="sidebar" :data="sidebarData" />
+      <Sidebar :data="sidebarData" />
 
-      <div class="flex-1 flex flex-col relative pl-[250px]">
+      <div class="flex-1 flex flex-col relative md:pl-[250px]">
         <div v-if="menuStore.loading && !menuStore.imagesLoaded" class="spinner-overlay"></div>
         <div v-if="menuStore.imagesLoaded" class="spinner-overlay">
           <ProgressSpinner />

@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center h-full relative card bg-transparent overflow-hidden">
-    <div ref="fullscreenDiv" class="flex justify-center max-h-[100vh]">
+    <div ref="fullscreenDiv" class="flex justify-center max-h-[100svh]">
       <!-- Pagination -->
       <div class="swiper-pagination-container absolute top-4 w-full flex justify-center z-10">
         <div class="swiper-pagination" />
@@ -16,7 +16,7 @@
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
-      <div class="relative w-full flex justify-center bg-transparent">
+      <div class="relative w-full flex justify-center items-center md:items-stretch bg-transparent">
         <Swiper
           ref="swiperRef"
           :modules="swiperModules"
@@ -29,8 +29,8 @@
           :autoplay="autoplayOptions"
           :lazy="{ loadPrevNext: true, loadOnTransitionStart: true }"
           :class="{
-            'max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
-            'max-h-[91dvh] max-w-[100dvh]': !isFullScreen,
+            'max-h-[100dvw] md:max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
+            'max-h-[100dvw] md:max-h-[91dvh] max-w-[100dvh]': !isFullScreen,
           }"
           @swiper="handleSwiperInit"
           @slideChange="onSlideChange"
@@ -308,7 +308,7 @@ watchEffect(() => {});
   top: 25px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 998;
   padding: 4px;
   background-color: transparent;
   border-radius: 15px;

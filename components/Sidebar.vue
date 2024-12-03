@@ -1,5 +1,8 @@
 <template>
-  <div class="absolute bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10">
+  <div
+    class="absolute bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10 w-[250px] md:left-0 transition-all"
+    :class="sidebarStore.open ? 'left-0 !fixed z-[1000]' : '-left-[250px]'"
+  >
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
       <NuxtImg src="/images/logo-img.png" class="relative h-auto w-[220px]" alt="Header Logo" />
     </div>
@@ -81,6 +84,12 @@
       <ButtonUpdate label="Update" className="mt-2" />
     </div>
   </div>
+  <div
+    v-if="sidebarStore.open"
+    tabindex="0"
+    class="fixed bg-black/40 inset-0 z-[999]"
+    @click="sidebarStore.setOpen(false)"
+  ></div>
 </template>
 
 <script setup>
@@ -92,6 +101,7 @@ const props = defineProps({
 
 const toast = useToast();
 const menuStore = useMenuStore();
+const sidebarStore = useSidebar();
 
 // State management
 const state = ref({
@@ -109,6 +119,7 @@ const accordionItems = ref([]);
 const isClicked = ref(false);
 const submenuPosition = ref({ top: '0px', left: '0px' });
 const isVisible = computed(() => state.value.submenuVisible);
+const refSubMenu = ref(null);
 
 const isOptionSelected = (option) => state.value.activeOption?.id === option.id;
 
@@ -121,6 +132,7 @@ const handleMainClick = (option) => {
 
   state.value.activeOption = option;
   state.value.selectedSubItem = null;
+  sidebarStore.setOpen(false);
 };
 
 const handleArrowClick = async (option, event) => {
@@ -153,16 +165,25 @@ const handleArrowClick = async (option, event) => {
 
   requestAnimationFrame(() => {
     const rect = menuItem.getBoundingClientRect();
-    const submenuWidth = 250;
+    const menuItemWidth = 250;
+    const menuItemHeight = 48;
     const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     let leftPosition = rect.right - 12 + window.scrollX;
+    let topPosition = rect.top - 4 + window.scrollY;
+    const submenu = refSubMenu.value.getBoundingClientRect();
 
-    if (leftPosition + submenuWidth > viewportWidth) {
-      leftPosition = rect.left - submenuWidth + window.scrollX;
+    if (leftPosition + menuItemWidth > viewportWidth) {
+      leftPosition = rect.left - 24;
+      topPosition = rect.top + menuItemHeight + window.scrollY;
+
+      if (topPosition + submenu.height > viewportHeight) {
+        topPosition = topPosition - (topPosition + submenu.height - viewportHeight);
+      }
     }
 
     submenuPosition.value = {
-      top: `${rect.top - 4 + window.scrollY}px`,
+      top: `${topPosition}px`,
       left: `${leftPosition}px`,
     };
   });
@@ -180,6 +201,7 @@ const handleItemClick = (item) => {
   state.value.activeOption = state.value.openedBox;
 
   menuStore.setCover('');
+  sidebarStore.setOpen(false);
 
   if (item.data.length === 0) {
     menuStore.setNotFound(true);
