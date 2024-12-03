@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center h-full relative card bg-transparent overflow-hidden">
-    <div ref="fullscreenDiv" class="flex justify-center max-h-[100vh]">
+  <div class="flex justify-center h-full relative card overflow-hidden">
+    <div ref="fullscreenDiv" class="flex justify-center max-h-[100svh]">
       <!-- Pagination -->
       <div class="swiper-pagination-container absolute top-4 w-full flex justify-center z-10">
         <div class="swiper-pagination" />
@@ -308,7 +308,7 @@ watchEffect(() => {});
   top: 25px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 998;
   padding: 4px;
   background-color: transparent;
   border-radius: 15px;

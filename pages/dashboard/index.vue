@@ -1,7 +1,7 @@
 <template>
   <SplashScreen v-show="coverIsReady" />
 
-  <div v-if="!apiDataStore.loading" class="w-full h-screen flex flex-col" style="font-family: 'Lato', sans-serif">
+  <div v-if="!apiDataStore.loading" class="w-full h-[100svh] flex flex-col" style="font-family: 'Lato', sans-serif">
     <Header v-model:selected="selectedHeader" />
 
     <div class="flex flex-1">

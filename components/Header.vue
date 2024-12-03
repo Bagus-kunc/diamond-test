@@ -8,7 +8,7 @@
       </Button>
     </div>
     <div class="flex-1 overflow-x-auto">
-      <ul class="flex text-nowrap md:justify-center gap-3 md:gap-6 text-[#AAAAAAFC]">
+      <ul class="flex text-nowrap sm:justify-center gap-3 md:gap-6 text-[#AAAAAAFC]">
         <li
           v-for="item in data.categories || []"
           :key="item.id"
