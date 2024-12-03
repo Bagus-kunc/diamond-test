@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute bg-white top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10 w-[250px] md:left-0 transition-all"
+    class="absolute bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10 w-[250px] md:left-0 transition-all"
     :class="sidebarStore.open ? 'left-0 !fixed z-[1000]' : '-left-[250px]'"
   >
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
@@ -133,10 +133,6 @@ const handleMainClick = (option) => {
   state.value.activeOption = option;
   state.value.selectedSubItem = null;
   sidebarStore.setOpen(false);
-
-  setTimeout(() => {
-    state.value.loading = false;
-  }, 1000);
 };
 
 const handleArrowClick = async (option, event) => {

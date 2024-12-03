@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center h-full relative card overflow-hidden">
+  <div class="flex justify-center h-full relative card bg-transparent overflow-hidden">
     <div ref="fullscreenDiv" class="flex justify-center max-h-[100svh]">
       <!-- Pagination -->
       <div class="swiper-pagination-container absolute top-4 w-full flex justify-center z-10">
@@ -16,7 +16,7 @@
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
-      <div class="relative w-full flex justify-center items-center md:items-stretch bg-white">
+      <div class="relative w-full flex justify-center items-center md:items-stretch bg-transparent">
         <Swiper
           ref="swiperRef"
           :modules="swiperModules"
