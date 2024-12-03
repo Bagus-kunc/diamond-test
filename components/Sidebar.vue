@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10 w-[250px] md:left-0 transition-all"
+    class="absolute bg-white md:bg-transparent top-0 min-w-[250px] menu-sidebar flex flex-col h-full pb-10 w-[250px] md:left-0 transition-all"
     :class="sidebarStore.open ? 'left-0 !fixed z-[1000]' : '-left-[250px]'"
   >
     <div class="sticky top-0 z-[1010] flex flex-col justify-center gap-5 pl-4 mb-4 px-4">
@@ -176,10 +176,10 @@ const handleArrowClick = async (option, event) => {
     if (leftPosition + menuItemWidth > viewportWidth) {
       leftPosition = rect.left - 24;
       topPosition = rect.top + menuItemHeight + window.scrollY;
+    }
 
-      if (topPosition + submenu.height > viewportHeight) {
-        topPosition = topPosition - (topPosition + submenu.height - viewportHeight);
-      }
+    if (topPosition + submenu.height > viewportHeight) {
+      topPosition = topPosition - (topPosition + submenu.height - viewportHeight);
     }
 
     submenuPosition.value = {
@@ -201,7 +201,6 @@ const handleItemClick = (item) => {
   state.value.activeOption = state.value.openedBox;
 
   menuStore.setCover('');
-  sidebarStore.setOpen(false);
 
   if (item.data.length === 0) {
     menuStore.setNotFound(true);
@@ -216,7 +215,8 @@ const handleItemClick = (item) => {
 
   setTimeout(() => {
     state.value.submenuVisible = false;
-  }, 300);
+    sidebarStore.setOpen(false);
+  }, 100);
 };
 
 watchEffect(() => {
