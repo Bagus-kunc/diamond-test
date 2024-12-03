@@ -93,7 +93,7 @@ const useFetchApi = async <T>(
     loading = false;
     errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     console.error('API call failed:', errorMessage);
-    throw new Error(errorMessage);
+    throw error;
   }
 };
 

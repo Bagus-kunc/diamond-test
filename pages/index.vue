@@ -98,10 +98,11 @@ const handlePin = async () => {
       valuePin.value = '';
     }
   } catch (err) {
-    alert(err);
-    console.log(self.crypto);
-    console.log('Error: Unable to verify PIN', err); // Log the actual error
-    error.value = 'PIN entered incorrect';
+    error.value = '';
+    console.log('Error: Unable to verify PIN'); // Log the actual error
+    if (err?._data?.message) {
+      error.value = err._data.message;
+    }
     valuePin.value = ''; // Clear PIN input if error occurs
   } finally {
     isLoading.value = false;
