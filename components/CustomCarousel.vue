@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center h-full relative card overflow-hidden">
+  <div class="flex justify-center h-full relative card bg-transparent overflow-hidden">
     <div ref="fullscreenDiv" class="flex justify-center max-h-[100vh]">
       <!-- Pagination -->
       <div class="swiper-pagination-container absolute top-4 w-full flex justify-center z-10">
@@ -9,14 +9,14 @@
       <!-- Navigation Buttons -->
       <button
         v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
-        class="px-3 bg-white"
+        class="px-3 bg-transparent"
         :disabled="!isInitialized"
         @click="handlePrev"
       >
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
-      <div class="relative w-full flex justify-center bg-white">
+      <div class="relative w-full flex justify-center bg-transparent">
         <Swiper
           ref="swiperRef"
           :modules="swiperModules"
@@ -129,7 +129,7 @@
       <!-- Next Button -->
       <button
         v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
-        class="px-3 bg-white"
+        class="px-3 bg-transparent"
         :disabled="!isInitialized"
         @click="handleNext"
       >
@@ -315,7 +315,7 @@ watchEffect(() => {});
 }
 
 :deep(.swiper-pagination-bullet) {
-  @apply w-28 h-2 bg-gray-400 rounded-full opacity-50;
+  @apply w-28 h-2 rounded-full opacity-50;
   margin: 0 4px !important;
 
   transition: all 0.3s ease;
@@ -326,6 +326,6 @@ watchEffect(() => {});
 }
 
 .card {
-  @apply bg-white rounded-lg shadow-lg overflow-hidden;
+  @apply overflow-hidden;
 }
 </style>

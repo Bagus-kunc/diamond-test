@@ -3,7 +3,7 @@
 
 .p-listbox {
     @apply bg-surface-0 dark:bg-surface-950 text-surface-700 dark:text-surface-0
-        border border-surface-300 dark:border-surface-700 rounded-md
+        rounded-md
         shadow-[0_1px_2px_0_rgba(18,18,23,0.05)]
         transition-colors duration-200
 }
