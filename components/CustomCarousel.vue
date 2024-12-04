@@ -8,7 +8,7 @@
 
       <!-- Navigation Buttons -->
       <button
-        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
+        v-show="products.length > 1 && isInitialized && !coverSubMenu"
         class="px-3 bg-transparent"
         :disabled="!isInitialized"
         @click="handlePrev"
@@ -128,7 +128,7 @@
 
       <!-- Next Button -->
       <button
-        v-show="products.length > 1 && isInitialized && !menuStore.notFound && !coverSubMenu"
+        v-show="products.length > 1 && isInitialized && !coverSubMenu"
         class="px-3 bg-transparent"
         :disabled="!isInitialized"
         @click="handleNext"
@@ -203,16 +203,26 @@ const isVideoType = (product) => product.type === 'iframe' || product.type === 2
 
 const getEmbedUrl = (url) => {
   if (!url) return '';
+
   try {
     const urlObj = new URL(url);
-    if (urlObj.hostname.includes('youtube.com')) {
-      const videoId = urlObj.searchParams.get('v');
+    const hostname = urlObj.hostname;
+    const pathname = urlObj.pathname;
+
+    const validHosts = ['youtube.com', 'www.youtube.com', 'youtu.be'];
+
+    if (validHosts.some((host) => hostname.includes(host))) {
+      let videoId = null;
+
+      if (hostname.includes('youtube.com')) {
+        videoId = urlObj.searchParams.get('v') || (pathname.startsWith('/shorts/') ? pathname.split('/')[2] : null);
+      } else if (hostname.includes('youtu.be')) {
+        videoId = pathname.slice(1);
+      }
+
       return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&fs=0` : url;
     }
-    if (urlObj.hostname.includes('youtu.be')) {
-      const videoId = urlObj.pathname.slice(1);
-      return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&fs=0` : url;
-    }
+
     return url;
   } catch (error) {
     console.error('Invalid URL:', url, error);
