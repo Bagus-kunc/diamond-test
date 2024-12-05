@@ -363,16 +363,7 @@ watch(
 onMounted(() => {
   checkAllImageLoaded();
   state.value.loading = true;
-  setTimeout(() => {
-    if (props.data && props.data.length > 0) {
-      state.value.currentCover = props.data[0].cover;
-      menuStore.setCover(props.data[0].cover);
-      state.value.activeOption = props.data.find((item) => item.cover === props.data[0].cover);
-    } else {
-      menuStore.setCover('/images/contents/not-found.jpg');
-    }
-    state.value.loading = false;
-  }, 1000);
+  menuStore.setCover('/images/contents/not-found.jpg');
 });
 
 const unwatch = watchEffect(() => {});
