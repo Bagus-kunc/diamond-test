@@ -6,7 +6,7 @@ import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 declare let self: ServiceWorkerGlobalScope;
 
-const FALLBACK_IMAGE = '/images/contents/background.jpg';
+const FALLBACK_IMAGE = '/images/contents/not-found.jpg';
 // Define custom cache name and assets
 const CACHE_NAME = `diamond-clinic-cache-v2 - ${self.location.origin}`;
 const ASSETS_TO_CACHE = [

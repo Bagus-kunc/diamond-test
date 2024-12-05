@@ -23,6 +23,17 @@
         </li>
       </ul>
     </div>
+    <div class=" flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full" :class="{ 'bg-green-500': isOnline, 'bg-red-500': !isOnline }"></div>
+        <p
+          :class="{
+            'text-green-500 md:flex sm:flex hidden': isOnline,
+            'text-red-500 md:flex sm:flex hidden': !isOnline,
+          }"
+        >
+          {{ isOnline ? 'ONLINE' : 'OFFLINE' }}
+        </p>
+    </div>
   </div>
 </template>
 
@@ -40,12 +51,13 @@ const sidebarStore = useSidebar();
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
   // eslint-disable-next-line vue/require-default-prop
-  selected: Number,
+  selected: { type: Number, required: true },
 });
 
 const emit = defineEmits(['update:selected']);
 
 const isFirstLoad = ref(true);
+const isOnline = ref(true);
 
 const handleItem = (dataMenu, id) => {
   if (dataMenu.length === 0) {
@@ -55,12 +67,25 @@ const handleItem = (dataMenu, id) => {
   if (menuStore.selected !== id) {
     menuStore.setSelected(id);
     if (!isFirstLoad.value) {
-      menuStore.setCover('/images/contents/background.jpg');
+      menuStore.setCover('/images/contents/not-found.jpg');
     }
   }
 
   emit('update:selected', id);
 };
+
+const updateOnlineStatus = () => {
+  isOnline.value = navigator.onLine;
+};
+onMounted(() => {
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+});
+onUnmounted(() => {
+  window.removeEventListener('online', updateOnlineStatus);
+  window.removeEventListener('offline', updateOnlineStatus);
+});
 
 onMounted(async () => {
   if (!apiDataStore.data || !apiDataStore.data.categories?.length) {

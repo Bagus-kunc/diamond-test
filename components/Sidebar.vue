@@ -204,8 +204,7 @@ const handleItemClick = (item) => {
 
   if (item.data.length === 0) {
     menuStore.setNotFound(true);
-    console.log('tidak ada data');
-    menuStore.setCover('/images/contents/background.jpg');
+    menuStore.setCover('/images/contents/not-found.jpg');
     menuStore.setLoading(false);
   } else {
     menuStore.setNotFound(false);
@@ -370,7 +369,7 @@ onMounted(() => {
       menuStore.setCover(props.data[0].cover);
       state.value.activeOption = props.data.find((item) => item.cover === props.data[0].cover);
     } else {
-      menuStore.setCover('/images/contents/background.jpg');
+      menuStore.setCover('/images/contents/not-found.jpg');
     }
     state.value.loading = false;
   }, 1000);
