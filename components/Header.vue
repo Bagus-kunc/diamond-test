@@ -23,16 +23,16 @@
         </li>
       </ul>
     </div>
-    <div class=" flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full" :class="{ 'bg-green-500': isOnline, 'bg-red-500': !isOnline }"></div>
-        <p
-          :class="{
-            'text-green-500 md:flex sm:flex hidden': isOnline,
-            'text-red-500 md:flex sm:flex hidden': !isOnline,
-          }"
-        >
-          {{ isOnline ? 'ONLINE' : 'OFFLINE' }}
-        </p>
+    <div class="flex items-center gap-2">
+      <div class="w-3 h-3 rounded-full" :class="{ 'bg-green-500': isOnline, 'bg-red-500': !isOnline }"></div>
+      <p
+        :class="{
+          'text-green-500 md:flex sm:flex hidden': isOnline,
+          'text-red-500 md:flex sm:flex hidden': !isOnline,
+        }"
+      >
+        {{ isOnline ? 'ONLINE' : 'OFFLINE' }}
+      </p>
     </div>
   </div>
 </template>
@@ -56,7 +56,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected']);
 
-const isFirstLoad = ref(true);
 const isOnline = ref(true);
 
 const handleItem = (dataMenu, id) => {
@@ -66,9 +65,7 @@ const handleItem = (dataMenu, id) => {
 
   if (menuStore.selected !== id) {
     menuStore.setSelected(id);
-    if (!isFirstLoad.value) {
-      menuStore.setCover('/images/contents/not-found.jpg');
-    }
+    menuStore.setCover('/images/contents/not-found.jpg');
   }
 
   emit('update:selected', id);
@@ -96,8 +93,6 @@ onMounted(async () => {
     menuStore.setCover('');
     const firstCategory = apiDataStore.data.categories[0];
     handleItem(firstCategory.data, firstCategory.id);
-
-    isFirstLoad.value = false;
   }
 });
 </script>
