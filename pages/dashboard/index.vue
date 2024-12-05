@@ -99,7 +99,6 @@ onMounted(() => {
   font-size: 3rem;
   color: #687489;
   justify-content: center;
-  /* background: url('/images/contents/background.jpg'); */
   background-position: center;
   z-index: 999;
 }

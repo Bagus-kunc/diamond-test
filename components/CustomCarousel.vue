@@ -50,6 +50,7 @@
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
+                @error="handleImageError"
               />
               <Icon
                 class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/80 hover:bg-black/50 transition-colors"
@@ -70,7 +71,7 @@
             <!-- Image Content -->
             <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
               <LazyNuxtImg
-                placeholder
+
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
                 class="object-cover h-full"
@@ -80,7 +81,9 @@
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
+                placeholder="/images/contents/not-found.jpg"
               />
+
               <!-- Fullscreen Button -->
               <Icon
                 class="absolute bottom-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-black/60 transition-colors"
@@ -96,7 +99,7 @@
             >
               <img
                 v-if="isVideoType(product)"
-                src="~/assets/images/bg-diamond.jpg"
+                src="/images/contents/not-found.jpg"
                 format="webp"
                 layout="fill"
                 class="top-0 left-0 w-full h-full"
@@ -201,6 +204,11 @@ const autoplayOptions = computed(() => ({
 const isImageType = (product) => product.type === 'image' || product.type === 1;
 const isVideoType = (product) => product.type === 'iframe' || product.type === 2;
 
+const handleImageError = (event) => {
+  event.target.src = '/images/contents/not-found.jpg';
+  console.error('Gambar gagal dimuat, menampilkan gambar cadangan.');
+};
+
 const getEmbedUrl = (url) => {
   if (!url) return '';
 
@@ -250,9 +258,6 @@ const handlePrev = () => {
 const onSlideChange = () => {
   if (!swiperInstance.value) return;
 
-  const currentIndex = swiperInstance.value.realIndex ?? 0;
-  // const currentProduct = products.value[currentIndex];
-
   const iframes = document.querySelectorAll('iframe');
   iframes.forEach((iframe) => {
     const src = iframe.src;
@@ -261,7 +266,6 @@ const onSlideChange = () => {
     }
   });
 
-  // emit('slide-change', currentIndex);
 };
 
 const toggleFullscreen = async () => {
@@ -309,7 +313,55 @@ watchEffect(() => {
   }
 });
 
-watchEffect(() => {});
+onMounted(() => {
+  const paginationContainer = document.querySelector('.swiper-pagination');
+
+  if (paginationContainer) {
+    const observer = new MutationObserver(() => {
+      const bullets = paginationContainer.querySelectorAll('.swiper-pagination-bullet');
+      console.log('Jumlah bullets:', bullets.length);
+      swiperInstance.value.slideTo(0);
+
+      const adjustBulletSize = () => {
+        const windowWidth = window.innerWidth;
+        let bulletWidth = '20px';
+
+        if (windowWidth > 768) {
+          if (bullets.length < 5) {
+            bulletWidth = '';
+          }else if (bullets.length >= 5 && bullets.length < 7) {
+            bulletWidth = '80px';
+          } else if (bullets.length >= 7 && bullets.length < 11) {
+            bulletWidth = '60px';
+          } else if (bullets.length >= 11 && bullets.length <= 12) {
+            bulletWidth = '40px';
+          } else if (bullets.length > 12) {
+            bulletWidth = '20px';
+          }
+        } else {
+          bulletWidth = '15px';
+        }
+
+        bullets.forEach(bullet => {
+          bullet.style.width = bulletWidth;
+        });
+      };
+
+      adjustBulletSize();
+
+      window.addEventListener('resize', adjustBulletSize);
+
+      onBeforeUnmount(() => {
+        window.removeEventListener('resize', adjustBulletSize);
+        observer.disconnect();
+      });
+    });
+
+    observer.observe(paginationContainer, { childList: true, subtree: true });
+  }
+});
+
+
 </script>
 
 <style scoped>
@@ -325,7 +377,7 @@ watchEffect(() => {});
 }
 
 :deep(.swiper-pagination-bullet) {
-  @apply w-28 h-2 rounded-full opacity-50;
+  @apply lg:w-28 md:w-20 sm:w-12 w-10 h-1 rounded-full opacity-50;
   margin: 0 4px !important;
 
   transition: all 0.3s ease;
