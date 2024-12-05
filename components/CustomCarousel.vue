@@ -16,7 +16,7 @@
         <Icon name="ic:baseline-arrow-circle-left" size="30" :style="{ color: isInitialized ? '#AAAAAAFC' : '#ccc' }" />
       </button>
 
-      <div class="relative w-full flex justify-center items-center md:items-stretch bg-transparent">
+      <div :class="['relative w-full flex justify-center items-center', isFullScreen ? 'bg-white' : 'bg-transparent']">
         <Swiper
           ref="swiperRef"
           :modules="swiperModules"
@@ -44,7 +44,7 @@
                 :src="coverSubMenu"
                 alt="Cover Image"
                 format="webp"
-                class="object-cover h-full"
+                class="object-cover h-full mx-auto"
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
@@ -70,18 +70,18 @@
           >
             <!-- Image Content -->
             <div v-if="isImageType(product)" class="relative w-full h-full max-h-full">
-              <LazyNuxtImg
-
+              <img
+                placeholder
                 :src="product.url"
                 :alt="product.title || 'Content Image'"
-                class="object-cover h-full"
                 format="webp"
+                class="object-cover h-full mx-auto"
                 loading="lazy"
                 fetchpriority="high"
                 :sizes="{ sm: '320px', md: '768px', lg: '1024px' }"
                 @loadstart="handleImageStartLoad"
                 @load="handleImageLoad"
-                placeholder="/images/contents/not-found.jpg"
+                @error="handleImageError"
               />
 
               <!-- Fullscreen Button -->
@@ -265,7 +265,6 @@ const onSlideChange = () => {
       iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     }
   });
-
 };
 
 const toggleFullscreen = async () => {
@@ -329,7 +328,7 @@ onMounted(() => {
         if (windowWidth > 768) {
           if (bullets.length < 5) {
             bulletWidth = '';
-          }else if (bullets.length >= 5 && bullets.length < 7) {
+          } else if (bullets.length >= 5 && bullets.length < 7) {
             bulletWidth = '80px';
           } else if (bullets.length >= 7 && bullets.length < 11) {
             bulletWidth = '60px';
@@ -342,7 +341,7 @@ onMounted(() => {
           bulletWidth = '15px';
         }
 
-        bullets.forEach(bullet => {
+        bullets.forEach((bullet) => {
           bullet.style.width = bulletWidth;
         });
       };
@@ -360,8 +359,6 @@ onMounted(() => {
     observer.observe(paginationContainer, { childList: true, subtree: true });
   }
 });
-
-
 </script>
 
 <style scoped>
