@@ -3,12 +3,13 @@
     <Toast />
     <Button
       id="updateButton"
-      class="btn-update px-5 mt-2 border-[1px] !border-gray-dark !text-gray-dark hover:!bg-blue-hover hover:!text-white hover:!border-white !bg-white rounded-full w-auto"
+      class="rounded-full !bg-transparent !border-none !text-gray-500 !px-6"
       :class="isLoading ? '!text-black' : className"
       :disabled="isLoading"
+      :aria-label="label"
       @click="updateCache"
     >
-      {{ label }}
+      <Icon name="ic:baseline-refresh" size="28" />
     </Button>
   </div>
 </template>

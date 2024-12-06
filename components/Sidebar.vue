@@ -81,7 +81,7 @@
         </transition>
       </Teleport>
 
-      <ButtonUpdate label="Update" className="mt-2" />
+      <ButtonUpdate label="Update" class="mt-2" />
     </div>
   </div>
   <div
