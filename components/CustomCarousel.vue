@@ -268,16 +268,40 @@ const onSlideChange = () => {
 };
 
 const toggleFullscreen = async () => {
-  try {
-    if (!document.fullscreenElement) {
-      await fullscreenDiv.value.requestFullscreen();
-      isFullScreen.value = true;
-    } else {
-      await document.exitFullscreen();
-      isFullScreen.value = false;
+  var isInFullScreen =
+    (document.fullscreenElement && document.fullscreenElement !== null) ||
+    (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+    (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+    (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+  var docElm = fullscreenDiv.value;
+  if (!isInFullScreen) {
+    if (docElm.requestFullscreen) {
+      docElm.requestFullscreen();
+    } else if (docElm.mozRequestFullScreen) {
+      docElm.mozRequestFullScreen();
+    } else if (docElm.webkitRequestFullScreen) {
+      docElm.webkitRequestFullScreen();
+    } else if (docElm.msRequestFullscreen) {
+      docElm.msRequestFullscreen();
     }
-  } catch (error) {
-    console.warn('Fullscreen API error:', error);
+
+    const wrapper = document.querySelector('.swiper-wrapper').classList
+    wrapper.add('!h-[100dvh]')
+    isFullScreen.value = true;
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+     const wrapper = document.querySelector('.swiper-wrapper').classList
+    wrapper.remove('!h-[100dvh]')
+    isFullScreen.value = false;
   }
 };
 
@@ -371,6 +395,10 @@ onMounted(() => {
   padding: 4px;
   background-color: transparent;
   border-radius: 15px;
+}
+
+:deep(.swiper-wrapper) {
+  height: 91dvh;
 }
 
 :deep(.swiper-pagination-bullet) {
