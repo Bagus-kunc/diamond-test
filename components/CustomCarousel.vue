@@ -354,12 +354,10 @@ onMounted(() => {
       const adjustBulletSize = () => {
         const windowWidth = window.innerWidth;
         const swiperContainer = document.querySelector('.swiper-pagination-container').classList
-        let bulletWidth = '20px';
+        let bulletWidth;
 
         if (windowWidth > 768) {
-          if (bullets.length < 5) {
-            bulletWidth = '';
-          } else if (bullets.length >= 5 && bullets.length < 7) {
+          if (bullets.length >= 5 && bullets.length < 7) {
             bulletWidth = '80px';
           } else if (bullets.length >= 7 && bullets.length < 11) {
             bulletWidth = '60px';
@@ -367,12 +365,17 @@ onMounted(() => {
             bulletWidth = '40px';
           } else if (bullets.length > 12) {
             bulletWidth = '30px';
-          } else if (bullets.length > 12) {
-            bulletWidth = '30px';
           }
         } else {
-          bulletWidth = '15px';
-          if (bullets.length > 12) {
+          if (bullets.length < 5) {
+            bulletWidth = '';
+          } else if (bullets.length >= 5 && bullets.length < 7) {
+            bulletWidth = '60px';
+          } else if (bullets.length >= 7 && bullets.length < 11) {
+            bulletWidth = '50px';
+          } else if (bullets.length >= 11 && bullets.length <= 12) {
+            bulletWidth = '30px';
+          } else if (bullets.length > 12) {
             bulletWidth = '20px';
           }
         }
