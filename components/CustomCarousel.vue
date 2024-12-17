@@ -2,7 +2,7 @@
   <div class="flex justify-center h-full relative card bg-transparent overflow-hidden">
     <div ref="fullscreenDiv" class="flex justify-center max-h-[100svh]">
       <!-- Pagination -->
-      <div class="swiper-pagination-container absolute top-4 w-full flex justify-center z-10">
+      <div class="swiper-pagination-container !top-7 left-1/2 w-full flex justify-center z-10">
         <div class="swiper-pagination" />
       </div>
 
@@ -187,6 +187,11 @@ const paginationOptions = computed(() => ({
   el: '.swiper-pagination',
   type: 'bullets',
   dynamicBullets: false,
+  renderBullet: (index, className) => `
+    <div class="${className} swiper-bullet-wrapper py-3 cursor-pointer flex justify-center items-center !bg-transparent">
+      <span class="bullet-visual block h-1 w-full bg-[#000080] rounded-full"></span>
+    </div>
+  `,
 }));
 
 const navigationOptions = computed(() => ({
@@ -348,6 +353,7 @@ onMounted(() => {
 
       const adjustBulletSize = () => {
         const windowWidth = window.innerWidth;
+        const swiperContainer = document.querySelector('.swiper-pagination-container').classList
         let bulletWidth = '20px';
 
         if (windowWidth > 768) {
@@ -360,10 +366,15 @@ onMounted(() => {
           } else if (bullets.length >= 11 && bullets.length <= 12) {
             bulletWidth = '40px';
           } else if (bullets.length > 12) {
-            bulletWidth = '20px';
+            bulletWidth = '30px';
+          } else if (bullets.length > 12) {
+            bulletWidth = '30px';
           }
         } else {
           bulletWidth = '15px';
+          if (bullets.length > 12) {
+            bulletWidth = '20px';
+          }
         }
 
         bullets.forEach((bullet) => {
@@ -389,8 +400,6 @@ onMounted(() => {
 <style scoped>
 .swiper-pagination-container {
   position: absolute;
-  top: 25px;
-  left: 50%;
   transform: translateX(-50%);
   z-index: 998;
   padding: 4px;
