@@ -28,10 +28,9 @@
           :navigation="navigationOptions"
           :autoplay="autoplayOptions"
           :lazy="{ loadPrevNext: true, loadOnTransitionStart: true }"
-          class="max-h-[100dvw] md:w-[100dvh]"
           :class="{
-            ' md:max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
-            'md:max-h-[91dvh]': !isFullScreen,
+            'max-h-[100dvw] md:max-h-[100dvh] max-w-[110dvh] !m-0': isFullScreen,
+            'max-h-[100dvw] md:max-h-[91dvh]': !isFullScreen,
           }"
           @swiper="handleSwiperInit"
           @slideChange="onSlideChange"
